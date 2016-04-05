@@ -1,11 +1,7 @@
-import sys
 import os
 import time
 import random
-import math
-import pdb
 import logging
-import json
 from StructOpt import io
 from StructOpt import tools
 from StructOpt import generate
@@ -24,21 +20,21 @@ class Optimizer():
     logger = None
 
 
-    def __init__(self, input, uselogger = True):
+    def __init__(self, input, uselogger=True):
         self.args = io.read_parameter_input(input, uselogger)
         for k, v in self.args.items():
             setattr(self, k, v)
 
         self.relaxation_module = None # Currently only one relaxation module
         if self.relaxation:
-            mod = import_module('StructOpt.fitness.{module_name}.{module_name}_eval'.format(module_name = self.relaxation))  # Import the module package
-            cls = getattr(mod, '{cls_name}_eval'.format(cls_name = self.relaxation))  # Get's the class from the module package
+            mod = import_module('StructOpt.fitness.{module_name}.{module_name}_eval'.format(module_name=self.relaxation))  # Import the module package
+            cls = getattr(mod, '{cls_name}_eval'.format(cls_name=self.relaxation))  # Get's the class from the module package
             self.relaxation_module = cls()
 
         self.fitness_modules = []
         for m in self.modules:
-            mod = import_module('StructOpt.fitness.{module_name}.{module_name}_eval'.format(module_name = m))  # Import the module package
-            cls = getattr(mod, '{cls_name}_eval'.format(cls_name = m))  # Get's the class from the module package
+            mod = import_module('StructOpt.fitness.{module_name}.{module_name}_eval'.format(module_name=m))  # Import the module package
+            cls = getattr(mod, '{cls_name}_eval'.format(cls_name=m))  # Get's the class from the module package
             self.fitness_modules.append(cls())
 
         if self.loggername:
@@ -191,14 +187,14 @@ class Optimizer():
                 pop.extend(indiv)
                 pop = self.generation_eval(pop)
                 self.write()
-            convergence = comm.bcast(self.convergence, root = 0)
+            convergence = comm.bcast(self.convergence, root=0)
 
         if rank == 0:
             logger.info('Run algorithm stats')
             end_signal = self.algorithm_stats(self.population)
         else:
             end_signal = None
-        end_signal = comm.bcast(end_signal, root = 0)
+        end_signal = comm.bcast(end_signal, root=0)
 
         return end_signal
 
@@ -437,8 +433,7 @@ class Optimizer():
         if self.fingerprinting:
             logger.info('Writing fingerprint files')
             for one in pop:
-                self.fpfile.write(repr(fingerprinting.fingerprint_dist(
-                    pop[0].fingerprint, one.fingerprint))+' '+repr(one.energy)+' ')
+                self.fpfile.write(repr(fingerprinting.fingerprint_dist(pop[0].fingerprint, one.fingerprint))+' '+repr(one.energy)+' ')  # TODO Fix this
             self.fpfile.write('\n')
             self.fpminfile.write(repr(pop[0].fingerprint)+'\n')
             self.fpminfile.write(repr(pop[0].energy)+'\n')
@@ -622,9 +617,9 @@ class Optimizer():
                 path = os.path.join(os.getcwd(), '{0}'.format(self.filename))
                 os.chdir(path)
                 if self.genealogytree:
-                    pp.read_output(os.getcwd(), genealogytree = True, natoms = self.natoms)
+                    pp.read_output(os.getcwd(), genealogytree=True, natoms=self.natoms)
                 else:
-                    pp.read_output(os.getcwd(), genealogytree = False, natoms = self.natoms)
+                    pp.read_output(os.getcwd(), genealogytree=False, natoms=self.natoms)
                 os.chdir(cwd)
             if self.lattice_concentration:
                 if self.structure == 'Defect':
@@ -638,7 +633,7 @@ class Optimizer():
                     os.chdir(cwd)
 
         except Exception, e:
-            logger.error('Error in execution: {0}'.format(e), exc_info = True)
+            logger.error('Error in execution: {0}'.format(e), exc_info=True)
             print('********ERROR IN EXECUTION********')
             print(str(e))
             print('CLEANING UP FILES')
@@ -682,5 +677,5 @@ class Optimizer():
 if __name__ == "__main__":
     import sys
     input = sys.argv[1]
-    A = Optimizer(input)
-    A.run()
+    optimizer = Optimizer(input)
+    optimizer.run()
