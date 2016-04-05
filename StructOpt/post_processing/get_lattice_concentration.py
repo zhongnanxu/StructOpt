@@ -1,11 +1,11 @@
 import os
 import math
 import numpy
-from StructOpt.inp_out import read_xyz
+from StructOpt.io import read_xyz
 from StructOpt.tools import calc_dist
 
 def get_lattice_concentration(bulkfile,indivfile):
-    """Function to identify the lattice concentration of atoms in a bulk structure compared to a 
+    """Function to identify the lattice concentration of atoms in a bulk structure compared to a
     structure with a defect.
     Inputs:
         bulkfile = filename for starting structure with original lattice atoms
@@ -74,7 +74,7 @@ def get_lattice_concentration(bulkfile,indivfile):
         indiv.translate([nnxd/2.0,nnyd/2.0,nnzd/2.0])
         bxarray=[[0,[],[]] for i in range(nx*ny*nz)]
         positions=indiv.get_positions()
-    
+
         # Wrap positions in individual to cell size
         for i in range(len(positions)):
             while positions[i][0] > cell[0]:
@@ -89,7 +89,7 @@ def get_lattice_concentration(bulkfile,indivfile):
                 positions[i][1]=positions[i][1]+cell[1]
             while positions[i][2] < 0:
                 positions[i][2]=positions[i][2]+cell[2]
-    
+
         for i in range(len(indiv)):
             box=[math.floor(positions[i][0]/nnxd),math.floor(positions[i][1]/nnyd),math.floor(positions[i][2]/nnzd)]
             bxarray[int((nx*ny)*(box[2])+nx*(box[1])+box[0])][0]+=1

@@ -3,7 +3,7 @@ try:
     from mpi4py import MPI
 except:
     pass
-from StructOpt.inp_out.write_individual import write_individual
+from StructOpt.io.write_individual import write_individual
 
 def write_optimizer(Optimizer, optfile, restart=True):
     """Function to write out an Optimizer class object

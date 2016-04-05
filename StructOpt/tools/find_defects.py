@@ -5,7 +5,7 @@ except ImportError:
     print "NOTE: ASE is not installed. To use Structopt find_defects.py, ASE must be installed."
 import numpy
 import copy
-from StructOpt.inp_out.write_xyz import write_xyz
+from StructOpt.io.write_xyz import write_xyz
 from StructOpt.tools.calc_dist import calc_dist
 
 def find_defects(solid, bulko, rcutoff, atomlistcheck=False, trackvacs=False, trackswaps=False, debug=False, dcheck = 0.6):

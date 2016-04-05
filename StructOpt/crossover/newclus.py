@@ -2,7 +2,7 @@ import random
 import numpy
 from ase import Atom, Atoms
 from ase.calculators.neighborlist import NeighborList
-from StructOpt.inp_out import write_xyz
+from StructOpt.io import write_xyz
 
 def newclus(ind1, ind2, Optimizer):
     """Select a box in the cluster configuration"""
@@ -11,7 +11,7 @@ def newclus(ind1, ind2, Optimizer):
     else:
         debug = False
     Optimizer.output.write('Box Cluster Cx between individual '+repr(ind1.index)+' and individual '+repr(ind2.index)+'\n')
-    
+
     #Perserve starting conditions of individual
     solid1 = ind1[0].copy()
     solid2 = ind2[0].copy()
@@ -130,7 +130,7 @@ def newclus(ind1, ind2, Optimizer):
             for one in dellist:
                 del group2[one]
                 del indices2[one]
-            
+
     other2 = Atoms(cell=solid2.get_cell(),pbc=solid2.get_pbc())
     for one in solid2:
         if one.index not in indices2:
@@ -147,7 +147,7 @@ def newclus(ind1, ind2, Optimizer):
     nsolid2.extend(group1.copy())
 
     #DEBUG: Write crossover to file
-    if debug: 
+    if debug:
         write_xyz(Optimizer.debugfile, nsolid1,'CX(randalloybx):nsolid1')
         write_xyz(Optimizer.debugfile, nsolid2,'CX(randalloybx):nsolid2')
 
@@ -200,13 +200,13 @@ def newclus(ind1, ind2, Optimizer):
             else:
                 if len(atms2)==0:
                     nsolid2.append(atms1[random.randint(0,len(atms1)-1)])
-                    nsolid2.pop(random.randint(0,len(nsolid2)-2))	
+                    nsolid2.pop(random.randint(0,len(nsolid2)-2))
 
     nsolid1.set_cell(cello1)
     nsolid2.set_cell(cello2)
     nsolid1.set_pbc(pbc1)
     nsolid2.set_pbc(pbc2)
-    
+
     ind1[0]=nsolid1.copy()
     ind2[0]=nsolid2.copy()
 

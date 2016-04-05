@@ -1,11 +1,11 @@
 import copy
 from ase import Atom, Atoms
-from StructOpt.inp_out.write_individual import write_individual
+from StructOpt.io.write_individual import write_individual
 
 class Individual(object):
     """Defines class object individual for use in evolution"""
-    def __init__(self, data, fitness=0, index=0, history_index='0', energy=0, tenergymx=0, 
-                tenergymin=0, bulki=Atoms(), bulko=Atoms(), box=Atoms(), pressure=0, volume=0, 
+    def __init__(self, data, fitness=0, index=0, history_index='0', energy=0, tenergymx=0,
+                tenergymin=0, bulki=Atoms(), bulko=Atoms(), box=Atoms(), pressure=0, volume=0,
                 force=0, purebulkenpa=0, natomsbulk=0, fingerprint=0, swaplist=[],
                 vacancies=Atoms(),swaps=Atoms()):
         self.fitness=fitness
@@ -27,36 +27,36 @@ class Individual(object):
         self.vacancies=vacancies
         self.swaps=swaps
         self.data=[data]
-    
+
     def __getitem__(self, i):
         return self.data[i]
-    
+
     def __setitem__(self, key, item):
         self.data[key]=item
-    
+
     def __iter__(self):
         return self
-    
+
     def __copy__(self):
         self.data=copy.copy(self.data)
         return self.data
-    
+
     def __deepcopy__(self):
         self.data=copy.deepcopy(self.data)
         return self.data
-    
+
     def __setattr__( self, attr, value ):
         super( Individual, self ).__setattr__( attr, value )
-    
+
     def next(self):
         if self.index > len(self.data):
             raise StopIteration
         self.index=self.index+1
         return self.data[self.index]
-    
+
     def len(self):
         return len(self.data)
-    
+
     def duplicate(offspring):
         """Duplicates individual"""
         dupli=offspring[0].copy()
@@ -80,11 +80,11 @@ class Individual(object):
         dup.vacancies=offspring.vacancies.copy()
         dup.swaps=offspring.swaps.copy()
         return dup
-    
+
 #     def write(self,indivfile):
 #         write_individual(self,indivfile)
 #         return
-    
+
 #     def read(self,indivfile):
 #         self = read_individual(indivfile)
 #         return self

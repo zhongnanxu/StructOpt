@@ -1,7 +1,7 @@
 import os
 from operator import attrgetter
 from ase import Atom, Atoms
-from StructOpt.inp_out.write_xyz import write_xyz
+from StructOpt.io.write_xyz import write_xyz
 import logging
 try:
     from mpi4py import MPI
@@ -108,4 +108,4 @@ def BestInds(pop, bests, Optimizer, writefile=False, fname=None):
         bestfile.close()
         bestfitfile.close()
     return bests
-    
+

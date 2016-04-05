@@ -6,7 +6,7 @@ import math
 import pdb
 import logging
 import json
-from StructOpt import inp_out
+from StructOpt import io
 from StructOpt import tools
 from StructOpt import generate
 from StructOpt import switches
@@ -25,7 +25,7 @@ class Optimizer():
 
     def __init__(self, input, uselogger=True):
 
-        self.args = inp_out.read_parameter_input(input, uselogger)
+        self.args = io.read_parameter_input(input, uselogger)
         for k,v in self.args.items():
             setattr(self,k,v)
 
@@ -46,23 +46,23 @@ class Optimizer():
             logger = logging.getLogger(self.loggername)
         if self.restart_optimizer:
                 logger.info('restarting output')
-                outdict = inp_out.restart_output(self)
+                outdict = io.restart_output(self)
                 self.__dict__.update(outdict)
                 logger.info('Loading individual files')
                 poplist = []
                 for indfile in self.population:
-                    ind = inp_out.read_individual(indfile)
+                    ind = io.read_individual(indfile)
                     poplist.append(ind)
                 self.population = poplist
                 logger.info('Loading bests')
                 bestlist = []
                 for bestfile in self.BESTS:
-                    ind = inp_out.read_individual(bestfile)
+                    ind = io.read_individual(bestfile)
                     bestlist.append(ind)
                 self.BESTS = bestlist
                 self.restart = True
                 if self.structure == 'Defect':
-                    bulk = inp_out.read_xyz(self.solidfile)
+                    bulk = io.read_xyz(self.solidfile)
                     bulk.set_pbc(True)
                     bulk.set_cell(self.solidcell)
                     self.solidbulk = bulk.copy()
@@ -94,7 +94,7 @@ class Optimizer():
         else:
             #Setup the output files
             logger.info('Initializing output for algorithm')
-            outdict = inp_out.setup_output(self.filename, self.restart, self.nindiv,
+            outdict = io.setup_output(self.filename, self.restart, self.nindiv,
                 self.indiv_defect_write, self.genealogy, self.allenergyfile,
                 self.fingerprinting, self.debug)
             self.__dict__.update(outdict)
@@ -121,7 +121,7 @@ class Optimizer():
                 swaplist = self.swaplist
             #Write the input parameters to the output file
             logger.info('Writing the input parameters to output file')
-            inp_out.write_parameters(self)
+            io.write_parameters(self)
 
 
 
@@ -317,7 +317,7 @@ class Optimizer():
         for ind in pop:
             ind.index=index1
             index1+=1
-        inp_out.write_pop(self,pop)
+        io.write_pop(self,pop)
 
         if self.allenergyfile:
             for ind in pop:
@@ -406,19 +406,19 @@ class Optimizer():
         #DEBUG: Write relaxed individual
         if 'MA' in self.debug:
             if self.generation > 0:
-                inp_out.write_xyz(self.debugfile,pop[self.nindiv][0],\
+                io.write_xyz(self.debugfile,pop[self.nindiv][0],\
                 'First Relaxed Offspring '+repr(pop[self.nindiv-1].energy))
                 #DEBUG: Write relaxed ind in solid
                 if self.structure=='Defect' or self.structure=='Surface':
-                    inp_out.write_xyz(self.debugfile,pop[self.nindiv].bulki,\
+                    io.write_xyz(self.debugfile,pop[self.nindiv].bulki,\
                     'First Relaxed bulki '+repr(pop[self.nindiv-1].energy))
                     sols = pop[self.nindiv][0].copy()
                     sols.extend(pop[self.nindiv].bulki)
-                    inp_out.write_xyz(self.debugfile,sols,'First from Invalid-ind + Bulki '+\
+                    io.write_xyz(self.debugfile,sols,'First from Invalid-ind + Bulki '+\
                     repr(pop[self.nindiv].energy))
                     sols = pop[self.nindiv][0].copy()
                     sols.extend(pop[self.nindiv].bulko)
-                    inp_out.write_xyz(self.debugfile,sols,\
+                    io.write_xyz(self.debugfile,sols,\
                     'First from Invalid-ind + Bulko '+repr(pop[self.nindiv].energy))
         if self.generation==0:
             logger.info('Initializing Bests list')
@@ -526,7 +526,7 @@ class Optimizer():
             self.cxattempts=cxattempts
             #DEBUG: Write first child
             if 'MA' in self.debug:
-                inp_out.write_xyz(self.debugfile,offspring[0][0],'First Child '+
+                io.write_xyz(self.debugfile,offspring[0][0],'First Child '+
                     repr(offspring[0].history_index))
             # Apply mutation to the offspring
             self.output.write('\n--Applying Mutation--\n')
@@ -545,7 +545,7 @@ class Optimizer():
             self.mutattempts=mutattempts
             #DEBUG: Write first offspring
             if 'MA' in self.debug:
-                inp_out.write_xyz(self.debugfile,muts[0][0],'First Mutant '+\
+                io.write_xyz(self.debugfile,muts[0][0],'First Mutant '+\
                 repr(muts[0].history_index))
 
         return offspring
@@ -563,7 +563,7 @@ class Optimizer():
             logger.info('Generating new population')
             pop = generate.get_population(self)
         if 'MA' in self.debug:
-            inp_out.write_xyz(self.debugfile,pop[0][0],'First Generated Individual')
+            io.write_xyz(self.debugfile,pop[0][0],'First Generated Individual')
         #Use if concentration of interstitials is unknown
         if self.swaplist:
             mutlist=self.mutation_options
@@ -576,7 +576,7 @@ class Optimizer():
             self.mutation_options=mutlist
         # Write Initial structures to files
         self.output.write('\n---Starting Structures---\n')
-        inp_out.write_pop(self, pop)
+        io.write_pop(self, pop)
         #Print number of atoms to Summary file
         if self.structure=='Defect' or self.structure=='Surface':
             natstart=len(pop[0][0])+len(pop[0].bulki)
@@ -635,18 +635,18 @@ class Optimizer():
             print 'EXITING PROGRAM'
 
     def read(self,optfile):
-        parameters = inp_out.read_parameter_input(optfile,True)
+        parameters = io.read_parameter_input(optfile,True)
         self.__dict__.update(parameters)
-        outdict = inp_out.restart_output(self)
+        outdict = io.restart_output(self)
         self.__dict__.update(outdict)
         poplist = []
         for indfile in self.population:
-            ind = inp_out.read_individual(indfile)
+            ind = io.read_individual(indfile)
             poplist.append(ind)
         self.population = poplist
         bestlist = []
         for bestfile in self.BESTS:
-            ind = inp_out.read_individual(bestfile)
+            ind = io.read_individual(bestfile)
             bestlist.append(ind)
         self.BESTS = bestlist
         self.restart = True
@@ -654,9 +654,9 @@ class Optimizer():
 
     def write(self,filename=None, restart=True):
         if filename:
-            inp_out.write_optimizer(self, filename, restart)
+            io.write_optimizer(self, filename, restart)
         else:
-            inp_out.write_optimizer(self, self.optimizerfile, restart)
+            io.write_optimizer(self, self.optimizerfile, restart)
         return
 
 if __name__ == "__main__":

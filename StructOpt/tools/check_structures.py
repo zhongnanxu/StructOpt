@@ -6,7 +6,7 @@ try:
     from ase.calculators.neighborlist import NeighborList
 except ImportError:
     pass
-from StructOpt.inp_out.write_xyz import write_xyz
+from StructOpt.io.write_xyz import write_xyz
 from StructOpt.tools.find_defects import find_defects
 from StructOpt.tools.check_cell_type import check_cell_type
 from StructOpt.fingerprinting import get_fingerprint
@@ -59,7 +59,7 @@ def constrain_positions(indiv, bulk, sf):
                 id = [atm.index for atm in totalsol if atm.position[0]==one.position[0] and atm.position[1]==one.position[1] and atm.position[2]==one.position[2]][0]
                 ts[id].position += trans
         return ts, STR
-    
+
 def check_min_dist(Optimizer, totalsol, type='Defect', nat=None, min_len=0.7, STR=''):
         if type=='Defect' or type=='Crystal' or type=='Surface':
             if nat==None:
@@ -107,7 +107,7 @@ def check_min_dist(Optimizer, totalsol, type='Defect', nat=None, min_len=0.7, ST
                 tol = 0.01
                 epsilon = 0.05
                 fix = 0.5
-                
+
                 closelist = numpy.arange(len(totalsol))
                 iter = 0
                 while len(closelist) > 0 and iter<2:
@@ -116,7 +116,7 @@ def check_min_dist(Optimizer, totalsol, type='Defect', nat=None, min_len=0.7, ST
                     dist=spatial.distance.cdist(R,R)
                     numpy.fill_diagonal(dist,1.0)
                     smalldist = numpy.where(dist < min_len-tol)
-   
+
                     for ind in range(len(smalldist[0])):
                         i = smalldist[0][ind]
                         j = smalldist[1][ind]

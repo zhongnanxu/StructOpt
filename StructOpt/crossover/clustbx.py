@@ -1,7 +1,7 @@
 import random
 import numpy
 from ase import Atom, Atoms
-from StructOpt.inp_out import write_xyz
+from StructOpt.io import write_xyz
 
 def clustbx(ind1, ind2, Optimizer):
     """Select a box in the cluster configuration
@@ -11,7 +11,7 @@ def clustbx(ind1, ind2, Optimizer):
     else:
         debug = False
     Optimizer.output.write('Box Cluster Cx between individual '+repr(ind1.index)+' and individual '+repr(ind2.index)+'\n')
-    
+
     #Perserve starting conditions of individual
     solid1=ind1[0].copy()
     solid2=ind2[0].copy()
@@ -26,7 +26,7 @@ def clustbx(ind1, ind2, Optimizer):
     #Get starting concentrations and number of atoms
     nat1=len(solid1)
     nat2=len(solid2)
-    
+
     if Optimizer.alloy==False:
         #Atomlist-based
         concent1=[c for sym,c,m,u in Optimizer.atomlist]
@@ -60,7 +60,7 @@ def clustbx(ind1, ind2, Optimizer):
         r=1.0
     if debug:
         print 'Radius of box = '+repr(r)+'\nPosition in solid1 = '+repr(pt1)+'\nPosition in solid2 = '+repr(pt2)
-    
+
     #Find atoms within sphere of radius r
     solid1.append(Atom(position=pt1))
     dist1=[]
@@ -83,7 +83,7 @@ def clustbx(ind1, ind2, Optimizer):
         else:
             blist2.append((d,solid2[i]))
     solid2.pop()
-    
+
     #Translate spheres to opposite location
     dats1=Atoms()
     for d,atm in dist1:
@@ -226,7 +226,7 @@ def clustbx(ind1, ind2, Optimizer):
         nsolid2=ind2[0].copy()
         f.close()
     #DEBUG: Write crossover to file
-    if debug: 
+    if debug:
         write_xyz(Optimizer.debugfile, nsolid1,'CX(randalloybx):nsolid1')
         write_xyz(Optimizer.debugfile, nsolid2,'CX(randalloybx):nsolid2')
 
@@ -251,13 +251,13 @@ def clustbx(ind1, ind2, Optimizer):
             else:
                 if len(atms2)==0:
                     nsolid2.append(atms1[random.randint(0,len(atms1)-1)])
-                    nsolid2.pop(random.randint(0,len(nsolid2)-2))	
+                    nsolid2.pop(random.randint(0,len(nsolid2)-2))
 
     nsolid1.set_cell(cello1)
     nsolid2.set_cell(cello2)
     nsolid1.set_pbc(pbc1)
     nsolid2.set_pbc(pbc2)
-    
+
     ind1[0]=nsolid1.copy()
     ind2[0]=nsolid2.copy()
 

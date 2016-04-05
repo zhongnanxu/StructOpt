@@ -1,9 +1,9 @@
-from StructOpt.inp_out.write_xyz import write_xyz
+from StructOpt.io.write_xyz import write_xyz
 import logging
 import pdb
 
 def crossover_switch(child1, child2, Optimizer):
-    """Functions for selecting and pairing individuals 
+    """Functions for selecting and pairing individuals
     for crossovers"""
     #logger = initialize_logger(Optimizer.loggername)
     logger = logging.getLogger(Optimizer.loggername)
@@ -49,7 +49,7 @@ def crossover_switch(child1, child2, Optimizer):
         child1.energy=0
         child2.energy=0
         child1.fitness=0
-        child2.fitness=0 
+        child2.fitness=0
         ch1hi=child1.history_index
         child1.history_index = '(' + repr(child1.index) + '+' + repr(child2.index) + ')'
         child2.history_index = '(' + repr(child2.index) + '+' + repr(child1.index) + ')'
@@ -61,6 +61,6 @@ def crossover_switch(child1, child2, Optimizer):
             s2.extend(child2.bulki.copy())
         write_xyz(Optimizer.debugfile,s1,'First Cx Individual - Post')
         write_xyz(Optimizer.debugfile,s2,'Second Cx Individual - Post')
-    
+
     return child1, child2
-	
+

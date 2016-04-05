@@ -1,5 +1,5 @@
 from StructOpt.tools.eval_energy import eval_energy
-from StructOpt.inp_out.write_xyz import write_xyz
+from StructOpt.io.write_xyz import write_xyz
 import logging
 import math
 import os

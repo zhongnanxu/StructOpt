@@ -6,7 +6,6 @@ import random
 from tempfile import mkdtemp
 import math
 import cmath
-#matplotlib.use('Agg')
 import matplotlib
 import matplotlib.pyplot as plt
 import matplotlib.cm  as cm
@@ -36,7 +35,7 @@ class STEM_eval(object):
     def read_inputs(self):
         args = json.load(open('stem_inp.json'))
         with open(args['psf']) as fp:
-            psf_data = fp.read() 
+            psf_data = fp.read()
         args['psf'] = numpy.reshape(numpy.array(psf_data.split(),dtype=float),[args['pixels']]*2)
         return args
 
@@ -90,7 +89,7 @@ class STEM_eval(object):
            Grid_sim2exp = self.grid_sim2exp
         except:
            Grid_sim2exp = 1
-        if self.pixelshift == True: 
+        if self.pixelshift == True:
             points = [-0.5993457/2,0,0.5993457/2]
             chisq = []
             for x in points:
@@ -99,11 +98,11 @@ class STEM_eval(object):
                     simfun=self.get_image(self.psf,atms,self.slice_size,self.pixels,pixelshift)
                     simfun_resize = simfun
                     chisq.append(self.compare_functions(expfun,simfun_resize))
-            return min(chisq)       
+            return min(chisq)
 
         else:
             simfun=self.get_image(self.psf,atms,self.slice_size,self.pixels)
-            if Grid_sim2exp > 1: 
+            if Grid_sim2exp > 1:
                  #simfun_resize = numpy.zeros([150,150],dtype=float)       
                 simfun_resize = numpy.zeros([self.pixels,self.pixels],dtype=float)
                 for x in range(len(simfun)):
@@ -114,26 +113,26 @@ class STEM_eval(object):
             else:
                 simfun_resize = simfun
 
-            chisq=self.compare_functions(expfun,simfun_resize)  
+            chisq=self.compare_functions(expfun,simfun_resize)
         logger.info('M:finish chi2 evaluation, chi2 = {0} @ rank ={1}'.format(chisq,rank))
         signal = 'Evaluated individual {0} on {1}\n'.format(individ.index,rank)
         return chisq, signal
 
     def calculate_simp_function(self,image):
         return image
-    
+
     def calculate_comp_function(self,imagefile):
         img=Image.open(imagefile).convert('LA')
         data=numpy.zeros((len(a),len(a[0])))
         for i in range(len(a)):
             for j in range(len(a[0])):
                 data[i][j]=a[i][j]
-        
+
         #Calculate the atom column positions
         positions=get_atom_pos(self,data)
         x=positions[0]
         y=positions[1]
-        
+
         #Apply rotation/translation
         mvs=[]
         for i in range(len(x)):
@@ -172,11 +171,11 @@ class STEM_eval(object):
             ara=numpy.dot(transfmat,one)
             nx.append(ara[0])
             ny.append(ara[1])
-        
+
         gfuntot=scipy.interpolate.RectBivariateSpline(x,y,z)
-        
+
         return gfuntot
-    
+
     def compare_functions(self, expfun, simfun):
         """Function compares two matrices and calculates chisq.  Matrices must be same size"""
         try:
@@ -193,11 +192,11 @@ class STEM_eval(object):
         #   chisq = abs(sum(sum((simfun-expfun)**2)))
         chisq = chisq/len(simfun)/len(simfun[0])
         return chisq
-    
+
     def stemref2image(self,stemref):
         if stemref.split('/')[-1].endswith('xyz'): # xyz coordinates mean a phantom
-            from StructOpt import inp_out
-            atoms_ref=inp_out.read_xyz(stemref,0)
+            from StructOpt import io
+            atoms_ref=io.read_xyz(stemref,0)
             return self.get_image(self.psf,atoms_ref,self.slice_size,self.pixels)
         else: # experimental image
             fileobj = open(stemref.split('/')[-1], 'r')
@@ -205,8 +204,8 @@ class STEM_eval(object):
             nl = len(lines)
             Ims = numpy.empty([nl,nl],dtype=float)
             for x in range(0,len(lines)):
-                Ims[x] = lines[x].split() 
-            
+                Ims[x] = lines[x].split()
+
             nk = self.pixels
             Icfit = numpy.zeros([nk,nk],dtype=float)
             if nl < nk:
@@ -218,14 +217,14 @@ class STEM_eval(object):
                         Icfit[x-(nl-nk)/2][y-(nl-nk)/2] = -1000
             return Icfit
 
-    def IcImsfit(self,Ims,coeff): 
+    def IcImsfit(self,Ims,coeff):
         # Fitting of convolutional method vs multislice method (this is a polynomial fit)`
         Ic = 0.0;
         for i in range(len(coeff)):
             Ic = Ic + coeff[i]*Ims**i
         return Ic
 
-    
+
     def get_image(self, psf, atms, rmax, nx, pixelshift=[0,0,0], scalefactor=1.0):
         """Function to get image based point spread function and atoms
         rmax=Size of slice in Angstoms
@@ -235,7 +234,7 @@ class STEM_eval(object):
             rank = MPI.COMM_WORLD.Get_rank()
         except:
             rank = 0
-        
+
         psf2d = numpy.fft.fft2(psf)
 
         pot = self.stempot(rmax,rmax,len(psf),len(psf[0]),atms,pixelshift,scalefactor)
@@ -247,48 +246,48 @@ class STEM_eval(object):
         zcon_im = numpy.fft.ifft2(potm,axes=(0,1)).real
 
         return zcon_im
-    
+
     def get_atom_pos(self, data):
-		"""Function to identify the location of the atom columns
-		Inputs are:
-			data = 2D matrix with imagefile value
-			self.args:
-				neighborhood_size = size of square stamp to search array
-				threshold = difference for change"""
-		
-	
-		if 'neighborhood_size' in self.args:
-			neighborhood_size = self.args['neighborhood_size']
-		else:
-			neighborhood_size = 30
-		if 'threshold' in self.args:
-			threshold = self.args['threshold']
-		else:
-			threshold = 30
-		
-		#Use filters to calculate peaks
-		data_max = filters.maximum_filter(data, neighborhood_size)
-		maxima = (data == data_max)
-		data_min = filters.minimum_filter(data, neighborhood_size)
-		diff = ((data_max - data_min) > threshold)
-		maxima[diff == 0] = 0
-
-		labeled, num_objects = ndimage.label(maxima)
-		slices = ndimage.find_objects(labeled)
-		x, y = [], []
-		for dy,dx in slices:
-			x_center = (dx.start + dx.stop - 1)/2
-			x.append(x_center)
-			y_center = (dy.start + dy.stop - 1)/2    
-			y.append(y_center)
-		
-
-		posiitons=[x,y]
-		
-		return positions
+        """Function to identify the location of the atom columns
+        Inputs are:
+            data = 2D matrix with imagefile value
+            self.args:
+                neighborhood_size = size of square stamp to search array
+                threshold = difference for change"""
 
 
-        
+        if 'neighborhood_size' in self.args:
+            neighborhood_size = self.args['neighborhood_size']
+        else:
+            neighborhood_size = 30
+        if 'threshold' in self.args:
+            threshold = self.args['threshold']
+        else:
+            threshold = 30
+
+        #Use filters to calculate peaks
+        data_max = filters.maximum_filter(data, neighborhood_size)
+        maxima = (data == data_max)
+        data_min = filters.minimum_filter(data, neighborhood_size)
+        diff = ((data_max - data_min) > threshold)
+        maxima[diff == 0] = 0
+
+        labeled, num_objects = ndimage.label(maxima)
+        slices = ndimage.find_objects(labeled)
+        x, y = [], []
+        for dy,dx in slices:
+            x_center = (dx.start + dx.stop - 1)/2
+            x.append(x_center)
+            y_center = (dy.start + dy.stop - 1)/2
+            y.append(y_center)
+
+
+        posiitons=[x,y]
+
+        return positions
+
+
+
     def get_probe_function(self, args):
         """Function to get the probe function based on input args
         kev=Electron energy in keV
@@ -300,7 +299,7 @@ class STEM_eval(object):
         Cs=Spherical aberration Cs in mm
         df=Defocus in Angstroms
         nx=number of pixels in slice"""
-        
+
         keV = args['electron_energy']
         ap = args['aperture_semiangle']
         try:
@@ -316,12 +315,12 @@ class STEM_eval(object):
         ds=args['source_size']
         rmax=args['slice_size']
         nx=args['pixels']
-       
+
         try:
             aber=args['aber']
         except:
             aber=[[0,0] for i in range(12)]
-         
+
         nk = math.floor(40*(0.001*ap / self.wavlen(keV))*rmax)
         if math.fmod(nk, 2):
             nk += 1
@@ -341,7 +340,7 @@ class STEM_eval(object):
         #for i in range(len(psf2D)):
         #    for j in range(len(psf2D[0])):
         #        psf2D[i][j] += abs(mn)
-        
+
         return psf2D
 
     def STEMPSF2DCoh(self, aber, keV, ap, nk,rmax):
@@ -352,13 +351,13 @@ class STEM_eval(object):
         phasef = scipy.interpolate.RectBivariateSpline(xp,yp,phase)
         #print "M:kmax",kmax
         #print phasef
-        
+
         kbound = nk/4.0/(rmax/2.0)
         # need to pad the phase with zeros here.
         probe2DCoh = numpy.zeros((nk,nk),dtype=complex)
         x=numpy.linspace(-kbound,kbound,nk)
         y=numpy.linspace(-kbound,kbound,nk)
-        
+
         #SetScale/I x -20*kmax, 40*kmax, "", probe2DCoh
         #SetScale/I y -20*kmax, 40*kmax, "", probe2DCoh
         for i in range(len(x)):
@@ -373,7 +372,7 @@ class STEM_eval(object):
         for i in range(len(x)):
             for j in range(len(y)):
                 probe2DCoh[i][j] = complex((abs(p2dcf[i][j]))**2, 0)
-        probe2DCoh = numpy.real(probe2DCoh)    
+        probe2DCoh = numpy.real(probe2DCoh)
         #print "M:probe2DCoh" 
         #print probe2DCoh[0]
         #print "M:sum:probe2DCoh",sum(sum(probe2DCoh)) 
@@ -406,7 +405,7 @@ class STEM_eval(object):
         #print "probe2DIncoh",probe2DIncoh[0],probe2DIncoh[100]
         #print "ave",sum(defocus_distribution),probe2DIncoh
         aber[0][0] = start_df
-        
+
         if ds != 0:
             fds = ds / (2*(2*math.log(2))**0.5)    # real-space standard deviation for Gaussian with FWHM ds
             #fds = 1/(2*math.pi*fds)    # FT standard deviation
@@ -441,7 +440,7 @@ class STEM_eval(object):
             probe2DIncoh = numpy.copy(probe2DSS)
             #SetScale/p x dimoffset(probe2dcoh, 0), dimdelta(probe2dcoh, 0), "", probe2dIncoh
             #SetScale/P y dimoffset(probe2dcoh, 1), dimdelta(probe2dcoh, 1), "", probe2dIncoh
-             
+
         return probe2DIncoh
 
     def ChiPhase2D(self, aber_in, keV, ap, nk):
@@ -478,7 +477,7 @@ class STEM_eval(object):
                 astack[10][i][j] = (1.0/6.0)*wl**5.0*aber[10][0]*(x[i]**6.0 + 3.0*x[i]**4.0*y[j]**2.0 + 3.0*x[i]**2.0*y[j]**4.0 + y[j]**6.0)
                 #A5, 5th order spherical aberration
                 astack[11][i][j] = (1.0/6.0)*wl**5.0*aber[11][0]*(x[i]**6.0 - 15.0*x[i]**4.0*y[j]**2.0 + 15.0*x[i]**2.0*y[j]**4.0 - y[j]**6.0)
-        
+
         #Set minimum to zero
         #nnastack = [numpy.zeros((len(x),len(y))) for one in range(12)] 
         # for i in range(len(x)):
@@ -514,7 +513,7 @@ class STEM_eval(object):
         #MatrixOp/O phase = 2*Pi*sumbeams(astack)
         #SetScale/I x -2*kmax, 2*kmax, "", phase
         #SetScale/I y -2*kmax, 2*kmax, "", phase
-        
+
         return fsum
 
     def ChromaticDefocusDistribution(self, Cc, dE, keV, ap):
@@ -528,11 +527,11 @@ class STEM_eval(object):
         ndf = math.ceil(df_range * self.wavlen(keV) * kmax**2 / df_phase_max)
         if ndf < 31:
             ndf = 31
-        
+
         #ndf = (ndf < 31 ? 31 : ndf)
         if not math.fmod(ndf,2):
             ndf+=1
-        
+
         #ndf = (!mod(ndf, 2) ? ndf+1 : ndf)
         defocus_distribution = numpy.linspace(-df_range, df_range, num = ndf)
         #Make/O/N=(ndf) defocus_distribution
@@ -559,11 +558,11 @@ class STEM_eval(object):
         Zatom = atms.get_atomic_numbers()
         #translate atoms such that the center of mass is in the center of the computational cell
         com = atms.get_center_of_mass()
-       # com = [ 44.40963074 , 44.65497562 , 44.90406073] #for AuNP
-       # com = numpy.array(com)
+        #com = [ 44.40963074 , 44.65497562 , 44.90406073] #for AuNP
+        #com = numpy.array(com)
         #print 'com',com -0.149836425, 0.29967285, 0
         #com += [0.41205016875, 0.6742639125, 0] #for rotated line profile 
-      #  com += [-0.149836425, 0.29967285, 0]  #for AuNP
+        #com += [-0.149836425, 0.29967285, 0]  #for AuNP
         #com += pixelshift
         #print 'com+pixelshift',com
         cop = xmax/2.0
@@ -587,7 +586,7 @@ class STEM_eval(object):
         axmax = max(ax)
         aymin = min(ay)
         aymax = max(ay)
-        
+
         V= numpy.zeros((nx,ny))
 
         #map x and y coords of the atoms to the nearest grid points
@@ -612,10 +611,10 @@ class STEM_eval(object):
         V2 = numpy.array([(1-fax[i]) * fay[i] * (Zatom[i]**zed) for i in range(len(fax))])
         V3 = numpy.array([fax[i] * (1-fay[i]) * (Zatom[i]**zed) for i in range(len(fax))])
         V4 = numpy.array([(1-fax[i]) * (1-fay[i]) * (Zatom[i]**zed) for i in range(len(fax))])
-    #     V1 = numpy.array([fax[i] * fay[i] * scalefactor for i in range(len(fax))])
-    #     V2 = numpy.array([(1-fax[i]) * fay[i] * scalefactor for i in range(len(fax))])
-    #     V3 = numpy.array([fax[i] * (1-fay[i]) * scalefactor for i in range(len(fax))])
-    #     V4 = numpy.array([(1-fax[i]) * (1-fay[i]) * scalefactor for i in range(len(fax))])
+        #V1 = numpy.array([fax[i] * fay[i] * scalefactor for i in range(len(fax))])
+        #V2 = numpy.array([(1-fax[i]) * fay[i] * scalefactor for i in range(len(fax))])
+        #V3 = numpy.array([fax[i] * (1-fay[i]) * scalefactor for i in range(len(fax))])
+        #V4 = numpy.array([(1-fax[i]) * (1-fay[i]) * scalefactor for i in range(len(fax))])
 
         for j in range(amax):
            V[iax[j],iay[j]] += V1[j]
@@ -659,26 +658,26 @@ class STEM_eval(object):
         return lambda x,y: height*math.exp(-(((center_x-x)/width_x)**2+((center_y-y)/width_y)**2)/2)
 
     def moments(self, data):
-    	"""Returns (height, x, y, width_x, width_y)
-    		the gaussian args of a 2D distribution by calculating its moments """
-    	total = data.sum()
-    	X, Y = indices(data.shape)
-    	x = (X*data).sum()/total
-    	y = (Y*data).sum()/total
-    	col = data[:, int(y)]
-    	width_x = sqrt(abs((arange(col.size)-y)**2*col).sum()/col.sum())
-    	row = data[int(x), :]
-    	width_y = sqrt(abs((arange(row.size)-x)**2*row).sum()/row.sum())
-    	height = data.max()
-    	return x, y, width_x, width_y, height
+        """Returns (height, x, y, width_x, width_y)
+            the gaussian args of a 2D distribution by calculating its moments """
+        total = data.sum()
+        X, Y = indices(data.shape)
+        x = (X*data).sum()/total
+        y = (Y*data).sum()/total
+        col = data[:, int(y)]
+        width_x = sqrt(abs((arange(col.size)-y)**2*col).sum()/col.sum())
+        row = data[int(x), :]
+        width_y = sqrt(abs((arange(row.size)-x)**2*row).sum()/row.sum())
+        height = data.max()
+        return x, y, width_x, width_y, height
 
     def fitgaussian(self, data):
-    	"""Returns (height, x, y, width_x, width_y)
-    		the gaussian args of a 2D distribution found by a fit"""
-    	params = self.moments(data)
-    	errorfunction = lambda p: ravel(self.Gauss(*p)(*indices(data.shape)) - data)
-    	p, success = optimize.leastsq(errorfunction, params)
-    	return p
+        """Returns (height, x, y, width_x, width_y)
+            the gaussian args of a 2D distribution found by a fit"""
+        params = self.moments(data)
+        errorfunction = lambda p: ravel(self.Gauss(*p)(*indices(data.shape)) - data)
+        p, success = optimize.leastsq(errorfunction, params)
+        return p
 
     def find_stem_coeff(self, Optimizer, indiv):
         from StructOpt.tools.eval_energy import eval_energy

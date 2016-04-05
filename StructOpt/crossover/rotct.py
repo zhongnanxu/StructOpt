@@ -1,7 +1,7 @@
 import random
 import numpy
 from ase import Atom, Atoms
-from StructOpt.inp_out import write_xyz
+from StructOpt.io import write_xyz
 
 def rotct(ind1, ind2, Optimizer):
     """Rotate atoms cut and splice
@@ -15,11 +15,11 @@ def rotct(ind1, ind2, Optimizer):
     else:
         debug = False
     Optimizer.output.write('Rotate Cut/Splice Cx between individual '+repr(ind1.index)+' and individual '+repr(ind2.index)+'\n')
-    
+
     #Perserve starting conditions of individual
     indi1 = ind1[0].copy()
     indi2 = ind2[0].copy()
-    
+
     #Translate individuals so COM is at (0,0,0)
     com1 = indi1.get_center_of_mass()
     indi1.translate(-1*com1)
@@ -44,7 +44,7 @@ def rotct(ind1, ind2, Optimizer):
             indi1.rotate(rax,a=-1*rang,center='COM', rotate_cell=False)
         n+=1
     indi2.rotate(rax,a=rang,center='COM', rotate_cell=False)
-    if debug: 
+    if debug:
         print 'Group1 size = ', len(group1)
         print 'Position = ', [0,0,0]
         print 'Angle = ', rang
@@ -96,7 +96,7 @@ def rotct(ind1, ind2, Optimizer):
             for one in dellist:
                 del group2[one]
                 del indices2[one]
-    
+
     other1 = Atoms()
     other2 = Atoms()
     other2 = Atoms(cell=ind2[0].get_cell(),pbc=ind2[0].get_pbc())
@@ -107,22 +107,22 @@ def rotct(ind1, ind2, Optimizer):
     for one in indi1:
         if one.index not in indices1:
             other1.append(one)
-    
+
 
     indi1 = group2.copy()
     indi1.extend(other1)
     indi2 = group1.copy()
     indi2.extend(other2)
-    
+
     #DEBUG: Write crossover to file
-    if debug: 
+    if debug:
         write_xyz(Optimizer.debugfile, group1,'group1')
         write_xyz(Optimizer.debugfile, other1,'other1')
         write_xyz(Optimizer.debugfile, group2,'group2')
         write_xyz(Optimizer.debugfile, other2,'other2')
         print 'Length of group1 = ',len(group1),'Length of group2',len(group2)
-    
-    
+
+
     #DEBUG: Check structure of atoms exchanged
     for sym,c,m,u in Optimizer.atomlist:
         nc=len([atm for atm in indi1 if atm.symbol==sym])
@@ -145,7 +145,7 @@ def rotct(ind1, ind2, Optimizer):
             else:
                 if len(atms2)==0:
                     indi2.append(atms1[random.randint(0,len(atms1)-1)])
-                    indi2.pop(random.randint(0,len(indi2)-2))	
+                    indi2.pop(random.randint(0,len(indi2)-2))
     indi1.rotate(rax,a=-1*rang,center='COM', rotate_cell=False)
     indi2.rotate(rax,a=-1*rang,center='COM', rotate_cell=False)
     indi1.translate(com1)
@@ -165,7 +165,7 @@ def rotct(ind1, ind2, Optimizer):
 
     ind1[0]=indi1
     ind2[0]=indi2
-    
+
     #Check structure and number of atoms in crystal
     if Optimizer.structure=='Defect':
         solid1=Atoms()

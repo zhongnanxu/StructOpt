@@ -2,7 +2,7 @@ import random
 import numpy
 from ase import Atom, Atoms
 from StructOpt.tools.find_defects import find_defects
-from StructOpt.inp_out import write_xyz
+from StructOpt.io import write_xyz
 
 def randalloybox(ind1, ind2, Optimizer):
     """Select a box in the alloy configuration
@@ -16,7 +16,7 @@ def randalloybox(ind1, ind2, Optimizer):
         Optimizer.output.write('WARNING: Box Random alloy Cx attempted on nondefect structure. SKIPPING CX.\n')
     else:
         Optimizer.output.write('Box Random alloy Cx between individual '+repr(ind1.index)+' and individual '+repr(ind2.index)+'\n')
-    
+
         #Perserve starting conditions of individual
         indi1 = ind1[0].copy()
         indi2 = ind2[0].copy()
@@ -218,7 +218,7 @@ def randalloybox(ind1, ind2, Optimizer):
                         posd = posd[1::]
 
         #DEBUG: Write crossover to file
-        if debug: 
+        if debug:
             write_xyz(Optimizer.debugfile, nsolid1,'CX(randalloybx):nsolid1')
             write_xyz(Optimizer.debugfile, nsolid2,'CX(randalloybx):nsolid2')
 
@@ -242,7 +242,7 @@ def randalloybox(ind1, ind2, Optimizer):
                 else:
                     if len(atms2)==0:
                         nsolid2.append(atms1[random.randint(0,len(atms1)-1)])
-                        nsolid2.pop(random.randint(0,len(nsolid2)-2))	
+                        nsolid2.pop(random.randint(0,len(nsolid2)-2))
 
         nsolid1.set_cell(cell1)
         nsolid2.set_cell(cell2)
@@ -259,5 +259,5 @@ def randalloybox(ind1, ind2, Optimizer):
         ind2.bulki = outs[1].copy()
         ind2.vacancies = outs[2].copy()
         ind2.swaps = outs[3].copy()
-    
+
     return ind1, ind2

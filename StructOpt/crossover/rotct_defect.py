@@ -4,7 +4,7 @@ from ase import Atom, Atoms
 from StructOpt.tools.find_defects import find_defects
 from StructOpt.tools.position_average import position_average
 from StructOpt.tools.shift_atoms import shift_atoms
-from StructOpt.inp_out import write_xyz
+from StructOpt.io import write_xyz
 
 def rotct_defect(ind1, ind2, Optimizer):
     """Rotate atoms cut and splice
@@ -19,7 +19,7 @@ def rotct_defect(ind1, ind2, Optimizer):
     else:
         debug = False
     Optimizer.output.write('Rotate Cut/Splice Cx for defects between individual '+repr(ind1.index)+' and individual '+repr(ind2.index)+'\n')
-    
+
     #Perserve starting conditions of individual
     indi1 = ind1[0].copy()
     indi2 =ind2[0].copy()
@@ -60,7 +60,7 @@ def rotct_defect(ind1, ind2, Optimizer):
             n+=1
             indi1.rotate(rax,a=-1*rang,center=[0,0,0], rotate_cell=False)
     indi2.rotate(rax,a=rang,center=[0,0,0],rotate_cell=False)
-    if debug: 
+    if debug:
         print 'Group1 size = ', len(group1)
         print 'Position = ', [0,0,0]
         print 'Angle = ', rang
@@ -117,7 +117,7 @@ def rotct_defect(ind1, ind2, Optimizer):
                 for one in dellist:
                     del group2[one]
                     del indices2[one]
-    
+
         other2 = Atoms(cell=ind2[0].get_cell(),pbc=ind2[0].get_pbc())
         for one in indi2:
             if one.index not in indices2:
@@ -130,15 +130,15 @@ def rotct_defect(ind1, ind2, Optimizer):
         indi1.extend(other1)
         indi2 = group1.copy()
         indi2.extend(other2)
-    
+
         #DEBUG: Write crossover to file
-        if debug: 
+        if debug:
             write_xyz(Optimizer.debugfile, group1,'group1')
             write_xyz(Optimizer.debugfile, other1,'other1')
             write_xyz(Optimizer.debugfile, group2,'group2')
             write_xyz(Optimizer.debugfile, other2,'other2')
             print 'Length of group1 = ',len(group1),'Length of group2',len(group2)
-    
+
         #DEBUG: Check structure of atoms exchanged
         for sym,c,m,u in Optimizer.atomlist:
             nc=len([atm for atm in indi1 if atm.symbol==sym])
@@ -159,7 +159,7 @@ def rotct_defect(ind1, ind2, Optimizer):
                 else:
                     if len(atms2)==0:
                         indi2.append(atms1[random.randint(0,len(atms1)-1)])
-                        indi2.pop(random.randint(0,len(indi2)-2))	
+                        indi2.pop(random.randint(0,len(indi2)-2))
         indi1.rotate(rax,a=-1*rang,center=[0,0,0], rotate_cell=False)
         indi2.rotate(rax,a=-1*rang,center=[0,0,0], rotate_cell=False)
         if Optimizer.structure=='Defect':
@@ -171,7 +171,7 @@ def rotct_defect(ind1, ind2, Optimizer):
         else:
             indi1.translate(com1)
             indi2.translate(com2)
-        
+
         #DEBUG: Check structure and number of atoms in crystal
         if Optimizer.structure=='Defect':
             solid1=Atoms()
@@ -189,5 +189,5 @@ def rotct_defect(ind1, ind2, Optimizer):
         #pdb.set_trace()
         ind1[0]=indi1
         ind2[0]=indi2
-    
+
     return ind1, ind2

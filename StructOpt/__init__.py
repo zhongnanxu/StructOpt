@@ -3,7 +3,7 @@ import crossover
 import fingerprinting
 import fitness
 import generate
-import inp_out
+import io
 import moves
 import predator
 import selection
