@@ -14,15 +14,15 @@
 
 * In-line comment lines should have two spaces before the # symbol
 
-* Above-line comment lines have have one space before the # symbol unless it's pure code, then no spaces
+* Above-line comment lines have one space before the # symbol unless it's pure code, then no spaces
 
-* Use .format rather than + or %s
+* Use `.format` rather than `+ or `%`
 
 * Separate different ideas by newlines in any code
 
 * Put one newline after docstrings
 
-* Use print(...) and *not* print ...
+* Use `print(...)` and *not* `print` ...
 
 * Don't do 1-line if statements (or any other 1-line loops either); just make them 2 lines
 
