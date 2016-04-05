@@ -22,7 +22,7 @@ def cxtpa(ind1, ind2, Optimizer):
     cxpoint1 = random.randint(0, len(indi1)-1)
     cxpoint2 = random.randint(1, len(indi1)-1)
     if cxpoint2 == cxpoint1:
-        cxpoint2 + = 1
+        cxpoint2 += 1
     elif cxpoint2 < cxpoint1:
         # Swap the two cx points
         cxpoint1, cxpoint2 = cxpoint2, cxpoint1
@@ -51,7 +51,7 @@ def cxtpa(ind1, ind2, Optimizer):
         else:
             dellist.append(one.index)
     if len(dellist) != 0:
-        dellist.sort(reverse = True)
+        dellist.sort(reverse=True)
         for one in dellist:
             del group1[one]
             del indices1[one]
@@ -82,11 +82,11 @@ def cxtpa(ind1, ind2, Optimizer):
 
     # Debug options
     if debug:
-        print 'DEBUG CX: Number of atoms exchanged from Individual 1 = ', len(group1)
-        print 'DEBUG CX: Number of atoms exchanged from Individual 2 = ', len(group2)
+        print('DEBUG CX: Number of atoms exchanged from Individual 1 = {}'.format(len(group1)))
+        print('DEBUG CX: Number of atoms exchanged from Individual 2 = {}'.format(len(group2)))
         for s, c, m, u in Optimizer.atomlist:
-            print 'DEBUG CX: Individual 1 has ', len([atm for atm in indi1n if atm.symbol == s]), ' atoms of structure ', s
-            print 'DEBUG CX: Individual 2 has ', len([atm for atm in indi2n if atm.symbol == s]), ' atoms of structure ', s
-        print 'DEBUG CX: Number of atoms in Individual 1 = ', len(indi1n)
-        print 'DEBUG CX: Number of atoms in Individual 2 = ', len(indi2n)
+            print('DEBUG CX: Individual 1 has {} atoms of structure {}'.format(len([atm for atm in indi1n if atm.symbol == s]), s))
+            print('DEBUG CX: Individual 2 has {} atoms of structure {}'.format(len([atm for atm in indi2n if atm.symbol == s]), s))
+        print('DEBUG CX: Number of atoms in Individual 1 = {}'.format(len(indi1n)))
+        print('DEBUG CX: Number of atoms in Individual 2 = {}'.format(, len(indi2n)))
     return ind1, ind2

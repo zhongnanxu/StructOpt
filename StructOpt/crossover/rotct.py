@@ -30,7 +30,7 @@ def rotct(ind1, ind2, Optimizer):
     while n < 10:
         rax = random.choice(['x', '-x', 'y', '-y', 'z', '-z'])
         rang = random.random()*90
-        indi1.rotate(rax, a = rang, center = 'COM', rotate_cell = False)
+        indi1.rotate(rax, a=rang, center='COM', rotate_cell=False)
         # Search for atoms in individual 1 that are above the xy plane
         group1 = Atoms(cell = ind1[0].get_cell(), pbc = ind1[0].get_pbc())
         indices1 = []
@@ -42,7 +42,7 @@ def rotct(ind1, ind2, Optimizer):
             break
         else:
             indi1.rotate(rax, a=-1*rang, center='COM', rotate_cell=False)
-        n+ = 1
+        n += 1
     indi2.rotate(rax, a=rang, center='COM', rotate_cell=False)
 
     if debug:
@@ -71,11 +71,11 @@ def rotct(ind1, ind2, Optimizer):
             else:
                 dellist.append(one.index)
         if len(dellist) != 0:
-            dellist.sort(reverse = True)
+            dellist.sort(reverse=True)
             for one in dellist:
                 del group1[one]
                 del indices1[one]
-        # indices2.append(pt2.index)
+        #indices2.append(pt2.index)
     else:
         for one in indi2:
             if one.position[2] >= 0:
@@ -85,7 +85,7 @@ def rotct(ind1, ind2, Optimizer):
             # Too many atoms in group 1
             dellist.append(random.choice(group1).index)
         if len(dellist) != 0:
-            dellist.sort(reverse = True)
+            dellist.sort(reverse=True)
             for one in dellist:
                 del group1[one]
                 del indices1[one]
@@ -94,7 +94,7 @@ def rotct(ind1, ind2, Optimizer):
             # Too many atoms in group 2
             dellist.append(random.choice(group2).index)
         if len(dellist) != 0:
-            dellist.sort(reverse = True)
+            dellist.sort(reverse=True)
             for one in dellist:
                 del group2[one]
                 del indices2[one]

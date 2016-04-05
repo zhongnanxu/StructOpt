@@ -195,7 +195,7 @@ def clustbx(ind1, ind2, Optimizer):
                     rlist = [atm.index for atm in nsolid1 if atm.symbol == symr]
                     index1 = random.choice(rlist)
                     nsolid1[index1].symbol = sym
-                    c+ = 1
+                    c += 1
                     posd[0] = (posd[0][0]-1, posd[0][1])
                     if posd[0][0] == 0:
                         posd = posd[1::]
@@ -214,7 +214,7 @@ def clustbx(ind1, ind2, Optimizer):
                     rlist = [atm.index for atm in nsolid2 if atm.symbol == symr]
                     index1 = random.choice(rlist)
                     nsolid2[index1].symbol = sym
-                    c+ = 1
+                    c += 1
                     posd[0] = (posd[0][0]-1, posd[0][1])
                     if posd[0][0] == 0:
                         posd = posd[1::]

@@ -34,7 +34,7 @@ def newclus(ind1, ind2, Optimizer):
     pt1 = random.choice(solid1)
     pt1f = [(pt1.position[i]-cell1m[i])/cell1[i] for i in range(3)]
     pt2 = [pt1f[i]*cell2[i]+cell2m[i] for i in range(3)]
-    solid2.append(Atom(position = pt2))
+    solid2.append(Atom(position=pt2))
     pt2 = solid2[len(solid2)-1]
 
     # Find max neighborsize of circle cut
@@ -47,7 +47,7 @@ def newclus(ind1, ind2, Optimizer):
     # Make sure that crossover is only selection of atoms not all
     while True:
         ctoff = [r for on in solid1]
-        nl = NeighborList(ctoff, bothways = True, self_interaction = False)
+        nl = NeighborList(ctoff, bothways=True, self_interaction=False)
         nl.update(solid1)
         indices1, offsets = nl.get_neighbors(pt1.index)
         if len(indices1) == 0:
@@ -62,27 +62,27 @@ def newclus(ind1, ind2, Optimizer):
         print('Position in solid1 = {}'.format(repr(pt1.position)))
         print('Position in solid2 = {}'.format(repr(pt2.position)))
 
-    group1 = Atoms(cell = solid1.get_cell(), pbc = solid1.get_pbc())
+    group1 = Atoms(cell=solid1.get_cell(), pbc=solid1.get_pbc())
     group1.append(pt1)
     indices1a = [pt1.index]
     for index, d in zip(indices1, offsets):
         if index not in indices1a:
             index = int(index)
             pos = solid1[index].position + numpy.dot(d, solid1.get_cell())
-            group1.append(Atom(symbol = solid1[index].symbol, position = pos))
+            group1.append(Atom(symbol=solid1[index].symbol, position=pos))
             indices1a.append(index)
     indices1 = indices1a
     ctoff = [r for on in solid2]
-    nl = NeighborList(ctoff, bothways = True, self_interaction = False)
+    nl = NeighborList(ctoff, bothways=True, self_interaction=False)
     nl.update(solid2)
     indices2, offsets = nl.get_neighbors(pt2.index)
-    group2 = Atoms(cell = solid2.get_cell(), pbc = solid2.get_pbc())
+    group2 = Atoms(cell=solid2.get_cell(), pbc=solid2.get_pbc())
     indices2a = []
     for index, d in zip(indices2, offsets):
         if index not in indices2a:
             index = int(index)
             pos = solid2[index].position + numpy.dot(d, solid2.get_cell())
-            group2.append(Atom(symbol = solid2[index].symbol, position = pos))
+            group2.append(Atom(symbol=solid2[index].symbol, position=pos))
             indices2a.append(index)
     indices2 = indices2a
     if len(indices2) == 0:
@@ -98,7 +98,7 @@ def newclus(ind1, ind2, Optimizer):
     if Optimizer.forcing == 'Concentration':
         symlist = list(set(group1.get_chemical_symbols()))
         seplist = [[atm for atm in group2 if atm.symbol == sym] for sym in symlist]
-        group2n = Atoms(cell = group2.get_cell(), pbc = group2.get_pbc())
+        group2n = Atoms(cell=group2.get_cell(), pbc=group2.get_pbc())
         indices2n = []
         dellist = []
         for one in group1:
@@ -112,7 +112,7 @@ def newclus(ind1, ind2, Optimizer):
             else:
                 dellist.append(one.index)
         if len(dellist) != 0:
-            dellist.sort(reverse = True)
+            dellist.sort(reverse=True)
             for one in dellist:
                 del group1[one]
                 del indices1[one]
@@ -125,7 +125,7 @@ def newclus(ind1, ind2, Optimizer):
             # Too many atoms in group 1
             dellist.append(random.choice(group1).index)
         if len(dellist) != 0:
-            dellist.sort(reverse = True)
+            dellist.sort(reverse=True)
             for one in dellist:
                 del group1[one]
                 del indices1[one]
@@ -134,16 +134,16 @@ def newclus(ind1, ind2, Optimizer):
             # Too many atoms in group 2
             dellist.append(random.choice(group2).index)
         if len(dellist) != 0:
-            dellist.sort(reverse = True)
+            dellist.sort(reverse=True)
             for one in dellist:
                 del group2[one]
                 del indices2[one]
 
-    other2 = Atoms(cell = solid2.get_cell(), pbc = solid2.get_pbc())
+    other2 = Atoms(cell=solid2.get_cell(), pbc=solid2.get_pbc())
     for one in solid2:
         if one.index not in indices2:
             other2.append(one)
-    other1 = Atoms(cell = solid1.get_cell(), pbc = solid1.get_pbc())
+    other1 = Atoms(cell=solid1.get_cell(), pbc=solid1.get_pbc())
     for one in solid1:
         if one.index not in indices1:
             other1.append(one)
@@ -164,9 +164,9 @@ def newclus(ind1, ind2, Optimizer):
     for sym, c, m, u in Optimizer.atomlist:
         if Optimizer.structure == 'Defect':
             nc = len([atm for atm in nsolid1 if atm.symbol == sym])
-            nc+ = len([atm for atm in ind1.bulki if atm.symbol == sym])
+            nc += len([atm for atm in ind1.bulki if atm.symbol == sym])
             oc = len([atm for atm in solid1 if atm.symbol == sym])
-            oc+ = len([atm for atm in ind1.bulki if atm.symbol == sym])
+            oc += len([atm for atm in ind1.bulki if atm.symbol == sym])
         else:
             nc = len([atm for atm in nsolid1 if atm.symbol == sym])
             oc = len([atm for atm in solid1 if atm.symbol == sym])
@@ -181,9 +181,9 @@ def newclus(ind1, ind2, Optimizer):
     for sym, c, m, u in Optimizer.atomlist:
         if Optimizer.structure == 'Defect':
             nc = len([atm for atm in nsolid2 if atm.symbol == sym])
-            nc+ = len([atm for atm in ind2.bulki if atm.symbol == sym])
+            nc += len([atm for atm in ind2.bulki if atm.symbol == sym])
             oc = len([atm for atm in solid2 if atm.symbol == sym])
-            oc+ = len([atm for atm in ind2.bulki if atm.symbol == sym])
+            oc += len([atm for atm in ind2.bulki if atm.symbol == sym])
         else:
             nc = len([atm for atm in nsolid2 if atm.symbol == sym])
             oc = len([atm for atm in solid2 if atm.symbol == sym])
@@ -191,7 +191,7 @@ def newclus(ind1, ind2, Optimizer):
         if debug:
             print('DEBUG CX: New solid2 contains {} and {} atoms'.format(repr(nc), repr(sym)))
         if oc != nc:
-            # pdb.set_trace()
+            #pdb.set_trace()
             print('CX: Issue in maintaining atom concentration\n Dropping new individual')
             Optimizer.output.write('CX: Issue in maintaining atom concentration\n Dropping new individual 2\n')
             solid2.pop()

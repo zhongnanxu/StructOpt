@@ -22,8 +22,8 @@ def cxtp(ind1, ind2, Optimizer):
     cxpoint1 = random.randint(1, size)
     cxpoint2 = random.randint(1, size - 1)
     if cxpoint2 >= cxpoint1:
-        cxpoint2 + = 1
-    else:           # Swap the two cx points
+        cxpoint2 += 1
+    else:  # Swap the two cx points
         cxpoint1, cxpoint2 = cxpoint2, cxpoint1
     posi1 = copy.deepcopy(pos1)
     posi2 = copy.deepcopy(pos2)

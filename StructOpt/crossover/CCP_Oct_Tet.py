@@ -10,7 +10,7 @@ def CCP_Oct_Tet(ind1, ind2, Optimizer):
         debug = True
     else:
         debug = False
-    uc = numpy.maximum.reduce(Optimizer.solidbulk.get_cell()/Optimizer.supercell)[0]
+    uc = numpy.maximum.reduce(Optimizer.solidbulk.get_cell() / Optimizer.supercell)[0]
     interstitials = [[0.0, 0.5, 0.0], [0.5, 0.0, 0.0], [0.0, 0.0, 0.5], [0.5, 0.5, 0.5],
                     [0.25, 0.25, 0.25], [0.25, 0.75, 0.25], [0.75, 0.25, 0.25], [0.75, 0.75, 0.25],
                     [0.25, 0.25, 0.75], [0.25, 0.75, 0.75], [0.75, 0.25, 0.75], [0.75, 0.75, 0.75]]
@@ -29,6 +29,6 @@ def CCP_Oct_Tet(ind1, ind2, Optimizer):
 
     solidsites = Atoms()
     for one in sites:
-        solidsites.append(Atom(position = one))
+        solidsites.append(Atom(position=one))
 
     return ind1, ind2

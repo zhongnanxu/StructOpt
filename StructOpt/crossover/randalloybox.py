@@ -63,7 +63,7 @@ def randalloybox(ind1, ind2, Optimizer):
             Optimizer.output.write('Radius of box = '+repr(r)+'\nPosition in solid1 = '+repr(pt1)+'\nPosition in solid2 = '+repr(pt2)+'\n')
 
         # Find atoms within sphere of radius r
-        solid1.append(Atom(position = pt1))
+        solid1.append(Atom(position=pt1))
         dist1 = []
         blist1 = []
         for i in range(len(solid1)-1):
@@ -74,7 +74,7 @@ def randalloybox(ind1, ind2, Optimizer):
                 blist1.append((d, solid1[i]))
         solid1.pop()
 
-        solid2.append(Atom(position = pt2))
+        solid2.append(Atom(position=pt2))
         dist2 = []
         blist2 = []
         for i in range(len(solid2)-1):
@@ -135,7 +135,7 @@ def randalloybox(ind1, ind2, Optimizer):
                 # for j in range(3):
                 #   position[j] = nsolid2[i].position[j]-pt1[j]+pt2[j]
                 position = [random.uniform(pt2[0]-r/(2**0.5), pt2[0]+r/(2**0.5)), random.uniform(pt2[1]-r/(2**0.5), pt2[1]+r/(2**0.5)), random.uniform(pt2[2]-r/(2**0.5), pt2[2]+r/(2**0.5))]
-                nnsolid2.append(Atom(symbol = nsolid1[i].symbol, position = position))
+                nnsolid2.append(Atom(symbol=nsolid1[i].symbol, position=position))
             nsolid1 = nnsolid1.copy()
             nsolid2 = nnsolid2.copy()
 
@@ -148,7 +148,7 @@ def randalloybox(ind1, ind2, Optimizer):
                 for j in range(len(dist1), len(nsolid2)):
                     ds.append((nsolid2.get_distance(i, j), i))
             # Sort distances by longest to shortest
-            ds = sorted(ds, key = lambda one:one[0])
+            ds = sorted(ds, key=lambda one:one[0])
             diff = nnat2-nat2
             exchangeindices = []
             while len(exchangeindices) < diff:
@@ -165,7 +165,7 @@ def randalloybox(ind1, ind2, Optimizer):
                 # for j in range(3):
                 #   position[j] = nsolid2[i].position[j]-pt1[j]+pt2[j]
                 position = [random.uniform(pt1[0]-r/(2**0.5), pt1[0]+r/(2**0.5)), random.uniform(pt1[1]-r/(2**0.5), pt1[1]+r/(2**0.5)), random.uniform(pt1[2]-r/(2**0.5), pt1[2]+r/(2**0.5))]
-                nnsolid1.append(Atom(symbol = nsolid2[i].symbol, position = position))
+                nnsolid1.append(Atom(symbol=nsolid2[i].symbol, position=position))
             nsolid1 = nnsolid1.copy()
             nsolid2 = nnsolid2.copy()
 
@@ -187,7 +187,7 @@ def randalloybox(ind1, ind2, Optimizer):
                 diff = nconcent1[i]-concent1[i]
                 if diff > 0:
                     posd.append((diff, symlist[i]))
-                elif diff  <0:
+                elif diff < 0:
                     negd.append((diff, symlist[i]))
             for c, sym in negd:
                 while c != 0:
@@ -195,7 +195,7 @@ def randalloybox(ind1, ind2, Optimizer):
                     rlist = [atm.index for atm in nsolid1 if atm.symbol == symr]
                     index1 = random.choice(rlist)
                     nsolid1[index1].symbol = sym
-                    c + = 1
+                    c += 1
                     posd[0] = (posd[0][0]-1, posd[0][1])
                     if posd[0][0] == 0:
                         posd = posd[1::]
@@ -214,7 +214,7 @@ def randalloybox(ind1, ind2, Optimizer):
                     rlist = [atm.index for atm in nsolid2 if atm.symbol == symr]
                     index1 = random.choice(rlist)
                     nsolid2[index1].symbol = sym
-                    c + = 1
+                    c += 1
                     posd[0] = (posd[0][0]-1, posd[0][1])
                     if posd[0][0] == 0:
                         posd = posd[1::]
@@ -251,12 +251,12 @@ def randalloybox(ind1, ind2, Optimizer):
         nsolid1.set_pbc(pbc1)
         nsolid2.set_pbc(pbc2)
 
-        outs = find_defects(nsolid1, Optimizer.solidbulk, Optimizer.sf, atomlistcheck = Optimizer.atomlist, trackvacs = Optimizer.trackvacs, trackswaps = Optimizer.trackswaps, debug = False)
+        outs = find_defects(nsolid1, Optimizer.solidbulk, Optimizer.sf, atomlistcheck=Optimizer.atomlist, trackvacs=Optimizer.trackvacs, trackswaps=Optimizer.trackswaps, debug=False)
         ind1[0] = outs[0].copy()
         ind1.bulki = outs[1].copy()
         ind1.vacancies = outs[2].copy()
         ind1.swaps = outs[3].copy()
-        outs = find_defects(nsolid2, Optimizer.solidbulk, Optimizer.sf, atomlistcheck = Optimizer.atomlist, trackvacs = Optimizer.trackvacs, trackswaps = Optimizer.trackswaps, debug = False)
+        outs = find_defects(nsolid2, Optimizer.solidbulk, Optimizer.sf, atomlistcheck=Optimizer.atomlist, trackvacs=Optimizer.trackvacs, trackswaps=Optimizer.trackswaps, debug=False)
         ind2[0] = outs[0].copy()
         ind2.bulki = outs[1].copy()
         ind2.vacancies = outs[2].copy()

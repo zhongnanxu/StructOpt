@@ -35,20 +35,20 @@ def rotct_rand(ind1, ind2, Optimizer):
         rax = random.choice(['x', '-x', 'y', '-y', 'z', '-z'])
         rang = random.random()*90
         rpos = [random.uniform(cmin[i]*0.8, cmax[i]*0.8) for i in range(3)]
-        indi1.rotate(rax, a = rang, center = rpos, rotate_cell = False)
+        indi1.rotate(rax, a=rang, center=rpos, rotate_cell=False)
         # Search for atoms in individual 1 that are above the xy plane
-        group1 = Atoms(cell = ind1[0].get_cell(), pbc = ind1[0].get_pbc())
+        group1 = Atoms(cell=ind1[0].get_cell(), pbc=ind1[0].get_pbc())
         indices1 = []
         for one in indi1:
-            if one.position[2] != 0:
+            if one.position[2] >= 0:
                 group1.append(one)
                 indices1.append(one.index)
         if len(group1) > 2 and len(group1) < len(indi1):
             break
         else:
-            n+ = 1
-            indi1.rotate(rax, a = -1*rang, center = rpos, rotate_cell = False)
-    indi2.rotate(rax, a = rang, center = rpos, rotate_cell = False)
+            n += 1
+            indi1.rotate(rax, a=-1*rang, center=rpos, rotate_cell=False)
+    indi2.rotate(rax, a=rang, center=rpos, rotate_cell=False)
 
     if debug:
         print('Group1 size = ', len(group1))
@@ -59,18 +59,18 @@ def rotct_rand(ind1, ind2, Optimizer):
 
     if len(group1) != 0:
         # Apply concentration forcing if needed
-        group2 = Atoms(cell = ind2[0].get_cell(), pbc = ind2[0].get_pbc())
+        group2 = Atoms(cell=ind2[0].get_cell(), pbc=ind2[0].get_pbc())
         indices2 = []
         dellist = []
         for one in indi2:
-            if one.position[2] != 0:
+            if one.position[2] >= 0:
                 group2.append(one)
                 indices2.append(one.index)
 
         if Optimizer.forcing == 'Concentration':
             symlist = list(set(indi1.get_chemical_symbols()))
             seplist = [[atm for atm in group2 if atm.symbol == sym] for sym in symlist]
-            group2n = Atoms(cell = group2.get_cell(), pbc = group2.get_pbc())
+            group2n = Atoms(cell=group2.get_cell(), pbc=group2.get_pbc())
             indices2n = []
             dellist = []
             for one in group1:
@@ -84,7 +84,7 @@ def rotct_rand(ind1, ind2, Optimizer):
                 else:
                     dellist.append(one.index)
             if len(dellist) != 0:
-                dellist.sort(reverse = True)
+                dellist.sort(reverse=True)
                 for one in dellist:
                     del group1[one]
                     del indices1[one]
@@ -96,7 +96,7 @@ def rotct_rand(ind1, ind2, Optimizer):
                 # Too many atoms in group 1
                 dellist.append(random.choice(group1).index)
             if len(dellist) != 0:
-                dellist.sort(reverse = True)
+                dellist.sort(reverse=True)
                 for one in dellist:
                     del group1[one]
                     del indices1[one]
@@ -110,11 +110,11 @@ def rotct_rand(ind1, ind2, Optimizer):
                     del group2[one]
                     del indices2[one]
 
-        other2 = Atoms(cell = ind2[0].get_cell(), pbc = ind2[0].get_pbc())
+        other2 = Atoms(cell=ind2[0].get_cell(), pbc=ind2[0].get_pbc())
         for one in indi2:
             if one.index not in indices2:
                 other2.append(one)
-        other1 = Atoms(cell = ind1[0].get_cell(), pbc = ind1[0].get_pbc())
+        other1 = Atoms(cell=ind1[0].get_cell(), pbc=ind1[0].get_pbc())
         for one in indi1:
             if one.index not in indices1:
                 other1.append(one)
@@ -153,8 +153,8 @@ def rotct_rand(ind1, ind2, Optimizer):
                     if len(atms2) == 0:
                         indi2.append(atms1[random.randint(0, len(atms1)-1)])
                         indi2.pop(random.randint(0, len(indi2)-2))
-        indi1.rotate(rax, a = -1*rang, center = rpos, rotate_cell = False)
-        indi2.rotate(rax, a = -1*rang, center = rpos, rotate_cell = False)
+        indi1.rotate(rax, a=-1*rang, center=rpos, rotate_cell=False)
+        indi2.rotate(rax, a=-1*rang, center=rpos, rotate_cell=False)
         indi1.translate(com1)
         indi2.translate(com2)
 

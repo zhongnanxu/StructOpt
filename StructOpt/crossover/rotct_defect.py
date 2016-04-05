@@ -49,19 +49,19 @@ def rotct_defect(ind1, ind2, Optimizer):
     while n < 10:
         rax = random.choice(['x', '-x', 'y', '-y', 'z', '-z'])
         rang = random.random()*90
-        indi1.rotate(rax, a = rang, center = [0, 0, 0], rotate_cell = False)
+        indi1.rotate(rax, a=rang, center=[0, 0, 0], rotate_cell=False)
         # Search for atoms in individual 1 that are above the xy plane
-        group1 = Atoms(cell = ind1[0].get_cell(), pbc = ind1[0].get_pbc())
+        group1 = Atoms(cell=ind1[0].get_cell(), pbc=ind1[0].get_pbc())
         indices1 = []
         for one in indi1:
-            if one.position[2] != 0:
+            if one.position[2] >= 0:
                 group1.append(one)
                 indices1.append(one.index)
         if len(group1) > 2 and len(group1) < len(indi1):
             break
         else:
-            n+ = 1
-            indi1.rotate(rax, a = -1*rang, center = [0, 0, 0], rotate_cell = False)
+            n += 1
+            indi1.rotate(rax, a=-1*rang, center=[0, 0, 0], rotate_cell=False)
     indi2.rotate(rax, a = rang, center = [0, 0, 0], rotate_cell = False)
 
     if debug:
@@ -73,18 +73,18 @@ def rotct_defect(ind1, ind2, Optimizer):
 
     if len(group1) != 0:
         # Apply concentration forcing if needed
-        group2 = Atoms(cell = ind2[0].get_cell(), pbc = ind2[0].get_pbc())
+        group2 = Atoms(cell=ind2[0].get_cell(), pbc=ind2[0].get_pbc())
         indices2 = []
         dellist = []
         for one in indi2:
-            if one.position[2] != 0:
+            if one.position[2] >= 0:
                 group2.append(one)
                 indices2.append(one.index)
 
         if Optimizer.forcing == 'Concentration':
             symlist = list(set(indi1.get_chemical_symbols()))
             seplist = [[atm for atm in group2 if atm.symbol == sym] for sym in symlist]
-            group2n = Atoms(cell = group2.get_cell(), pbc = group2.get_pbc())
+            group2n = Atoms(cell=group2.get_cell(), pbc=group2.get_pbc())
             indices2n = []
             dellist = []
             for one in group1:
@@ -98,7 +98,7 @@ def rotct_defect(ind1, ind2, Optimizer):
                 else:
                     dellist.append(one.index)
             if len(dellist) != 0:
-                dellist.sort(reverse = True)
+                dellist.sort(reverse=True)
                 for one in dellist:
                     del group1[one]
                     del indices1[one]
@@ -110,7 +110,7 @@ def rotct_defect(ind1, ind2, Optimizer):
                 # Too many atoms in group 1
                 dellist.append(random.choice(group1).index)
             if len(dellist) != 0:
-                dellist.sort(reverse = True)
+                dellist.sort(reverse=True)
                 for one in dellist:
                     del group1[one]
                     del indices1[one]
@@ -194,7 +194,7 @@ def rotct_defect(ind1, ind2, Optimizer):
                 nc = len([atm for atm in solid2 if atm.symbol == sym])
                 Optimizer.output.write('CX ROTCT_Defect: Defect 2 configuration contains {} {} atoms\n'.format(repr(nc), repr(sym))
         if debug: Optimizer.output.flush()
-        # pdb.set_trace()
+        #pdb.set_trace()
         ind1[0] = indi1
         ind2[0] = indi2
 
