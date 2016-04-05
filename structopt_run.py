@@ -85,3 +85,18 @@ def write_submit(self):
     return
     
 Structopt.write_submit = write_submit    
+
+def calculation_required(self):
+    '''We only want a calculation to run when either the calculation is 
+    not converged or an input parameter has changed'''
+
+    if self.structopt_params != self.old_structopt_params:
+        return True
+    if self.lammps_params != self.old_lammps_params:
+        return True
+    if self.stem_params != self.old_stem_params:
+        return True
+    else:
+        return False
+
+Structopt.calculation_required = calculation_required

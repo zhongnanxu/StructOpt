@@ -78,6 +78,9 @@ class Structopt(Calculator):
         for key in lammps_keys:
             self.lammps_params[key] = None
 
+        # This has to be set early to read files correctly
+        self.structopt_params['filename'] = 'Output'
+
         self.run_params = {'nodes': 1,
                            'walltime': 24,
                            'ppn': None,
@@ -85,8 +88,7 @@ class Structopt(Calculator):
                            'mpirun': 'mpirun',
                            'python': 'python',
                            'qsys': 'pbs'}
-        
-        
+
         # Now we go through logic to see what to do
         # First check if this is clean directory
         if not os.path.exists('structopt_inp.json'):
@@ -96,7 +98,8 @@ class Structopt(Calculator):
 
         # If there's only an input file and never got submitted
         elif (os.path.exists('structopt_inp.json')
-              and not os.path.exists('jobid')):
+              and not os.path.exists('jobid')
+             and not os.path.exists('Output-rank0.txt')):
             self.read_input()
             self.structopt_running = False
             self.converged = False
@@ -113,19 +116,19 @@ class Structopt(Calculator):
         
 
         # If job is done and this is our first time looking at it
-        elif (os.path.exists('structopt_inp.inp')
+        elif (os.path.exists('structopt_inp.json')
               and os.path.exists('jobid')
               and not self.job_in_queue()
-              and os.path.exists('out.txt')):
+              and os.path.exists('Output-rank0.txt')):
             self.read_input()
             self.read_output()
             os.unlink('jobid')
             self.status = 'done'
 
         # If the job is done we're looking at it again
-        elif (os.path.exists('structopt_inp.inp')
+        elif (os.path.exists('structopt_inp.json')
               and not os.path.exists('jobid')
-              and os.path.exists('out.txt')):
+              and os.path.exists('Output-rank0.txt')):
             self.read_input()
             self.read_output()
             self.status = 'done'
@@ -219,17 +222,17 @@ class Structopt(Calculator):
     def read_output(self):
         '''Figures out whether the calculation converged '''
         
-        maxgen = self.int_params['maxgen']
-        filename = self.string_params['filename']
-        name = '{0}/{1}-rank0/Summary-{1}.txt'
-        with open(name.format(self.system_name, filename), 'r') as f:
+        maxgen = self.structopt_params['maxgen']
+        filename = self.structopt_params['filename']
+        name = '{0}-rank0/Summary-{0}.txt'.format(filename)
+        with open(name, 'r') as f:
             lines = f.readlines()
             gen = int(lines[-1].split()[0])
 
         gens, fmins, favgs, fmeds, fmaxs, fstds = [], [], [], [], [], []
         gen_start = False
         for line in lines:
-            if line.lower().startswith('generation'):
+            if line.lower().startswith('Gen'):
                 gen_start = True
                 continue
             if gen_start == False:
@@ -337,13 +340,13 @@ class Structopt(Calculator):
             
         return    
 
-    def read_xyz(self, name='Bests'):
+    def read_xyz(self, name='bests'):
         '''This reads the contents of one xyz file outputted from structopt.
         To my knowledge, this is either the Bests-<filename>.xyz or the 
         indiv##.xyz file.'''
 
-        filename = self.string_params['filename']
-        f_dir = '{0}/{1}-rank0'.format(self.system_name, filename)
+        filename = self.structopt_params['filename']
+        f_dir = '{0}-rank0'.format(filename)
         
         if isinstance(name, str) and name.lower() == 'bests':
             f_name = '{0}/Bests-{1}.xyz'.format(f_dir, filename)
@@ -385,19 +388,6 @@ class Structopt(Calculator):
             self.indiv[name]['fits'] = all_fits
             
         return
-
-    def calculation_required(self):
-        '''We only want a calculation to run when either the calculation is 
-        not converged or an input parameter has changed'''
-
-        if self.structopt_params != self.old_structopt_params:
-            return True
-        if self.lammps_params != self.old_lammps_params:
-            return True
-        if self.stem_params != self.old_stem_params:
-            return True
-        else:
-            return False
 
     def get_best_atoms(self):
         '''This returns the best atoms object from the Bests- file'''
