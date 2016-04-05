@@ -1,0 +1,93 @@
+"""This file contains the default structopt parameters that are loaded up if 
+they are not specified. These keys are taken from the 'optimized' Au309 run.
+See manual for all of their definitions."""
+
+structopt_keys = ['r_ab', 'size', 'cxpb', 'mutpb', 'demin', 'tolerance',
+                  'energy_cutoff_factor', 'structure', 'optimizer_type',
+                  'atomlist', 'natoms', 'nindiv', 'maxgen', 'reqrep',
+                  'mutation_options', 'restart', 'indiv_defect_write',
+                  'fingerprinting', 'genealogy',
+                  'allenergyfile', 'best_inds_list', 'postprocessing',
+                  'parallel', 'stem_keep_files', 'tournsize', 'fusslimit',
+                  'seed', 'convergence_scheme', 'generate_flag', 'predator',
+                  'selection_scheme', 'natural_selection_scheme', 'modules',
+                  'weights', 'cx_scheme', 'large_box_size']
+
+lammps_keys = ['pair_style', 'pot_file', 'parallel', 'keep_files',
+               'min_style', 'minimize', 'thermo_steps']
+
+stem_keys = ['stem_ref', 'psf', 'aber', 'electron_energy',
+             'spherical_aberration', 'defocus', 'aperture_semiangle',
+             'source_size', 'slice_size', 'pixels', 'delta_E',
+             'chromatic_aberration_coefficient', 'scale_factor',
+             'grid_sim2exp', 'pixelshift', 'keep_files', 'pixels']
+           
+
+Au309_DEFAULTS = {'structure': 'Cluster',
+                  'optimizer_type': 'GA',
+                  'filename': 'structopt',
+                  'calc_method': 'MAST_STEM',
+                  'exec_mast': 'python',
+                  'atomlist': [('Au', 1, 196.9665, -3.6)],
+                  'algorithm_type': 'lambda+mu',
+                  'natoms': 309,
+                  'nindiv': 12,
+                  'maxgen': 4000,
+                  'reqrep': 1000,
+                  'restart': False,
+                  'r_ab': 2.5,
+                  'size': 23,
+                  'indiv_defect_write': False,
+                  'cxpb': 0.8,
+                  'mutpb': 0.2,
+                  'cx_scheme': 'cxtp',
+                  'generate_flag': 'sphere',
+                  'mutation_options': ['lattice_alteration',
+                                       'lattice_alteration_group',
+                                       'rotation',
+                                       'zp_rotation'],
+                  'selection_scheme': 'tournament2',
+                  'natural_selection_scheme': 'fuss',
+                  'tournsize': 3,
+                  'fusslimit': 10,
+                  'convergence_scheme': 'gen_rep_min',
+                  'fingerprinting': False,
+                  'predator': 'fitpred',
+                  'demin': 0.001,
+                  'tolerance': 0.0001,
+                  'pair_style': 'eam',
+                  'lammps_keep_files': True,
+                  'lammps_min': '1e-8 1e-8 5000 10000',
+                  'lammps_min_style': r'cg\nmin_modify line quadratic',
+                  'lammps_thermo_steps': 1000,
+                  'genealogy': True,
+                  'allenergyfile': True,
+                  'best_inds_list': True,
+                  'postprocessing': True,
+                  'parallel': True,
+                  'energy_cutoff_factor': 4.0,
+                  'stem_keep_files': False,
+                  'stem_coeff': 10.0,
+                  'fitness_scheme': 'stem_cost',
+                  'electron_energy': 200,
+                  'spherical_aberration': 1.4,
+                  'defocus': 0,
+                  'aperture_semiangle': 24.5,
+                  'source_size': 0.882,
+                  'slice_size': 25.0,
+                  'chromatic_aberration_coefficient': 1.4,
+                  'delta_E': 0.73,
+                  'aber': [[0,0],[0,0],[22.56,-20.1],
+                           [22.08,-7.5],[0.1198,0],[0.9018,-170.1],
+                           [0.04964,20.9],[28.43,-120.6],[11.84,153.8],
+                           [8.456,76.1],[0.622,0],[2.811,-125.5]],
+                  'scale_factor': 0.00570113,
+                  'grid_sim2exp': 1,
+                  'pixelshift': False}
+
+# These are inputs that need to be set and I want them to be the same
+# for most of the runs. They're also not too descriptive of what's going
+# on. 
+# INP_DEFAULTS = {'filename': 'structopt',
+#                 'exec_mast':'/share/apps/mvapich2/tam_mvapich2-1.9a2/usr/local/bin/mpirun /share/apps/EPD_64bit/epd_free-7.3-2-rh5-x86_64/bin/python',
+#                 'parallel':True}
