@@ -29,3 +29,9 @@
 * Use the full names of things rather than abbreviations if the difference is only a few letters
 
 * Use `enumerate` not counters.
+
+* Use `"""` for docstrings rather than `'''`
+
+* Do not duplicate code if you can at all help it -- if you are duplicating code, you proabably want to reorganize the code into functions
+
+* Don't worry too much about line length unless it's really long
