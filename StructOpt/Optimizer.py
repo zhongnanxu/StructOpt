@@ -185,7 +185,7 @@ class Optimizer():
                     if None in fi:
                         pass
                     else:
-                        indiv[i].fitness = self.get_totalfit(fi, self.weights)
+                        indiv[i].fitness = self.objective_function(fi, self.weights)
                         logger.info('Individual {0}: {1}'.format(indiv[i].history_index, indiv[i].fitness))
                 self.output.write(stro)
                 pop.extend(indiv)
@@ -250,7 +250,7 @@ class Optimizer():
         return end_signal
 
 
-    def get_totalfit(self, fits, weights):
+    def objective_function(self, fits, weights):
         # return sum([weight*fit.fitness for fit, weight in zip(self.modules, self.weights)])
         return sum([ fit*weight for fit, weight in zip(fits, weights)])
 
