@@ -22,25 +22,25 @@ from mpi4py import MPI
 class Optimizer():
     __version__  = 'StructOpt_v2.0'
     logger = None
-    
+
     def __init__(self, input, uselogger=True):
-        
+
         self.args = inp_out.read_parameter_input(input, uselogger)
         for k,v in self.args.items():
             setattr(self,k,v)
-        
+
         self.relaxation_module = None # Currently only one relaxation module
         if self.relaxation:
             mod = import_module('StructOpt.fitness.{module_name}.{module_name}_eval'.format(module_name=self.relaxation))  # Import the module package
             cls = getattr(mod, '{cls_name}_eval'.format(cls_name=self.relaxation))  # Get's the class from the module package
             self.relaxation_module = cls()
-        
+
         self.fitness_modules = []
         for m in self.modules:
             mod = import_module('StructOpt.fitness.{module_name}.{module_name}_eval'.format(module_name=m))  # Import the module package
             cls = getattr(mod, '{cls_name}_eval'.format(cls_name=m))  # Get's the class from the module package
             self.fitness_modules.append(cls())
-        
+
         if self.loggername:
             global logger
             logger = logging.getLogger(self.loggername)
@@ -86,7 +86,7 @@ class Optimizer():
             self.calc = None
             self.static_calc = None
 
-    
+
     def algorithm_initialize(self):
         global logger
         if self.restart_optimizer:
@@ -122,10 +122,10 @@ class Optimizer():
             #Write the input parameters to the output file
             logger.info('Writing the input parameters to output file')
             inp_out.write_parameters(self)
-    
 
-    
-    
+
+
+
     def algorithm_run(self):
         global logger
         comm = MPI.COMM_WORLD
@@ -151,24 +151,24 @@ class Optimizer():
                 self.output.write('\n--Evaluate Structures--\n')
             else:
                 indiv = []
-            
-           
+
+
             stro = ''
             if rank==0:
                 indiv, stro = check_structures(Opti,indiv)
-            
+
 
             if self.relaxation:
                 stro += 'Relaxing structure using %s\n'%self.relaxation
                 relax_out = self.relaxation_module.evaluate_fitness(Opti, indiv, True)
-                
+
                 if rank==0:
                     for i in range(len(indiv)):
                         indiv[i] = relax_out[i][0]
                         stro += relax_out[i][1]
-            
+
             fits = []
-            for m in range(len(self.modules)): 
+            for m in range(len(self.modules)):
                 stro += 'Evaluating fitness with module %s\n'%self.modules[m]
                 out_part = self.fitness_modules[m].evaluate_fitness(Opti, indiv)
                 fm = []
@@ -176,7 +176,7 @@ class Optimizer():
                     fm.append(out_part[i][0])
                     stro += out_part[i][1]
                 fits.append(fm)
-            
+
 
             if rank==0:
                 logger.info('Individual fitnesses of Generation #{0}'.format(self.generation))
@@ -192,7 +192,7 @@ class Optimizer():
                 pop = self.generation_eval(pop)
                 self.write()
             convergence =comm.bcast(self.convergence, root=0)
-        
+
         if rank==0:
             logger.info('Run algorithm stats')
             end_signal = self.algorithm_stats(self.population)
@@ -200,8 +200,8 @@ class Optimizer():
             end_signal = None
         end_signal = comm.bcast(end_signal, root=0)
 
-        return end_signal    
-    
+        return end_signal
+
     def algorithm_stats(self,pop):
         self.output.write('\n----- Algorithm Stats -----\n')
         cxattempts = 0
@@ -245,12 +245,12 @@ class Optimizer():
         self.close_output()
         end_signal='Genetic Algorithm Finished'
         return end_signal
-    
+
 
     def get_totalfit(self, fits, weights):
         #return sum([weight*fit.fitness for fit, weight in zip(self.modules, self.weights)])
         return sum([ fit*weight for fit, weight in zip(fits, weights)])
-    
+
     def check_pop(self, pop):
         # Gather all the energies/fitnesses
         if self.output_format=='totalenergy':
@@ -284,7 +284,7 @@ class Optimizer():
             complist = [ind.energy/(ind[0].get_number_of_atoms()+ind.bulki.get_number_of_atoms()) for ind in pop]
         else:
             complist = [ind.fitness for ind in pop]
-    
+
         # Calcluate and print the Stats
         length = len(pop)
         mean = sum(complist) / length
@@ -294,7 +294,7 @@ class Optimizer():
         std = abs(sum2 / length - mean**2)**0.5
         mine = min(complist)
         maxe = max(complist)
-    
+
         self.output.write('\n----Stats----\n')
         self.output.write('  Min '+repr(mine)+'\n')
         self.output.write('  Max '+repr(maxe)+'\n')
@@ -318,12 +318,12 @@ class Optimizer():
             ind.index=index1
             index1+=1
         inp_out.write_pop(self,pop)
-    
+
         if self.allenergyfile:
             for ind in pop:
                 self.tenergyfile.write(repr(ind.energy)+' ')
             self.tenergyfile.write('\n')
-    
+
         #Check Convergence of population based on fitness
         fitnesses = [ind.fitness for ind in pop]
         popmin = min(fitnesses)
@@ -376,7 +376,7 @@ class Optimizer():
         if self.genealogy: self.Genealogyfile.flush()
         if self.allenergyfile: self.tenergyfile.flush()
         if 'MA' in self.debug: self.debugfile.flush()
-        if self.fingerprinting: 
+        if self.fingerprinting:
             self.fpfile.flush()
             self.fpminfile.flush()
         return self
@@ -392,10 +392,10 @@ class Optimizer():
         if self.genealogy: self.Genealogyfile.close()
         if self.allenergyfile: self.tenergyfile.close()
         if 'MA' in self.debug: self.debugfile.close()
-        if self.fingerprinting: 
+        if self.fingerprinting:
             self.fpfile.close()
             self.fpminfile.close()
-    
+
     def generation_eval(self, pop):
         global logger
         emx = max(ind.energy for ind in pop)
@@ -405,13 +405,13 @@ class Optimizer():
             ind.tenergymin = emn
         #DEBUG: Write relaxed individual
         if 'MA' in self.debug:
-            if self.generation > 0: 
+            if self.generation > 0:
                 inp_out.write_xyz(self.debugfile,pop[self.nindiv][0],\
-                'First Relaxed Offspring '+repr(pop[self.nindiv-1].energy))    
+                'First Relaxed Offspring '+repr(pop[self.nindiv-1].energy))
                 #DEBUG: Write relaxed ind in solid
                 if self.structure=='Defect' or self.structure=='Surface':
                     inp_out.write_xyz(self.debugfile,pop[self.nindiv].bulki,\
-                    'First Relaxed bulki '+repr(pop[self.nindiv-1].energy))    
+                    'First Relaxed bulki '+repr(pop[self.nindiv-1].energy))
                     sols = pop[self.nindiv][0].copy()
                     sols.extend(pop[self.nindiv].bulki)
                     inp_out.write_xyz(self.debugfile,sols,'First from Invalid-ind + Bulki '+\
@@ -491,10 +491,10 @@ class Optimizer():
 
         self.population = pop
         return pop
-    
+
     def generation_set(self,pop,Opti):
         global logger
-        
+
         ## Setting up energy calculators from relaxation method
         #self.calc = setup_energy_calculator(Opti,self.relaxation,True)
         #Set up calculator for fixed region calculations
@@ -525,7 +525,7 @@ class Optimizer():
                     cxattempts+=2
             self.cxattempts=cxattempts
             #DEBUG: Write first child
-            if 'MA' in self.debug: 
+            if 'MA' in self.debug:
                 inp_out.write_xyz(self.debugfile,offspring[0][0],'First Child '+
                     repr(offspring[0].history_index))
             # Apply mutation to the offspring
@@ -544,12 +544,12 @@ class Optimizer():
                 offspring.extend(muts)
             self.mutattempts=mutattempts
             #DEBUG: Write first offspring
-            if 'MA' in self.debug: 
+            if 'MA' in self.debug:
                 inp_out.write_xyz(self.debugfile,muts[0][0],'First Mutant '+\
                 repr(muts[0].history_index))
-                  
+
         return offspring
-    
+
     def initialize_structures(self):
         global logger
         self.output.write('\n----Initialize Structures----\n')
@@ -562,7 +562,7 @@ class Optimizer():
         else:
             logger.info('Generating new population')
             pop = generate.get_population(self)
-        if 'MA' in self.debug: 
+        if 'MA' in self.debug:
             inp_out.write_xyz(self.debugfile,pop[0][0],'First Generated Individual')
         #Use if concentration of interstitials is unknown
         if self.swaplist:
@@ -595,7 +595,7 @@ class Optimizer():
         #pop=[]
         #BESTS=[]
         return offspring
-    
+
     def run(self):
         global logger
         cwd=os.getcwd()
@@ -633,7 +633,7 @@ class Optimizer():
             except:
                 pass
             print 'EXITING PROGRAM'
-    
+
     def read(self,optfile):
         parameters = inp_out.read_parameter_input(optfile,True)
         self.__dict__.update(parameters)
@@ -651,14 +651,14 @@ class Optimizer():
         self.BESTS = bestlist
         self.restart = True
         return self
-        
+
     def write(self,filename=None, restart=True):
         if filename:
             inp_out.write_optimizer(self, filename, restart)
         else:
             inp_out.write_optimizer(self, self.optimizerfile, restart)
         return
-    
+
 if __name__ == "__main__":
     import sys
     input = sys.argv[1]
