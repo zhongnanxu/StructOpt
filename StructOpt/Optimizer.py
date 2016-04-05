@@ -605,7 +605,7 @@ class Optimizer():
 
             if self.postprocessing:
                 logger.info('Running Post-processing')
-                path = os.path.join(os.getcwd(), '{0}'.format(self.filename))
+                path = os.path.join(os.getcwd(), '{0}-rank0'.format(self.filename))
                 os.chdir(path)
                 if self.genealogytree:
                     pp.read_output(os.getcwd(),genealogytree=True,natoms=self.natoms)
@@ -615,7 +615,7 @@ class Optimizer():
             if self.lattice_concentration:
                 if self.structure=='Defect':
                     logger.info('Running lattice concentration check')
-                    path = os.path.join(os.getcwd(), '{0}'.format(self.filename))
+                    path = os.path.join(os.getcwd(), '{0}-rank0'.format(self.filename))
                     os.chdir(path)
                     if self.best_inds_list:
                         pp.get_lattice_concentration(os.path.join(os.getcwd(),'Bulkfile.xyz'),os.path.join(os.getcwd(),'Bests-'+self.filename+'.xyz'))
