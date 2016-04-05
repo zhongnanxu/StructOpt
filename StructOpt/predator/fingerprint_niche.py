@@ -74,7 +74,7 @@ def fingerprint_niche(pop, Optimizer):
                 else:
                     clustlist = clustlistn
         except:
-            attemptcount- = 1
+            attemptcount -= 1
             STR += 'WARNING: PREDATOR: K-means cluster difficulty\n'
 
     if passflag == True:

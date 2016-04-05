@@ -64,7 +64,7 @@ def energy_cluster(pop, Optimizer):
                 else:
                     clustlist = clustlistn
         except:
-            attemptcount- = 1
+            attemptcount -= 1
             STR += 'WARNING: PREDATOR: K-means cluster difficulty\n'
             print('WARNING: PREDATOR: K-means cluster difficulty')
 

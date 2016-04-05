@@ -264,7 +264,7 @@ class Optimizer():
                 energy = ind.energy
                 for sym, c, m, u in self.atomlist:
                     nc = len([atm for atm in solid if atm.symbol == sym])
-                    energy- = float(nc)*float(u)
+                    energy -= float(nc)*float(u)
                 complist.append(energy)
         elif self.output_format == 'formation_energy_per_int':
             complist = []
@@ -275,7 +275,7 @@ class Optimizer():
                 energy = ind.energy
                 for sym, c, m, u in self.atomlist:
                     nc = len([atm for atm in solid if atm.symbol == sym])
-                    energy- = float(nc)*float(u)
+                    energy -= float(nc)*float(u)
                 energy = energy/self.natoms
                 complist.append(energy)
         elif self.output_format == 'formation_energy2':
