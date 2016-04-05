@@ -2,8 +2,8 @@ import random
 
 def tournament(pop, nkeep, Optimizer):
     """Selection function to order and choose individuals based on Tournament schemes
-    Function will allow for repeats
-    """
+    Function will allow for repeats"""
+
     tournsize = Optimizer.tournsize
     newpop = []
     for j in range(nkeep):
@@ -14,4 +14,5 @@ def tournament(pop, nkeep, Optimizer):
         mine = min(fitnesses)
         select = [ind for ind in subgroup if ind.fitness==mine]
         newpop.append(select[0])
+
     return newpop
