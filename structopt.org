@@ -315,3 +315,16 @@ with Structopt('tests/maldonis-test',
 
 #+RESULTS:
 
+* StructOpt edits
+#+BEGIN_SRC python
+from StructOpt import io
+
+print io.read_parameter_input('tests/maldonis-test/structopt_inp.json', True)
+
+
+
+#+END_SRC
+
+#+RESULTS:
+: {'fixed_region': False, 'mutant_add': False, 'bh_temp': 0.08617385692256675, 'bh_steps': 100, 'bulkfp': None, 'generate_flag': 'box', 'migration_intervals': 5, u'natoms': 309, 'algorithm_type': 'lambda+mu', u'predator': u'mutation_dups', 'loggername': 'Output-rank0-2016_0406_084958.log', 'supercell': (1, 1, 1), 'quench_max_temp': 1000, 'allenergyfile': False, 'restart_optimizer': False, 'restart': False, u'natural_selection_scheme': u'fuss', 'quench_step_size': 0.01, u'large_box_size': 500, 'debug': ['None'], 'adaptmultiplier': 3.0, 'solidbulk': None, 'trackvacs': False, u'tournsize': 3, 'fingerprinting': False, 'trackswaps': False, 'constrain_position': False, u'filename': u'Output', u'best_inds_list': True, 'solidfile': None, u'tolerance': 0.01, 'solidcell': None, u'maxgen': 4000, 'quench_n_steps_1': 10000, 'quench_n_steps_2': 20000, 'relaxation': 'LAMMPS', u'selection_scheme': u'tournament2', 'genealogytree': False, 'energy_cutoff_factor': 10.0, 'cell_shape_options': ['cubic', 'hexagonal', 'triclinic', 'monoclinic', 'orthorhombic', 'tetragonal'], u'atomlist': [(u'Au', 309, 196.9665, 0.0)], u'postprocessing': True, 'metropolis_temp': 30.0, u'demin': 0.01, 'optimizer_type': 'GA', u'nindiv': 20, u'size': 23.0, u'mutation_options': [u'lattice_alteration', u'lattice_alteration_group', u'rotation_geo', u'rotation'], 'quench_min_temp': 2, 'mark': None, 'finddefects': True, u'fusslimit': 5, u'reqrep': 1000, 'surftopthick': 0, 'output_format': 'fitness', 'swaplist': False, 'rattle_atoms': False, 'adaptbegin': 0.75, 'lattice_concentration': False, u'genealogy': True, 'random_vac_start': False, u'cx_scheme': u'rotct_rand', 'constrain_swaps': False, 'seed': 9, 'fpbin': 0.25, u'mutpb': 0.15, 'number_of_bests': 100, 'migration_percent': 0.05, u'cxpb': 0.8, 'vacancy_output': False, 'indiv_defect_write': False, u'convergence_scheme': u'max_gen', 'forcing': 'Concentration', 'fpcutoff': 15.0, 'isolate_mutation': False, 'surfacecell': None, u'r_ab': 2.5, 'evalsolid': False, 'surfacefile': None, 'random_loc_start': False, u'parallel': True, u'structure': u'Cluster', 'restart_ints': 0, u'modules': [u'LAMMPS', u'STEM'], u'weights': [0.003, 10.0], 'alloy': True, 'sf': 1.75}
+
