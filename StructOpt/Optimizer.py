@@ -225,18 +225,18 @@ class Optimizer():
         mintgen = mins[0][0]-1
         mints = mins[0][1]
         avgts = sum(deltats)/len(deltats)
-        self.output.write('Total Length of GA run : {}\n'.format(tools.convert_time(ttseconds))
-        self.output.write('Average time per generation : {}\n'.format(tools.convert_time(avgts))
-        self.output.write('Maximum time for generation {} : {}\n'.format(repr(maxtgen), tools.convert_time(maxts))
-        self.output.write('Minimum time for generation {} : {}\n'.format(repr(mintgen), tools.convert_time(mints))
+        self.output.write('Total Length of GA run : {}\n'.format(tools.convert_time(ttseconds)))
+        self.output.write('Average time per generation : {}\n'.format(tools.convert_time(avgts)))
+        self.output.write('Maximum time for generation {} : {}\n'.format(repr(maxtgen), tools.convert_time(maxts)))
+        self.output.write('Minimum time for generation {} : {}\n'.format(repr(mintgen), tools.convert_time(mints)))
         self.output.write('Attempted Crossovers: {}\n'.format(repr(cxattempts)))
         self.output.write('Successful Crossovers: {}\n'.format(repr(cxsuccess)))
         self.output.write('Mutations:\n')
 
         i = 0
         for opt in self.mutation_options:
-            self.output.write('    Attempted {} : {}\n'.format(repr(mutslist[i][0]))
-            self.output.write('    Successful {} : {}\n'.format(repr(mutslist[i][1]))
+            self.output.write('    Attempted {} : {}\n'.format(repr(mutslist[i][0])))
+            self.output.write('    Successful {} : {}\n'.format(repr(mutslist[i][1])))
             i += 1
         if self.best_inds_list:
             BESTS = tools.BestInds(pop, self.BESTS, self, writefile = True)
