@@ -11,7 +11,8 @@ structopt_keys = ['r_ab', 'size', 'cxpb', 'mutpb', 'demin', 'tolerance',
                   'parallel', 'stem_keep_files', 'tournsize', 'fusslimit',
                   'seed', 'convergence_scheme', 'generate_flag', 'predator',
                   'selection_scheme', 'natural_selection_scheme', 'modules',
-                  'weights', 'cx_scheme', 'large_box_size', 'restart_files']
+                  'weights', 'cx_scheme', 'large_box_size', 'restart_files',
+                  'indiv_write']
 
 lammps_keys = ['pair_style', 'pot_file', 'parallel', 'keep_files',
                'min_style', 'minimize', 'thermo_steps']

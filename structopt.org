@@ -377,6 +377,7 @@ with Structopt('tests/short-test',
                postprocessing=True,
                parallel=True,
                restart_files=False,
+               indiv_write='none',
                
                # LAMMPS parameters
                pair_style='eam', pot_file=pot_file,
@@ -384,7 +385,7 @@ with Structopt('tests/short-test',
                min_style='cg\nmin_modify line quadratic',
                thermo_steps=1000, keep_files=False) as calc:
     calc.write_input()
-    calc.write_submit()
+    # calc.write_submit()
     #optimizer = Optimizer('structopt_inp.json')
     #optimizer.run()
 
