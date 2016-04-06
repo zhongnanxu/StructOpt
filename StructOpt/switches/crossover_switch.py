@@ -1,4 +1,4 @@
-from StructOpt.io.write_xyz import write_xyz
+from StructOpt.structoptio.write_xyz import write_xyz
 import logging
 import pdb
 

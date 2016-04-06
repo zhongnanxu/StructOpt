@@ -1,4 +1,4 @@
-from StructOpt.io import read_xyz
+from StructOpt.structoptio import read_xyz
 from StructOpt.generate.surface import get_surface_restart_indiv
 from StructOpt.generate.defect import get_defect_restart_indiv
 from StructOpt.generate.crystal import get_crystal_restart_indiv

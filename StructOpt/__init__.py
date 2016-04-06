@@ -14,9 +14,9 @@ except ImportError:
 
 def setup(input):
     import time
-    import io.read_parameter_input
-    import io.logger_utils
-    parameters = io.read_parameter_input.read_parameter_input(input)
+    from structoptio.read_parameter_input import read_parameter_input, set_default_parameters
+    import structoptio.logger_utils
+    parameters = read_parameter_input(input)
     if parameters["USE_MPI4PY"]:
         try:
             from mpi4py import MPI
@@ -27,18 +27,18 @@ def setup(input):
         parameters["rank"] = 0
 
     if "loggername" not in parameters:
-        parameters["loggername"] = "{0}-rank{1}-{2}.log".format(parameters["filename"], rank, time.strftime("%Y_%m%d_%H%M%S"))
+        parameters["loggername"] = "{0}-rank{1}-{2}.log".format(parameters["filename"], parameters["rank"], time.strftime("%Y_%m%d_%H%M%S"))
     else:
         raise ValueError("'loggername' should not be defined in the input file currently. If you think you want to define it, talk to the developers about why.")
 
-    if rank == 0:
-        logger = io.logger_utils.initialize_logger(filename=parameters["loggername"], name="default")
+    if parameters["rank"] == 0:
+        logger = structoptio.logger_utils.initialize_logger(filename=parameters["loggername"], name="default")
     else:
-        logger = io.logger_utils.initialize_logger(filename=parameters["loggername"], name="default", disable_output=True)
+        logger = structoptio.logger_utils.initialize_logger(filename=parameters["loggername"], name="default", disable_output=True)
 
-    logger_by_rank = io.logger_utils.initialize_logger(filename=parameters["loggername"], name="by-rank")
+    logger_by_rank = structoptio.logger_utils.initialize_logger(filename=parameters["loggername"], name="by-rank")
 
-    parameters = io.read_parameter_inputs.set_default_parameters(parameters)
+    parameters = set_default_parameters(parameters)
 
     globals()["parameters"] = parameters
     return None
@@ -47,4 +47,4 @@ def setup(input):
 from Optimizer import Optimizer
 
 # Used for `from StructOpt import *`
-__all__ = ["Optimizer"]
+__all__ = ["Optimizer", "setup", "parameters"]

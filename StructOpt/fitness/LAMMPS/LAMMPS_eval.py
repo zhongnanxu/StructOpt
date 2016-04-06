@@ -6,7 +6,7 @@ try:
     from ase.calculators.neighborlist import NeighborList
 except ImportError:
     pass
-from StructOpt.io.write_xyz import write_xyz
+from StructOpt.structoptio.write_xyz import write_xyz
 from StructOpt.fingerprinting import get_fingerprint
 from StructOpt.tools.lammps import LAMMPS
 from StructOpt.tools.setup_energy_calculator import setup_energy_calculator

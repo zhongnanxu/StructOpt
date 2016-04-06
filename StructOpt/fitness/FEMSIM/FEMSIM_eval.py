@@ -5,7 +5,7 @@ import json
 import time
 import numpy as np
 import os
-from StructOpt.io.write_xyz import write_xyz
+from StructOpt.structoptio.write_xyz import write_xyz
 import logging
 import math
 import shutil

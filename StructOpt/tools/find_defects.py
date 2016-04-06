@@ -2,7 +2,7 @@ from ase import Atom, Atoms
 from ase.calculators.neighborlist import NeighborList
 import numpy
 import copy
-from StructOpt.io.write_xyz import write_xyz
+from StructOpt.structoptio.write_xyz import write_xyz
 from StructOpt.tools.calc_dist import calc_dist
 
 def find_defects(solid, bulko, rcutoff, atomlistcheck = False, trackvacs = False, trackswaps = False, debug = False, dcheck = 0.6):
