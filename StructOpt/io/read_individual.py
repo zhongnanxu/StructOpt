@@ -1,4 +1,4 @@
-from StructOpt.inp_out.read_xyz import read_xyz
+from StructOpt.io.read_xyz import read_xyz
 from StructOpt.generate.Individual import Individual
 from ase import Atom, Atoms
 

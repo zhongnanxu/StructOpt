@@ -1,5 +1,5 @@
 from StructOpt.tools.eval_energy import eval_energy
-from StructOpt.inp_out.write_xyz import write_xyz
+from StructOpt.io.write_xyz import write_xyz
 import logging
 import math
 import os
@@ -7,7 +7,7 @@ from StructOpt.tools.find_defects import find_defects
 from ase import Atom, Atoms
 
 def sibias2(indiv, Optimizer):
-    """Function to calculate total energy fitness of individual and bias away 
+    """Function to calculate total energy fitness of individual and bias away
     from Si-Interstitials.
     Input:
         indiv = structopt Individual class object to be evaluated

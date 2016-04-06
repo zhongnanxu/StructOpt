@@ -12,16 +12,17 @@ def adapting(pop, Optimizer):
         pop = new population updated based on fitness evaluation
     *** needs work ***
     """
+
     fitlist = [one.fitness for one in pop]
     nfitlist, nindices = remove_duplicates(fitlist, Optimizer.demin)
     STR = ''
     newpop = []
     if len(nfitlist) != len(fitlist):
-        STR+='Predator: Removed total of '+repr(len(fitlist)-len(nfitlist))+' from population\n'
+        STR += 'Predator: Removed total of {} from population\n'.format(repr(len(fitlist)-len(nfitlist)))
     otherlist = []
     for i in range(len(pop)):
         if i not in nindices:
-            STR+='Predator: Removed '+repr(pop[i].history_index)+'\n'
+            STR += 'Predator: Removed {}\n'.format(repr(pop[i].history_index))
             otherlist.append(pop[i])
         else:
             newpop.append(pop[i])
@@ -29,18 +30,18 @@ def adapting(pop, Optimizer):
         Optimizer.output.write('Predator: Adding duplicates back')
         indiv = random.choice(otherlist)
         newpop.append(indiv)
-        STR+='Predator: Adding mutated duplicates to new pop history='+indiv.history_index+'\n'
-    if Optimizer.natural_selection_scheme=='fussf':
+        STR += 'Predator: Adding mutated duplicates to new pop history = {}\n'.format(indiv.history_index)
+    if Optimizer.natural_selection_scheme == 'fussf':
         for ind in newpop:
             if ind.fingerprint == 0:
-                ind.fingerprint = get_fingerprint(Optimizer,ind,Optimizer.fpbin,Optimizer.fpcutoff)
+                ind.fingerprint = get_fingerprint(Optimizer, ind, Optimizer.fpbin, Optimizer.fpcutoff)
     if genrep >= Optimizer.reqrep*Optimizer.adaptbegin:
         ofusslim = Optimizer.fusslimit
         nfusslim = ofusslim*math.exp(-Optimizer.adaptmultiplier*float(Optimizer.genrep)/float(Optimizer.reqrep))
         Optimizer.fusslimit = nfusslim
     else:
         ofusslim = Optimizer.fusslimit
-    pop = selection_switch(newpop, Optimizer.nindiv,Optimizer.natural_selection_scheme,Optimizer)
-    pop = get_best(pop,len(pop))
-    Optimizer.fusslimit=ofusslim
+    pop = selection_switch(newpop, Optimizer.nindiv, Optimizer.natural_selection_scheme, Optimizer)
+    pop = get_best(pop, len(pop))
+    Optimizer.fusslimit = ofusslim
     return pop, STR

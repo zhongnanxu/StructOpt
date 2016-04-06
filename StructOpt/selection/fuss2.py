@@ -5,6 +5,7 @@ def fuss2(pop, nkeep, Optimizer):
 	order individuals in a population.
 	fuss point must reside within fusslimit of minimum fitness
 	"""
+
     newpop = []
     fits = [ind.fitness for ind in pop]
     minindex = min(xrange(len(fits)), key=fits.__getitem__)
@@ -12,6 +13,7 @@ def fuss2(pop, nkeep, Optimizer):
     maxf = max(fits)
     if abs(maxf - minf) > fusslimit:
         maxf = minf + fusslimit
+
     indices = []
     loopcount = 0
     while len(newpop) < nkeep:
@@ -37,8 +39,10 @@ def fuss2(pop, nkeep, Optimizer):
             else:
                 newpop.append(pop[min(indexl)])
                 indices.append(min(indexl))
+
     if minindex not in indices:
         rm = random.choice(indices)
         newpop = [pop[inx] for inx in indices if inx != rm]
         newpop.append(pop[minindex])
+
     return newpop

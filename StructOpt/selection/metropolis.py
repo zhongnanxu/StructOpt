@@ -11,12 +11,16 @@ def metropolis(pop, nkeep, Optimizer):
 	Outputs:
 		newpop = new list of Individual class structures of length nkeep
 	"""
+
 	newpop = []
-	#Identify temperature for algorithm
+
+	# Identify temperature for algorithm
 	T = Optimizer.metropolis_temp
-	#Collect fitnesses
+
+	# Collect fitnesses
 	fits = [ind.fitness for ind in pop]
-	#Identify the minimum fitness
+
+	# Identify the minimum fitness
 	minf = min(fits)
 	print fits
 	while len(newpop)<nkeep:
@@ -24,4 +28,5 @@ def metropolis(pop, nkeep, Optimizer):
 		r=random.random()
 		if r <= math.exp((minf-ind.fitness)/T):
 			newpop.append(ind)
+
 	return newpop

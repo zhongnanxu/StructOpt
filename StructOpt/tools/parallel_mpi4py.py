@@ -26,7 +26,7 @@ def parallel_mpi4py(individ,module,relax):
             else:
                 one=None
             ind = comm.scatter(one,root=0)
-            
+
             if ind == None:
                 rank = MPI.COMM_WORLD.Get_rank()
                 stro = 'Evaluated none individual on {0}\n'.format(rank)

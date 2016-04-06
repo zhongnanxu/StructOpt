@@ -2,8 +2,8 @@ from StructOpt.tools import get_best
 import random
 
 def cost(pop, nkeep, Optimizer):
-	"""Selection function to order and select structures based on simple relative cost
-	"""
+	"""Selection function to order and select structures based on simple relative cost"""
+
 	pop = get_best(pop,len(pop))
 	newpop = []
 	fitnesses = [ind.fitness for ind in pop]
@@ -30,4 +30,5 @@ def cost(pop, nkeep, Optimizer):
 		else:
 			newpop.append(pop[counter])
 			prevcounter.append(counter)
+
 	return newpop

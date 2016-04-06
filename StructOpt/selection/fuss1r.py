@@ -5,14 +5,18 @@ def fuss1r(pop, nkeep, Optimizer):
 	order individuals in a population.
 	No constraint on fuss -> population will diverge
 	"""
+
 	newpop = []
-	#Collect fitnesses
+
+	# Collect fitnesses
 	fits = [ind.fitness for ind in pop]
-	#Identify the minimum and maximum fitness and index
+
+	# Identify the minimum and maximum fitness and index
 	minindex = min(xrange(len(fits)), key=fits.__getitem__)
 	minf = min(fits)
 	maxf = max(fits)
-	#Scale fitnesses to range 0-1
+
+	# Scale fitnesses to range 0-1
 	fits = [(f-minf)/(maxf-minf) for f in fits]
 	indices = []
 	while len(newpop) < nkeep:
@@ -23,4 +27,5 @@ def fuss1r(pop, nkeep, Optimizer):
 		if index not in indices:
 			newpop.append(pop[index])
 			indices.append(index)
+
 	return newpop

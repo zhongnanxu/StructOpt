@@ -34,12 +34,9 @@ from tempfile import mkdtemp, NamedTemporaryFile, mktemp as uns_mktemp
 import numpy as np
 import decimal as dec
 
-try:
-    from ase import Atoms
-    #from ase.parallel import paropen
-    from ase.units import GPa
-except ImportError:
-    print "NOTE: ASE is not installed. To use Structopt lammps.py, ASE must be installed."
+from ase import Atoms
+from ase.units import GPa
+
 __all__ = ['LAMMPS', 'write_lammps_data']
 
 # "End mark" used to indicate that the calculation is done
