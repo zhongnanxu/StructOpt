@@ -134,9 +134,9 @@ def rotct_rand(ind1, ind2, Optimizer):
         # DEBUG: Check structure of atoms exchanged
         for sym, c, m, u in Optimizer.atomlist:
             nc = len([atm for atm in indi1 if atm.symbol == sym])
-            Optimizer.output.write('CX RANDROTCT: Individual 1 contains {} {} atoms\n'.format(repr(nc), repr(sym))
+            Optimizer.output.write('CX RANDROTCT: Individual 1 contains {} {} atoms\n'.format(repr(nc), repr(sym)))
             nc = len([atm for atm in indi2 if atm.symbol == sym])
-            Optimizer.output.write('CX RANDROTCT: Individual 2 contains {} {} atoms\n'.format(repr(nc), repr(sym))
+            Optimizer.output.write('CX RANDROTCT: Individual 2 contains {} {} atoms\n'.format(repr(nc), repr(sym)))
 
         if Optimizer.forcing != 'Concentration':
             for i in range(len(Optimizer.atomlist)):
@@ -168,9 +168,9 @@ def rotct_rand(ind1, ind2, Optimizer):
         solid2.extend(ind2.bulki)
         for sym, c, m, u in Optimizer.atomlist:
             nc = len([atm for atm in solid1 if atm.symbol == sym])
-            Optimizer.output.write('CX RANDROTCT: Defect 1 configuration contains {} {} atoms\n'.format(repr(nc), repr(sym))
+            Optimizer.output.write('CX RANDROTCT: Defect 1 configuration contains {} {} atoms\n'.format(repr(nc), repr(sym)))
             nc = len([atm for atm in solid2 if atm.symbol == sym])
-            Optimizer.output.write('CX RANDROTCT: Defect 2 configuration contains {} {} atoms\n'.format(repr(nc), repr(sym))
+            Optimizer.output.write('CX RANDROTCT: Defect 2 configuration contains {} {} atoms\n'.format(repr(nc), repr(sym)))
     if debug: Optimizer.output.flush()
     # pdb.set_trace()
     ind1[0] = indi1

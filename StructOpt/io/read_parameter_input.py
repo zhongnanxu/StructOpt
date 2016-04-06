@@ -156,7 +156,7 @@ def read_parameter_input(input, logger):
         parameters['restart_files'] = True
         if rank==0:
             logger.info('Setting restart_files = {0}'.format(parameters['restart_files']))
-
+            
     # Parameters for post-processing
     if 'lattice_concentration' not in parameters:
         parameters['lattice_concentration'] = False
