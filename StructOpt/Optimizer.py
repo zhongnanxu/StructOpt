@@ -234,9 +234,10 @@ class Optimizer():
         self.output.write('Mutations:\n')
 
         i = 0
+        self.output.write('{}\n'.format(mutslist))
         for opt in self.mutation_options:
-            self.output.write('    Attempted {} : {}\n'.format(repr(mutslist[i][0])))
-            self.output.write('    Successful {} : {}\n'.format(repr(mutslist[i][1])))
+            self.output.write('    Attempted {} : {}\n'.format(opt, repr(mutslist[i][0])))
+            self.output.write('    Successful {} : {}\n'.format(opt, repr(mutslist[i][1])))
             i += 1
         if self.best_inds_list:
             BESTS = tools.BestInds(pop, self.BESTS, self, writefile = True)
