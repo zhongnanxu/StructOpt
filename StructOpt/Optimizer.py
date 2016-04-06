@@ -20,6 +20,7 @@ class Optimizer():
 
 
     def __init__(self, input_filename):
+        self.logger = logging.getLogger('default')
         for k, v in StructOpt.parameters.items():
             setattr(self, k, v)
 
