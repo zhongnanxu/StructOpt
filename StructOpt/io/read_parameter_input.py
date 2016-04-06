@@ -5,7 +5,7 @@ import time
 import numpy
 import logging
 import json
-from StructOpt.io.loggerUtils import initialize_logger
+from StructOpt.io.logger_utils import initialize_logger
 from StructOpt.tools.check_atomlist_concentration import check_atomlist_concentration
 import pdb
 
