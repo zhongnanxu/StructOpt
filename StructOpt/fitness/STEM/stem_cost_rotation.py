@@ -1,5 +1,5 @@
 from StructOpt.tools import eval_energy
-from StructOpt.inp_out.write_xyz import write_xyz
+from StructOpt.io.write_xyz import write_xyz
 import logging
 import math
 import os
@@ -51,7 +51,7 @@ def stem_cost_rotation(indiv, Optimizer):
     if math.isnan(fit):
         logger.warn('Found NAN energy structure HI={0}'.format(indiv.history_index))
         indiv.energy = 10000
-    
+
     #Calculate the chisq
     chisq0 = Optimizer.stemcalc.run(indiv[0])
     #Identify the 12 <110> directions

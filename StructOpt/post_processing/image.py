@@ -1,10 +1,9 @@
 import matplotlib
-matplotlib.use('Agg')
 from matplotlib import pyplot as plt
 from matplotlib import ticker
 from StructOpt.tools.StemCalc import ConvStem
 from StructOpt import Optimizer
-from StructOpt import inp_out
+from StructOpt import io
 import numpy
 import ast
 fp = open('structoptinput.txt','r')
@@ -14,14 +13,14 @@ for i in range(len(data)):
 data=' '.join(data)
 data='{'+data+'}'
 parameters = ast.literal_eval(data)
-Au=inp_out.read_xyz('STEM_ref.xyz',0)
+Au=io.read_xyz('STEM_ref.xyz',0)
 
 fileobj = open(parameters['psf'],'r')
 lines = fileobj.readlines()
 nk = len(lines)
 parameters['pixels'] = nk
 parameters['psf'] = numpy.empty([nk,nk],dtype=float)
-for x in range(0,nk):   
+for x in range(0,nk):
     parameters['psf'][x] = lines[x].split()
 A = ConvStem(parameters=parameters,calc_exp=False)
 imAu = A.get_image(parameters['psf'], Au, parameters['slice_size'], parameters['pixels'])

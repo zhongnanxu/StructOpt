@@ -1,10 +1,10 @@
-from StructOpt.inp_out.read_xyz import read_xyz
-from StructOpt.inp_out.write_xyz import write_xyz
+from StructOpt.io.read_xyz import read_xyz
+from StructOpt.io.write_xyz import write_xyz
 from ase import Atom,Atoms
 from StructOpt.tools.lammps import LAMMPS
 
 # Set up calculator
-parcoff = '* * SiC.edip C Si' 
+parcoff = '* * SiC.edip C Si'
 pair_coeff = [parcoff]
 mass = ['1 12.011','2 28.0855']
 parameters = { 'pair_style' : 'edip', 'pair_coeff' : pair_coeff , 'mass' : mass, 'newton': 'on' }

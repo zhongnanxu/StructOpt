@@ -8,12 +8,12 @@ def cxtpc(ind1, ind2, Optimizer):
     Maintains total number of atoms
     Random clusters not necessarily geometry based
     """
+
     if 'CX' in Optimizer.debug:
         debug = True
     else:
         debug = False
-    Optimizer.output.write('Two Pt Crystal-Fraction Cx between individual '
-        +repr(ind1.index)+' and individual '+repr(ind2.index)+'\n')
+    Optimizer.output.write('Two Pt Crystal-Fraction Cx between individual {} and individual {}\n'.format(repr(ind1.index), repr(ind2.index)))
     indi1 = ind1[0]
     indi2 = ind2[0]
     pos1 = indi1.get_scaled_positions()
@@ -33,7 +33,7 @@ def cxtpc(ind1, ind2, Optimizer):
     indi1.set_scaled_positions(posi1)
     indi2.set_scaled_positions(posi2)
     if debug:
-        print 'DEBUG CX: CXPT1 = ',cxpoint1,'CXPT2 = ',cxpoint2
+        print('DEBUG CX: CXPT1 = {};  CXPT2 = '.format(cxpoint1, cxpoint2))
     ind1[0] = indi1
     ind2[0] = indi2
     return ind1, ind2

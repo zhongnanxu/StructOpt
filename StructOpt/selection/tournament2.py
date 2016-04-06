@@ -2,8 +2,8 @@ import random
 
 def tournament2(pop, nkeep, Optimizer):
     """Selection function to order and choose individuals based on Tournament schemes
-    Function will allow repeats but not back to back
-    """
+    Function will allow repeats but not back to back"""
+
     tournsize = Optimizer.tournsize
     newpop = []
     prevind = None
@@ -17,4 +17,5 @@ def tournament2(pop, nkeep, Optimizer):
         if select[0].index != prevind:
             newpop.append(select[0])
             prevind = select[0].index
+
     return newpop

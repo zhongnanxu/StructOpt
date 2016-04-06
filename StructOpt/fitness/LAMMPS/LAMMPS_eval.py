@@ -6,7 +6,7 @@ try:
     from ase.calculators.neighborlist import NeighborList
 except ImportError:
     pass
-from StructOpt.inp_out.write_xyz import write_xyz
+from StructOpt.io.write_xyz import write_xyz
 from StructOpt.fingerprinting import get_fingerprint
 from StructOpt.tools.lammps import LAMMPS
 from StructOpt.tools.setup_energy_calculator import setup_energy_calculator
@@ -30,12 +30,11 @@ import random
 
 class LAMMPS_eval(object):
     def __init__(self):
-        
+
         self.args = self.read_inputs()
         for k,v in self.args.items():
             setattr(self,k,v)
 
-            
     def read_inputs(self):
         args = dict()
         #args['parallel'] = True
@@ -45,10 +44,10 @@ class LAMMPS_eval(object):
     def evaluate_fitness(self, Optimizer, individ, relax=False):
         comm = MPI.COMM_WORLD
         rank = MPI.COMM_WORLD.Get_rank()
-        
+
         if rank==0:
             ntimes=int(math.ceil(1.*len(individ)/comm.Get_size()))
-            
+
             nadd=int(ntimes*comm.Get_size()-len(individ))
             maplist=[[] for n in range(ntimes)]
             strt=0
@@ -80,7 +79,7 @@ class LAMMPS_eval(object):
             if rank == 0:
                 outs.extend(outt)
         return outs
-    
+
     def evaluate_indiv(self, Optimizer, individ, rank, relax):
 
         logger = logging.getLogger(Optimizer.loggername)
@@ -90,19 +89,19 @@ class LAMMPS_eval(object):
         else:
             logger.info('Received individual HI = {0} for LAMMPS energy evaluation'.format(
             individ.history_index))
-        
+
         STR='----Individual ' + str(individ.history_index)+ ' Optimization----\n'
         indiv=individ[0]
         if 'EE' in Optimizer.debug:
             debug = True
         else:
             debug = False
-        if debug: 
+        if debug:
             write_xyz(Optimizer.debugfile,indiv,'Received by evaluate_fitness')
             Optimizer.debugfile.flush()
             logger.debug('Writing received individual to debug file')
-        
-        
+
+
         totalsol = compose_structure(Optimizer,individ)
 
         # Set calculator to use to get forces/energies
@@ -127,10 +126,10 @@ class LAMMPS_eval(object):
             calc=Optimizer.calc
         totalsol.set_calculator(calc)
         totalsol.set_pbc(True)
-        
+
         # Perform Energy Minimization
         if not Optimizer.parallel:
-            if debug: 
+            if debug:
                 write_xyz(Optimizer.debugfile,totalsol,'Individual sent to Energy Minimizer')
                 logger.debug('Writing structure sent to energy minimizer')
         try:
@@ -158,10 +157,10 @@ class LAMMPS_eval(object):
                 write_xyz(Optimizer.debugfile,totalsol,'Individual after Energy Minimization')
                 Optimizer.debugfile.flush()
                 logger.debug('Writing structure received from energy minimizer')
-       
-        
+
+
         individ, bul = decompose_structure(Optimizer,totalsol,individ)
-        
+
         # Add concentration energy dependence
         if Optimizer.forcing=='energy_bias':
             if debug:
@@ -198,7 +197,7 @@ class LAMMPS_eval(object):
             if debug:
                 logger.info('Identifying fingerprint of new structure')
             individ.fingerprint=get_fingerprint(Optimizer,individ,Optimizer.fpbin,Optimizer.fpcutoff)
-        
+
         calc.clean()
         if relax:
             signal = 'Relaxed structure of individual {0} on {1}\n'.format(individ.index,rank)
@@ -209,7 +208,7 @@ class LAMMPS_eval(object):
         #self.fitness = energy
         if Optimizer.structure == 'Defect' or Optimizer.structure=='Surface':
             individ.bulki = bul
-       
+
 
         if relax:
             return individ, signal
@@ -218,7 +217,7 @@ class LAMMPS_eval(object):
 
     def setup_lammps(self, Optimizer, args, relax):
         return setup_energy_calculator(Optimizer,'LAMMPS',relax)
-        
+
 
     def update_parameters(self, **kwargs):
         # TODO
@@ -259,7 +258,7 @@ class LAMMPS_eval(object):
             individ.hpealist = hpealist
             individ.lpealist = lpealist
         return
-    
+
 
     def run_energy_eval(self, totalsol, fx_region=False, STR='', static_calc=None):
         totcop = totalsol.copy()

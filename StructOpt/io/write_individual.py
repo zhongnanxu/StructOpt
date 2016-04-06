@@ -1,4 +1,4 @@
-from StructOpt.inp_out.write_xyz import write_xyz
+from StructOpt.io.write_xyz import write_xyz
 
 def write_individual(individ, indivfile):
     """Function to write the data of an individual class object to a flat file

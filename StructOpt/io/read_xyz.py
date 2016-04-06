@@ -1,7 +1,5 @@
-try:
-    from ase import Atom, Atoms
-except ImportError:
-    print "NOTE: ASE is not installed. To use Structopt read_xyz.py, ASE must be installed."
+from ase import Atom, Atoms
+
 
 def read_xyz(fileobj,n=-1,data=False):
     """

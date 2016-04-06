@@ -2,9 +2,9 @@ import random
 from StructOpt.tools import get_best
 
 def rank(pop, nkeep, Optimizer):
-    """Selection function that chooses structures to survive and orders them based on their relative ranking
-    """
-    pop = get_best(pop,len(pop))
+    """Selection function that chooses structures to survive and orders them based on their relative ranking"""
+
+    pop = get_best(pop, len(pop))
     newpop = []
     prob = []
     cumprob = []
@@ -12,6 +12,7 @@ def rank(pop, nkeep, Optimizer):
         rankprob = float((nkeep-i)) / float(sum(range(nkeep+1)))
         prob.append(rankprob)
         cumprob.append(sum(prob))
+
     prevcounter = None
     for i in range(nkeep):
         rand = random.random()
@@ -28,4 +29,5 @@ def rank(pop, nkeep, Optimizer):
         else:
             newpop.append(pop[counter])
             prevcounter = counter
+
     return newpop

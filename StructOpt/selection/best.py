@@ -10,9 +10,10 @@ def best(pop, nkeep, Optimizer=None):
     Outputs:
         npop = population with desired number of individuals
     """
+
     if nkeep <= len(pop):
-        npop = get_best(pop,nkeep)
+        npop = get_best(pop, nkeep)
     else:
-        print 'WARNING: selection.best nkeep > pop. Returning pop'
+        print('WARNING: selection.best nkeep > pop. Returning pop')
         npop = pop
     return npop

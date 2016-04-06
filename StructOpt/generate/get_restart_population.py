@@ -1,4 +1,4 @@
-from StructOpt.inp_out import read_xyz
+from StructOpt.io import read_xyz
 from StructOpt.generate.surface import get_surface_restart_indiv
 from StructOpt.generate.defect import get_defect_restart_indiv
 from StructOpt.generate.crystal import get_crystal_restart_indiv
@@ -44,8 +44,8 @@ def get_restart_population(Optimizer):
                 indiv.set_cell([Optimizer.size,Optimizer.size,Optimizer.size])
                 individ = Individual(indiv)
             individ.index = index1
-            if Optimizer.genealogy: 
-            	individ.history_index = repr(index1)
+            if Optimizer.genealogy:
+                individ.history_index = repr(index1)
             pop.append(individ)
             index1 = index1+1
     if len(pop) == 0:

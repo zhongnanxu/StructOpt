@@ -5,7 +5,7 @@ import time
 import numpy
 import logging
 import json
-from StructOpt.inp_out.loggerUtils import initialize_logger
+from StructOpt.io.loggerUtils import initialize_logger
 from StructOpt.tools.check_atomlist_concentration import check_atomlist_concentration
 import pdb
 try:
@@ -14,7 +14,7 @@ except:
     pass
 
 def read_parameter_input(input, logger):
-    """Function to convert input string, file, or dictionary to a dictionary to contain 
+    """Function to convert input string, file, or dictionary to a dictionary to contain
         the parameters for use by the optimizer class.
         input:
             input : Can be dictionary, string, or filename
@@ -46,7 +46,7 @@ def read_parameter_input(input, logger):
     else:
         parameters['loggername'] = None
         logger = dummy_logger_no_write()
-    
+
     if 'modules' not in parameters:
         logger.warning('modules not set.  Default values set to LAMMPS.\n')
         parameters['modules'] = ['LAMMPS']
@@ -119,7 +119,7 @@ def read_parameter_input(input, logger):
         parameters['nindiv'] = nindiv
         if rank==0:
             logger.info('Setting number of individuals in population (nindiv) = {0}'.format(parameters['nindiv'])) 
-    
+
     #Parameters for output
     if 'genealogy' not in parameters:
         parameters['genealogy'] = genealogy
@@ -164,7 +164,7 @@ def read_parameter_input(input, logger):
         parameters['genealogytree'] = False
         if rank==0:
             logger.info('Setting genealogytree = {0}'.format(parameters['genealogytree']))
-    
+
     #Parameters for general algorithm
     if 'seed' not in parameters:
         parameters['seed']=random.randint(0,10)
@@ -179,7 +179,7 @@ def read_parameter_input(input, logger):
         parameters['debug'] = ['None']
         if rank==0:
             logger.info('Setting debug = {0}'.format(parameters['debug']))
-        if 'None' not in parameters['debug']: 
+        if 'None' not in parameters['debug']:
             print '***** DEBUGGING RUN *****'
     if 'algorithm_type' not in parameters:
         parameters['algorithm_type'] = algtype
@@ -227,7 +227,7 @@ def read_parameter_input(input, logger):
         if rank==0:
             if parameters['restart']:
                 logger.info('Setting restart_ints = {0}'.format(parameters['restart_ints']))
-    
+
     # Parameters to generate the population and individual
     if 'r_ab' not in parameters:
         parameters['r_ab'] = 2.5
@@ -308,7 +308,7 @@ def read_parameter_input(input, logger):
     if 'surfacecell' not in parameters:
         parameters['surfacecell'] = None
     if 'surftopthick' not in parameters:
-        parameters['surftopthick'] = 0        
+        parameters['surftopthick'] = 0
     if 'cell_shape_options' not in parameters:
         parameters['cell_shape_options'] = ['cubic', 'hexagonal', 'triclinic', \
         'monoclinic', 'orthorhombic', 'tetragonal']
@@ -319,13 +319,13 @@ def read_parameter_input(input, logger):
         parameters['alloy'] = True
         if rank==0:
             logger.info('Setting alloy = {0}'.format(parameters['alloy']))
-    
+
     if 'large_box_size' not in parameters:
         parameters['large_box_size']=500.0
         if rank == 0:
             if parameters['structure']=='Cluster':
                 logger.info('Setting large_box_size to {0}'.format(parameters['large_box_size']))
-    
+
     #Parameters for Crossovers
     if 'cxpb' not in parameters:
         parameters['cxpb'] = cxpb
@@ -339,7 +339,7 @@ def read_parameter_input(input, logger):
         parameters['selection_scheme'] = 'tournament2'
         if rank == 0:
             logger.info('Setting selection_scheme = {0}'.format(parameters['selection_scheme']))
-    
+
     #Parameters for Mutations
     if 'mutpb' not in parameters:
         parameters['mutpb'] = mutpb
@@ -403,13 +403,13 @@ def read_parameter_input(input, logger):
         parameters['isolate_mutation'] = False
         if rank == 0:
             logger.info('Setting isolate_mutation flag = {0}'.format(parameters['isolate_mutation']))
-    
+
     #Parameters for Selection
     if 'energy_cutoff_factor' not in parameters:
         parameters['energy_cutoff_factor'] = 10.0
         if rank ==0:
             logger.info('Setting energy_cutoff_factor = {0}'.format(parameters['energy_cutoff_factor']))
-   
+
     """
     stem_parameters_keys = ['psf_file','stem_ref','electron_energy','spherical_aberration','defocus','aperture_semiangle','source_size','slice_size','chromatic_aberration_coefficient','delta_E','aber','scale_factor']
     if 'stem' in parameters['fitness_scheme']:
@@ -419,7 +419,7 @@ def read_parameter_input(input, logger):
                 logger.critical('Must provide stem_parameters %s for STEM_Cost calculation'%one)
                 raise RuntimeError("STEM parameters not specified.  Cannot simulate image files")
             else:
-                stemparams[one] = parameters[one] 
+                stemparams[one] = parameters[one]
         if 'fitting_coeff' not in parameters:
             parameters['fitting_coeff'] = [1]
         else:
@@ -471,7 +471,7 @@ def read_parameter_input(input, logger):
     else:
         parameters['stemcalc'] = None
     """
-    
+
     if 'constrain_swaps' not in parameters:
         if 'IntSwap' in parameters['mutation_options']:
             parameters['swaplist'] = None
@@ -538,7 +538,7 @@ def read_parameter_input(input, logger):
         parameters['demin'] = 0.005
         if rank == 0:
             logger.info('Setting cutoff convergence energy (demin) = {0}'.format(parameters['demin']))
-    
+
     return parameters
 
 class dummy_logger():

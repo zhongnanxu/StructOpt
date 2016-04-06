@@ -1,5 +1,5 @@
 from ase import Atoms, Atom
-from StructOpt.inp_out.write_xyz import write_xyz
+from StructOpt.io.write_xyz import write_xyz
 
 def write_pop(Optimizer,pop):
     """
@@ -16,7 +16,7 @@ def write_pop(Optimizer,pop):
         update_outfile(ind, Optimizer.output)
         if Optimizer.genealogy:
             update_genealogy(ind, Optimizer.Genealogyfile)
-        if Optimizer.swaplist: 
+        if Optimizer.swaplist:
             swaplist_check(ind,Optimizer.structure,Optimizer.output)
         if Optimizer.indiv_defect_write:
             write_xyz(Optimizer.ifiles[ind.index],ind[0],ind.energy)
@@ -43,7 +43,7 @@ def update_structsumfile(ind, structsumfile):
     structsumfile.write('    Pressure = {0}\n'.format(ind.pressure))
     structsumfile.write('    Genealogy = {0}\n'.format(ind.history_index))
     structsumfile.write('    Swaplist = {0}\n'.format(ind.swaplist))
-    
+
 def update_structfile(ind, structfile, Optimizer):
     if Optimizer.structure == 'Defect' or Optimizer.structure == 'Surface':
         sols = Atoms()

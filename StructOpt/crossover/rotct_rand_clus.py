@@ -2,7 +2,7 @@ import random
 import numpy
 from ase import Atom, Atoms
 from StructOpt.tools.find_defects import find_defects
-from StructOpt.inp_out import write_xyz
+from StructOpt.io import write_xyz
 
 def rotct_rand_clus(ind1, ind2, Optimizer):
     """Rotate atoms cut and splice
@@ -26,7 +26,7 @@ def rotct_rand_clus(ind1, ind2, Optimizer):
 
         indi1c,indi1b,vacant1,swap1,stro1 = find_defects(indi1,Optimizer.solidbulk,0)
         indi2c,indi2b,vacant2,swap2,stro2 = find_defects(indi2,Optimizer.solidbulk,0)
-    
+
         if len(indi1c) !=0 and len(indi2c) != 0:
             #Translate individuals so COM is at (0,0,0)
             com1 = indi1c.get_center_of_mass()
@@ -55,7 +55,7 @@ def rotct_rand_clus(ind1, ind2, Optimizer):
                     n+=1
                     indi1c.rotate(rax,a=-1*rang,center=rpos, rotate_cell=False)
             indi2c.rotate(rax,a=rang,center=rpos,rotate_cell=False)
-            if debug: 
+            if debug:
                 print 'Group1 size = ', len(group1)
                 print 'Position = ', rpos
                 print 'Angle = ', rang
@@ -138,7 +138,7 @@ def rotct_rand_clus(ind1, ind2, Optimizer):
                 indi2.extend(indi2b)
 
                 #DEBUG: Write crossover to file
-                if debug: 
+                if debug:
                     write_xyz(Optimizer.debugfile, group1,'group1')
                     write_xyz(Optimizer.debugfile, other1,'other1')
                     write_xyz(Optimizer.debugfile, group2,'group2')
@@ -165,7 +165,7 @@ def rotct_rand_clus(ind1, ind2, Optimizer):
                         else:
                             if len(atms2)==0:
                                 indi2.append(atms1[random.randint(0,len(atms1)-1)])
-                                indi2.pop(random.randint(0,len(indi2)-2))	
+                                indi2.pop(random.randint(0,len(indi2)-2))
 
             #DEBUG: Check structure and number of atoms in crystal
             if Optimizer.structure=='Defect':

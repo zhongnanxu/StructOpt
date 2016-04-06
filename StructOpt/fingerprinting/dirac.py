@@ -9,12 +9,13 @@ def dirac(x,a=0,sig=None):
     Outputs:
         out = value of dirac function evaluated at x
     """
-    if sig==None:
-        if x != a:
-            out=0
-        else:
-            out=1
-    else:
-        out=1/(sig*math.pi**0.5)*math.exp(-(x-a)**2/sig**2)
-    return out
 
+    if sig == None:
+        if x != a:
+            out = 0
+        else:
+            out = 1
+    else:
+        out = 1 / (sig*math.pi**0.5) * math.exp(-(x-a)**2 / sig**2)
+
+    return out
