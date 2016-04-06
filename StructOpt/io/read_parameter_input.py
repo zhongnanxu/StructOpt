@@ -152,7 +152,11 @@ def read_parameter_input(input, logger):
             logger.info('Setting vacancy_output = {0}'.format(parameters['vacancy_output']))
     if 'restart_optimizer' not in parameters:
         parameters['restart_optimizer'] = False
-        
+    if 'restart_files' not in parameters:
+        parameters['restart_files'] = True
+        if rank==0:
+            logger.info('Setting restart_files = {0}'.format(parameters['restart_files']))
+
     # Parameters for post-processing
     if 'lattice_concentration' not in parameters:
         parameters['lattice_concentration'] = False
