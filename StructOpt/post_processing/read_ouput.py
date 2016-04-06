@@ -67,7 +67,7 @@ def read_output(folder,genealogytree=False,natoms=None, loggername=None):
             plt.ylabel('Total Energy, eV')
             plt.title('Energy Evolution')
             plt.xlim([0,len(generation)])
-            plt.savefig('Plot-{0}.png'.format(filename))
+            plt.savefig('Plot-{0}.png'.format(filename[:-4]))
             indperatom=[]
             if natoms !=None:
                 if loggername:
@@ -90,7 +90,7 @@ def read_output(folder,genealogytree=False,natoms=None, loggername=None):
                 plt.ylabel('Energy/atom, eV/atom')
                 plt.title('Energy Evolution')
                 plt.xlim([0,len(generation)])
-                plt.savefig('Plot-Peratom-{0}.png'.format(filename))
+                plt.savefig('Plot-Peratom-{0}.png'.format(filename[:-4]))
         if ('Summary' in filename) and not ('png' in filename): #TTM 20151030 do not parse plot graphics if they happened to have been created first
             #print 'HKK :: filename' : filename
             if 'StructureSummary' not in filename:
@@ -106,32 +106,30 @@ def read_output(folder,genealogytree=False,natoms=None, loggername=None):
                 labels=f.readline().split()
                 data=dict((lab,[]) for lab in labels)
                 for line in f.readlines():
-                    i=0
-                    for value in line.split(' ',6):
+                    for i, value in enumerate(line.split(None, 6)):
                         #print 'HKK ::' , value
-                        if i <6:
+                        if i < 6:
                             data[labels[i]].append(float(value))
                         else:
-                            sp=value.split("'")
-                            data[labels[i]].append(sp[1])
-                        i+=1
+                            sp=value.strip()
+                            data[labels[i]].append(sp)
     
                 f.close()
-                yl=[data['Fitmedium'][one]-data['Fitmin'][one] for one in range(len(data['Generation']))]
-                yh=[data['Fitmax'][one]-data['Fitmedium'][one] for one in range(len(data['Generation']))]
+                yl=[data['Fitmedium'][one]-data['Fitmin'][one] for one in range(len(data['Gen']))]
+                yh=[data['Fitmax'][one]-data['Fitmedium'][one] for one in range(len(data['Gen']))]
                 fig=plt.figure()
                 ax1=fig.add_subplot(111)
-                ax1.errorbar(data['Generation'],data['Fitmedium'],xerr=0,yerr=[yl,yh])
-                plt.xlabel('Generation')
+                ax1.errorbar(data['Gen'],data['Fitmedium'],xerr=0,yerr=[yl,yh])
+                plt.xlabel('Gen')
                 plt.ylabel('Fitness')
-                plt.xlim([1,len(data['Generation'])+1])
+                plt.xlim([1,len(data['Gen'])+1])
                 plt.title('Fitness vs. Generation (Medium, Min, Max)')
                 plt.ylim([min(data['Fitmin'])-1.0,max(data['Fitmin'])+10.0])
-                plt.savefig('Plot-{0}.png'.format(filename))
-                srtsl=data['time'][0].split()
+                plt.savefig('Plot-{0}.png'.format(filename[:-4]))
+                srtsl=data['Time'][0].split()
                 strtime=[float(one) for one in srtsl[3].split(':')]
                 tclk=[0.0]
-                for one in data['time']:
+                for one in data['Time']:
                     stl=one.split()
                     otime=[float(two) for two in stl[3].split(':')]
                     diff=[otime[i]-strtime[i] for i in range(len(otime))]
@@ -150,11 +148,11 @@ def read_output(folder,genealogytree=False,natoms=None, loggername=None):
                 ax1.plot(tclk)
                 plt.xlabel('Generation')
                 plt.ylabel('CPU Time (s)')
-                plt.xlim([1,len(data['Generation'])+1])
+                plt.xlim([1,len(data['Gen'])+1])
                 plt.title('Processing Time per Generation')
                 totaltime=sum(tclk)/3600.0
                 plt.text(0.5, 0.95,'Total Time for run = '+'%.3f' % round(totaltime, 3)+'hours',horizontalalignment='center',verticalalignment='top',transform = ax1.transAxes)
-                plt.savefig('Plot-time-{0}.png'.format(filename))
+                plt.savefig('Plot-time-{0}.png'.format(filename[:-4]))
         if 'FingerprintMin' in filename:
             if loggername:
                 logger.info('Plotting minimum fingerprint functions by generation')
@@ -189,7 +187,7 @@ def read_output(folder,genealogytree=False,natoms=None, loggername=None):
                 plt.text(0.5, 0.95,'Structure Energy = '+repr(enfp[i]),horizontalalignment='center',verticalalignment='top',transform = ax.transAxes)
                 if max(fpmin[i])>100:
                     plt.ylim([0,100])
-                plt.savefig('Plot-FPMin-{0}-gen{1}.png'.format(filename,i))
+                plt.savefig('Plot-FPMin-{0}-gen{1}.png'.format(filename[:-4],i))
         if 'Fingerprints' in filename:
             if loggername:
                 logger.info('Plotting fingerprint distance vs. energy by generation')
@@ -221,7 +219,7 @@ def read_output(folder,genealogytree=False,natoms=None, loggername=None):
                 plt.xlabel('Fingerprint Cosine Distance from Minimum Energy Structure')
                 plt.ylabel('Energy Difference, eV')
                 plt.title('Fingerprint Distance vs. Energy, Generation={0}'.format(i))
-                plt.savefig('Plot-FpDist-{0}-gen{1}.png'.format(filename,i))
+                plt.savefig('Plot-FpDist-{0}-gen{1}.png'.format(filename[:-4],i))
         if ('Genealogy' in filename) and (not 'png' in filename): #TTM do not try to process any Genealogy*.png plots
             if loggername:
                 logger.info('Plotting bar plot of mutation success')
@@ -256,7 +254,7 @@ def read_output(folder,genealogytree=False,natoms=None, loggername=None):
             plt.ylabel('Successful Mutations')
             ax1.legend(loc='upper left')
             plt.title('Successful Mutations by Generation')
-            plt.savefig('Plot-SuccessfulMutations-{0}.png'.format(filename))
+            plt.savefig('Plot-SuccessfulMutations-{0}.png'.format(filename[:-4]))
             if genealogytree:
                 if loggername:
                     logger.info('Plotting genealogy tree')
@@ -275,7 +273,7 @@ def read_output(folder,genealogytree=False,natoms=None, loggername=None):
             plt.xlabel('Rank')
             plt.ylabel('Total Energy, eV')
             plt.title('Energy of Best Structures in Optimization')
-            plt.savefig('Plot-{0}.png'.format(filename))
+            plt.savefig('Plot-{0}.png'.format(filename[:-4]))
         else:
             pass
 
