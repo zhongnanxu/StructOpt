@@ -132,6 +132,12 @@ def set_default_parameters(parameters):
         logger.info('Setting vacancy_output = {0}'.format(parameters['vacancy_output']))
     if 'restart_optimizer' not in parameters:
         parameters['restart_optimizer'] = False
+    if 'restart_files' not in parameters:
+        parameters['restart_files'] = True
+        logger.info('Setting restart_files = {0}'.format(parameters['restart_files']))
+    if 'indiv_write' not in parameters:
+        parameters['indiv_write'] = 'all'
+        logger.info('Setting indiv_write = {0}'.format(parameters['indiv_write']))
 
     # Parameters for post-processing
     if 'lattice_concentration' not in parameters:

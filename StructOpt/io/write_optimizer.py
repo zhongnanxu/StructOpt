@@ -238,7 +238,7 @@ def write_optimizer(Optimizer, optfile, restart=True):
         rank = MPI.COMM_WORLD.Get_rank()
     except:
         rank = 0
-    if (len(Optimizer.population) > 0):
+    if (len(Optimizer.population) > 0 and Optimizer.restart_files == True):
         if isinstance(Optimizer.population[0], str):
             optfile.write("'population':{0},\n".format(Optimizer.population))
         else:
@@ -254,7 +254,7 @@ def write_optimizer(Optimizer, optfile, restart=True):
             optfile.write("'population':{0},\n".format(popfiles))
     else:
         optfile.write("'population':{0},\n".format([]))
-    if (len(Optimizer.BESTS) > 0):
+    if (len(Optimizer.BESTS) > 0 and Optimizer.restart_files == True):
         if isinstance(Optimizer.population[0], str):
             optfile.write("'BESTS':{0}".format(Optimizer.BESTS))
         else:
