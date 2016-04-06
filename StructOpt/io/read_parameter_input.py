@@ -14,27 +14,29 @@ except:
     pass
 
 def read_parameter_input(input, logger):
-    """Function to convert input string, file, or dictionary to a dictionary to contain
-        the parameters for use by the optimizer class.
+    """Function to convert input string, file, or dictionary to a dictionary 
+    to contain the parameters for use by the optimizer class.
         input:
             input : Can be dictionary, string, or filename
             logfile : Name of logfile to write to. Default is None
         output:
-            parameters : dictionary for defining parameters for optimizer with defaults
+            parameters : dictionary of parameters for optimizer with defaults
     """
+    
+    # Read and store the input
     parameters = None
     if isinstance(input,dict):
-        # If supplied input is already a dictionary set parameters equal to that dictionary
-        parameters=input
+        parameters = input
+    elif os.path.exists(input):
+        parameters = json.load(open(input))
     else:
-        #Check to see if input is a filename
-        if os.path.exists(input):
-            parameters = json.load(open(input))
-            # parameters = eval("%s"%open(input).read()) # issues with True/true
+        raise IOError('Error in input or input file')
+        
+    # Set default parameters
     if 'parallel' not in parameters:
         parameters['parallel'] = False
     if 'filename' not in parameters:
-        parameters['filename']='Output'
+        parameters['filename'] = 'Output'
     try:
         rank = MPI.COMM_WORLD.Get_rank()
     except:
@@ -46,7 +48,6 @@ def read_parameter_input(input, logger):
     else:
         parameters['loggername'] = None
         logger = dummy_logger_no_write()
-
     if 'modules' not in parameters:
         logger.warning('modules not set.  Default values set to LAMMPS.\n')
         parameters['modules'] = ['LAMMPS']
@@ -60,7 +61,7 @@ def read_parameter_input(input, logger):
     if 'weights' not in parameters:
         parameters['weights'] = [1.0 for m in range(len(parameters['modules']))]
 
-    if ('atomlist' not in parameters):
+    if 'atomlist' not in parameters:
         #Stop program if atom list parameter not in input
         logger.critical("Input file/string/dictionary must include an atomlist defined as 'atomlist':[('Xx',Concentration,Mass,Chemical Potential)]")
         logger.critical("Current parameters include:\n" + repr(parameters))
@@ -120,7 +121,7 @@ def read_parameter_input(input, logger):
         if rank==0:
             logger.info('Setting number of individuals in population (nindiv) = {0}'.format(parameters['nindiv'])) 
 
-    #Parameters for output
+    # Parameters for output
     if 'genealogy' not in parameters:
         parameters['genealogy'] = genealogy
         if rank==0:
@@ -151,7 +152,8 @@ def read_parameter_input(input, logger):
             logger.info('Setting vacancy_output = {0}'.format(parameters['vacancy_output']))
     if 'restart_optimizer' not in parameters:
         parameters['restart_optimizer'] = False
-    #Parameters for post-processing
+        
+    # Parameters for post-processing
     if 'lattice_concentration' not in parameters:
         parameters['lattice_concentration'] = False
         if rank==0:
@@ -165,7 +167,7 @@ def read_parameter_input(input, logger):
         if rank==0:
             logger.info('Setting genealogytree = {0}'.format(parameters['genealogytree']))
 
-    #Parameters for general algorithm
+    # Parameters for general algorithm
     if 'seed' not in parameters:
         parameters['seed']=random.randint(0,10)
         if rank==0:
@@ -326,7 +328,7 @@ def read_parameter_input(input, logger):
             if parameters['structure']=='Cluster':
                 logger.info('Setting large_box_size to {0}'.format(parameters['large_box_size']))
 
-    #Parameters for Crossovers
+    # Parameters for Crossovers
     if 'cxpb' not in parameters:
         parameters['cxpb'] = cxpb
         if rank == 0:
@@ -340,7 +342,7 @@ def read_parameter_input(input, logger):
         if rank == 0:
             logger.info('Setting selection_scheme = {0}'.format(parameters['selection_scheme']))
 
-    #Parameters for Mutations
+    # Parameters for Mutations
     if 'mutpb' not in parameters:
         parameters['mutpb'] = mutpb
         if rank == 0:
@@ -404,7 +406,7 @@ def read_parameter_input(input, logger):
         if rank == 0:
             logger.info('Setting isolate_mutation flag = {0}'.format(parameters['isolate_mutation']))
 
-    #Parameters for Selection
+    # Parameters for Selection
     if 'energy_cutoff_factor' not in parameters:
         parameters['energy_cutoff_factor'] = 10.0
         if rank ==0:
@@ -501,7 +503,8 @@ def read_parameter_input(input, logger):
             logger.info('Setting metropolis_temp = {0}'.format(parameters['metropolis_temp']))
     if 'mark' not in parameters:
         parameters['mark'] = None
-    #Parameters for Convergence
+        
+    # Parameters for Convergence
     if 'convergence_scheme' not in parameters:
         parameters['convergence_scheme'] = 'max_gen'
         if rank ==0:
