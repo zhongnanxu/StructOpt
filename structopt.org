@@ -331,13 +331,15 @@ print io.read_parameter_input('tests/maldonis-test/structopt_inp.json', True)
 #+BEGIN_SRC python
 from structopt import *
 from StructOpt import Optimizer
-import StructOpt.fitness.LAMMPS.LAMMPS_eval
-import StructOpt.fitness.STEM.STEM_eval
+from importlib import import_module
+
+#import_module('StructOpt.fitness.LAMMPS.LAMMPS_eval')
+#import StructOpt.fitness.LAMMPS.LAMMPS_eval
+#import StructOpt.fitness.STEM.STEM_eval
 
 pot_file = os.path.abspath('tests/Au_u3.eam')
 stem_ref = os.path.abspath('tests/STEM_ref.xyz')
 psf_file = os.path.abspath('tests/PSF.txt')
-
 
 with Structopt('tests/short-test',
                # Submission paramters
@@ -407,8 +409,4 @@ with Structopt('tests/short-test',
 #+END_SRC
 
 #+RESULTS:
-: ********ERROR IN EXECUTION********
-: [Errno 2] No such file or directory: '/tmp/LAMMPS-WZRQwp/in_lammps000001kQtMO6'
-: CLEANING UP FILES
-: EXITING PROGRAM
 
