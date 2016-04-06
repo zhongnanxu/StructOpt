@@ -315,16 +315,100 @@ with Structopt('tests/maldonis-test',
 
 #+RESULTS:
 
-* StructOpt edits
+* StructOpt Tests
+** Test new io/read_parameter_input.py
 #+BEGIN_SRC python
 from StructOpt import io
 
 print io.read_parameter_input('tests/maldonis-test/structopt_inp.json', True)
 
-
-
 #+END_SRC
 
 #+RESULTS:
 : {'fixed_region': False, 'mutant_add': False, 'bh_temp': 0.08617385692256675, 'bh_steps': 100, 'bulkfp': None, 'generate_flag': 'box', 'migration_intervals': 5, u'natoms': 309, 'algorithm_type': 'lambda+mu', u'predator': u'mutation_dups', 'loggername': 'Output-rank0-2016_0406_084958.log', 'supercell': (1, 1, 1), 'quench_max_temp': 1000, 'allenergyfile': False, 'restart_optimizer': False, 'restart': False, u'natural_selection_scheme': u'fuss', 'quench_step_size': 0.01, u'large_box_size': 500, 'debug': ['None'], 'adaptmultiplier': 3.0, 'solidbulk': None, 'trackvacs': False, u'tournsize': 3, 'fingerprinting': False, 'trackswaps': False, 'constrain_position': False, u'filename': u'Output', u'best_inds_list': True, 'solidfile': None, u'tolerance': 0.01, 'solidcell': None, u'maxgen': 4000, 'quench_n_steps_1': 10000, 'quench_n_steps_2': 20000, 'relaxation': 'LAMMPS', u'selection_scheme': u'tournament2', 'genealogytree': False, 'energy_cutoff_factor': 10.0, 'cell_shape_options': ['cubic', 'hexagonal', 'triclinic', 'monoclinic', 'orthorhombic', 'tetragonal'], u'atomlist': [(u'Au', 309, 196.9665, 0.0)], u'postprocessing': True, 'metropolis_temp': 30.0, u'demin': 0.01, 'optimizer_type': 'GA', u'nindiv': 20, u'size': 23.0, u'mutation_options': [u'lattice_alteration', u'lattice_alteration_group', u'rotation_geo', u'rotation'], 'quench_min_temp': 2, 'mark': None, 'finddefects': True, u'fusslimit': 5, u'reqrep': 1000, 'surftopthick': 0, 'output_format': 'fitness', 'swaplist': False, 'rattle_atoms': False, 'adaptbegin': 0.75, 'lattice_concentration': False, u'genealogy': True, 'random_vac_start': False, u'cx_scheme': u'rotct_rand', 'constrain_swaps': False, 'seed': 9, 'fpbin': 0.25, u'mutpb': 0.15, 'number_of_bests': 100, 'migration_percent': 0.05, u'cxpb': 0.8, 'vacancy_output': False, 'indiv_defect_write': False, u'convergence_scheme': u'max_gen', 'forcing': 'Concentration', 'fpcutoff': 15.0, 'isolate_mutation': False, 'surfacecell': None, u'r_ab': 2.5, 'evalsolid': False, 'surfacefile': None, 'random_loc_start': False, u'parallel': True, u'structure': u'Cluster', 'restart_ints': 0, u'modules': [u'LAMMPS', u'STEM'], u'weights': [0.003, 10.0], 'alloy': True, 'sf': 1.75}
+
+** Test restart_files param
+#+BEGIN_SRC python
+from structopt import *
+from StructOpt import Optimizer
+import StructOpt.fitness.LAMMPS.LAMMPS_eval
+import StructOpt.fitness.STEM.STEM_eval
+
+pot_file = os.path.abspath('tests/Au_u3.eam')
+stem_ref = os.path.abspath('tests/STEM_ref.xyz')
+psf_file = os.path.abspath('tests/PSF.txt')
+
+
+with Structopt('tests/short-test',
+               # Submission paramters
+               walltime=24, queue='morgan2',
+               
+               # GA parameters
+               modules = ['LAMMPS', 'STEM'],
+               weights = [0.003, 10.0],
+               structure='Cluster',
+               atomlist=[['Au', 1, 196.9665, 0.0]],
+               natoms=309,
+               nindiv=10,
+               maxgen=5,
+               reqrep=5,
+               tolerance=0.01,
+               r_ab=2.5,
+               size=23.0,
+               large_box_size=500,
+               cxpb=0.80,
+               mutpb=0.15,
+               cx_scheme='rotct_rand',
+               selection_scheme='tournament2',
+               natural_selection_scheme='fuss',
+               tournsize=3,
+               fusslimit=5,
+               convergence_scheme='max_gen',
+               predator='mutation_dups',
+               demin=0.01,
+               mutation_options=["lattice_alteration",
+                                 "lattice_alteration_group",
+                                 "rotation_geo",
+                                 "rotation"],
+               genealogy=True,
+               best_inds_list=True,
+               postprocessing=True,
+               parallel=True,
+               
+               # LAMMPS parameters
+               pair_style='eam', pot_file=pot_file,
+               minimize='1e-8 1e-8 5000 10000',
+               min_style='cg\nmin_modify line quadratic',
+               thermo_steps=1000, keep_files=False,
+               
+               # STEM parameters
+               electron_energy=200,
+               spherical_aberration=1.4, defocus=0,
+               aperture_semiangle=24.5,
+               source_size=0.882,
+               slice_size=25.0,
+               chromatic_aberration_coefficient=1.4,
+               delta_E=0.73,
+               pixels=976,
+               aber=[[0,0],[0,0],[22.56,-20.1],
+                     [22.08,-7.5],[0.1198,0],[0.9018,-170.1],
+                     [0.04964,20.9],[28.43,-120.6],[11.84,153.8],
+                     [8.456,76.1],[0.622,0],[2.811,-125.5]],
+               scale_factor=0.00570113,
+               grid_sim2exp=1,
+               pixelshift=False,                        
+               stem_ref=stem_ref,
+               psf=psf_file) as calc:
+    calc.write_input()
+    calc.write_submit()
+    optimizer = Optimizer('structopt_inp.json')
+    optimizer.run()
+
+#+END_SRC
+
+#+RESULTS:
+: ********ERROR IN EXECUTION********
+: [Errno 2] No such file or directory: '/tmp/LAMMPS-WZRQwp/in_lammps000001kQtMO6'
+: CLEANING UP FILES
+: EXITING PROGRAM
 
