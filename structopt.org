@@ -240,3 +240,78 @@ with Structopt('tests/calculate_run_short',
 #+END_SRC
 
 #+RESULTS:
+* Test calculate() jjmaldonis commits
+#+BEGIN_SRC python
+from structopt import *
+
+pot_file = os.path.abspath('Au_u3.eam')
+stem_ref = os.path.abspath('STEM_ref.xyz')
+psf_file = os.path.abspath('PSF.txt')
+
+with Structopt('tests/maldonis-test',
+               # Submission paramters
+               walltime=24, queue='morgan2',
+               
+               # GA parameters
+               modules = ['LAMMPS', 'STEM'],
+               weights = [0.003, 10.0],
+               structure='Cluster',
+               atomlist=[['Au', 1, 196.9665, 0.0]],
+               natoms=309,
+               nindiv=20,
+               maxgen=4000,
+               reqrep=1000,
+               tolerance=0.01,
+               r_ab=2.5,
+               size=23.0,
+               large_box_size=500,
+               cxpb=0.80,
+               mutpb=0.15,
+               cx_scheme='rotct_rand',
+               selection_scheme='tournament2',
+               natural_selection_scheme='fuss',
+               tournsize=3,
+               fusslimit=5,
+               convergence_scheme='max_gen',
+               predator='mutation_dups',
+               demin=0.01,
+               mutation_options=["lattice_alteration",
+                                 "lattice_alteration_group",
+                                 "rotation_geo",
+                                 "rotation"],
+               genealogy=True,
+               best_inds_list=True,
+               postprocessing=True,
+               parallel=True,
+               
+               # LAMMPS parameters
+               pair_style='eam', pot_file=pot_file,
+               minimize='1e-8 1e-8 5000 10000',
+               min_style='cg\nmin_modify line quadratic',
+               thermo_steps=1000, keep_files=False,
+               
+               # STEM parameters
+               electron_energy=200,
+               spherical_aberration=1.4, defocus=0,
+               aperture_semiangle=24.5,
+               source_size=0.882,
+               slice_size=25.0,
+               chromatic_aberration_coefficient=1.4,
+               delta_E=0.73,
+               pixels=976,
+               aber=[[0,0],[0,0],[22.56,-20.1],
+                     [22.08,-7.5],[0.1198,0],[0.9018,-170.1],
+                     [0.04964,20.9],[28.43,-120.6],[11.84,153.8],
+                     [8.456,76.1],[0.622,0],[2.811,-125.5]],
+               scale_factor=0.00570113,
+               grid_sim2exp=1,
+               pixelshift=False,                        
+               stem_ref=stem_ref,
+               psf=psf_file) as calc:
+    calc.calculate()
+
+
+#+END_SRC
+
+#+RESULTS:
+
