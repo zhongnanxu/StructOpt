@@ -316,7 +316,7 @@ class Optimizer():
         for ind in pop:
             ind.index = index1
             index1 += 1
-        io.write_pop(self, pop)
+        structoptio.write_pop(self, pop)
 
         if self.allenergyfile:
             for ind in pop:
