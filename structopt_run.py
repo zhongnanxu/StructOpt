@@ -73,7 +73,7 @@ def write_submit(self):
     script += 'cd $PBS_O_WORKDIR\n'
         
     # Load up the Optimizer.py path
-    opt_cmd = os.path.dirname(StructOpt.__file__) + '/Optimizer.py'
+    opt_cmd = '$HOME/bin/Optimizer.py'
 
     # Run structopt
     run_cmd = '{mpi_cmd} {py_cmd} {opt_cmd} {inp_file} | tee structopt.out\n\n'

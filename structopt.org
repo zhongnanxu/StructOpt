@@ -346,17 +346,17 @@ with Structopt('tests/short-test',
                walltime=24, queue='morgan2',
                
                # GA parameters
-               modules = ['LAMMPS', 'STEM'],
-               weights = [0.003, 10.0],
+               modules = ['LAMMPS'],
+               weights = [1.0],
                structure='Cluster',
                atomlist=[['Au', 1, 196.9665, 0.0]],
-               natoms=309,
-               nindiv=10,
+               natoms=18,
+               nindiv=5,
                maxgen=5,
                reqrep=5,
                tolerance=0.01,
                r_ab=2.5,
-               size=23.0,
+               size=1,
                large_box_size=500,
                cxpb=0.80,
                mutpb=0.15,
@@ -376,35 +376,17 @@ with Structopt('tests/short-test',
                best_inds_list=True,
                postprocessing=True,
                parallel=True,
+               restart_files=False,
                
                # LAMMPS parameters
                pair_style='eam', pot_file=pot_file,
                minimize='1e-8 1e-8 5000 10000',
                min_style='cg\nmin_modify line quadratic',
-               thermo_steps=1000, keep_files=False,
-               
-               # STEM parameters
-               electron_energy=200,
-               spherical_aberration=1.4, defocus=0,
-               aperture_semiangle=24.5,
-               source_size=0.882,
-               slice_size=25.0,
-               chromatic_aberration_coefficient=1.4,
-               delta_E=0.73,
-               pixels=976,
-               aber=[[0,0],[0,0],[22.56,-20.1],
-                     [22.08,-7.5],[0.1198,0],[0.9018,-170.1],
-                     [0.04964,20.9],[28.43,-120.6],[11.84,153.8],
-                     [8.456,76.1],[0.622,0],[2.811,-125.5]],
-               scale_factor=0.00570113,
-               grid_sim2exp=1,
-               pixelshift=False,                        
-               stem_ref=stem_ref,
-               psf=psf_file) as calc:
+               thermo_steps=1000, keep_files=False) as calc:
     calc.write_input()
     calc.write_submit()
-    optimizer = Optimizer('structopt_inp.json')
-    optimizer.run()
+    #optimizer = Optimizer('structopt_inp.json')
+    #optimizer.run()
 
 #+END_SRC
 
