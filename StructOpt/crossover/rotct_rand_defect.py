@@ -4,7 +4,7 @@ from ase import Atom, Atoms
 from StructOpt.tools.find_defects import find_defects
 from StructOpt.tools.position_average import position_average
 from StructOpt.tools.shift_atoms import shift_atoms
-from StructOpt.io import write_xyz
+from StructOpt.structoptio import write_xyz
 
 def rotct_rand_defect(ind1, ind2, Optimizer):
     """Rotate atoms cut and splice

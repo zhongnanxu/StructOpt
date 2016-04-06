@@ -1,5 +1,5 @@
 from StructOpt.tools import eval_energy
-from StructOpt.io.write_xyz import write_xyz
+from StructOpt.structoptio.write_xyz import write_xyz
 import logging
 import math
 import os
@@ -17,7 +17,7 @@ def stem_cost_rotation(indiv, Optimizer):
         debug=True
     else:
         debug=False
-    logger = logging.getLogger(Optimizer.loggername)
+    logger = logging.getLogger('by-rank')
     starting = indiv.duplicate()
     cwd = os.getcwd()
     try:

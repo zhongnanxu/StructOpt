@@ -4,7 +4,7 @@ import numpy
 from StructOpt.post_processing.read_genealogy import read_genealogy
 import logging
 
-def read_output(folder,genealogytree=False,natoms=None, loggername=None):
+def read_output(folder,genealogytree=False,natoms=None):
     """Function to analyze structural optimization output.
     Inputs:
         folder = folder containing output from structural optimization
@@ -12,7 +12,6 @@ def read_output(folder,genealogytree=False,natoms=None, loggername=None):
             Default = False
         natoms = number of atoms in an individual 
             Default = False
-        loggername = name of log file to write to
     Outputs:
         Plot-All_Energies-XXX.png
         Plot-Peratom-All_Energies-XXX.png
@@ -22,16 +21,13 @@ def read_output(folder,genealogytree=False,natoms=None, loggername=None):
         Plot-FpDist-Fingerprints-XXX-genXX.png
         Plot-SuccessfulMutations-XXX.png
         genealogytree-Genealogy-XXX.png
-        
+
     """
-    if loggername:
-        #logger = initialize_logger(loggername)
-        logger = logging.getLogger(Optimizer.loggername)
+    logger = logging.getLogger('default')
     files=os.listdir(folder)
     for filename in files:
         if ('All_Energies' in filename) and not ('png' in filename): #TTM 20151030 do not process a plot file if it was created first.
-            if loggername:
-                logger.info('Reading from All_Energies file.  Plotting all energies vs. generation')
+            logger.info('Reading from All_Energies file.  Plotting all energies vs. generation')
             f=open(os.path.join(folder,filename),'r')
             line0=f.readline()
             indenergies=[[float(value)] for value in line0.split()]
@@ -44,19 +40,19 @@ def read_output(folder,genealogytree=False,natoms=None, loggername=None):
                     else:
                         indenergies[i].append(None)
                     i+=1
-    
+
             f.close()
             generation=range(len(indenergies[0]))
             clist=[]
             for i in range(len(indenergies)):
                 clist.append(numpy.random.rand(3,1))
-    
+
             fig=plt.figure()
             ax1=fig.add_subplot(111)
             i=0
             for i in range(len(indenergies)):
                 ax1.scatter(generation,indenergies[i],c=clist[i],label='Ind '+repr(i+1))
-    
+
             handles, labels = ax1.get_legend_handles_labels()
             ax1.legend(handles, labels)
             box = ax1.get_position()
@@ -70,17 +66,16 @@ def read_output(folder,genealogytree=False,natoms=None, loggername=None):
             plt.savefig('Plot-{0}.png'.format(filename[:-4]))
             indperatom=[]
             if natoms !=None:
-                if loggername:
-                    logger.info('Plotting energy per atom vs. generation')
+                logger.info('Plotting energy per atom vs. generation')
                 for ind in indenergies:
                     indperatom.append([en/natoms for en in ind])
-        
+
                 fig=plt.figure()
                 ax1=fig.add_subplot(111)
                 i=0
                 for i in range(len(indperatom)):
                     ax1.scatter(generation,indperatom[i],c=clist[i],label='Ind '+repr(i+1))
-        
+
                 handles, labels = ax1.get_legend_handles_labels()
                 ax1.legend(handles, labels)
                 box = ax1.get_position()
@@ -94,8 +89,7 @@ def read_output(folder,genealogytree=False,natoms=None, loggername=None):
         if ('Summary' in filename) and not ('png' in filename): #TTM 20151030 do not parse plot graphics if they happened to have been created first
             #print 'HKK :: filename' : filename
             if 'StructureSummary' not in filename:
-                if loggername:
-                    logger.info('Plotting Fitness min, max and medium vs. generation')
+                logger.info('Plotting Fitness min, max and medium vs. generation')
                 f=open(os.path.join(folder,filename),'r')
                 #print 'HKK :: file', os.path.join(folder,filename) 
                 line0=f.readline()
@@ -141,8 +135,7 @@ def read_output(folder,genealogytree=False,natoms=None, loggername=None):
                             diff[i]+=60
                     tclk.append(diff[0]*3600+diff[1]*60+diff[2])
                     strtime=otime
-                if loggername:
-                    logger.info('Plotting computational time per generation')
+                logger.info('Plotting computational time per generation')
                 fig = plt.figure()
                 ax1 = fig.add_subplot(111)
                 ax1.plot(tclk)
@@ -154,8 +147,7 @@ def read_output(folder,genealogytree=False,natoms=None, loggername=None):
                 plt.text(0.5, 0.95,'Total Time for run = '+'%.3f' % round(totaltime, 3)+'hours',horizontalalignment='center',verticalalignment='top',transform = ax1.transAxes)
                 plt.savefig('Plot-time-{0}.png'.format(filename[:-4]))
         if 'FingerprintMin' in filename:
-            if loggername:
-                logger.info('Plotting minimum fingerprint functions by generation')
+            logger.info('Plotting minimum fingerprint functions by generation')
             f = open(os.path.join(folder,filename),'r')
             fpmin=[]
             enfp=[]
@@ -189,8 +181,7 @@ def read_output(folder,genealogytree=False,natoms=None, loggername=None):
                     plt.ylim([0,100])
                 plt.savefig('Plot-FPMin-{0}-gen{1}.png'.format(filename[:-4],i))
         if 'Fingerprints' in filename:
-            if loggername:
-                logger.info('Plotting fingerprint distance vs. energy by generation')
+            logger.info('Plotting fingerprint distance vs. energy by generation')
             f = open(os.path.join(folder,filename),'r')
             fpds=[]
             ens=[]
@@ -207,9 +198,9 @@ def read_output(folder,genealogytree=False,natoms=None, loggername=None):
                         i=0
                 fpds.append(fpg)
                 ens.append(eng)
-    
+
             f.close()
-    
+
             for i in range(len(fpds)):
                 emin=min(ens[i])
                 eng=[one-emin for one in ens[i]]
@@ -221,8 +212,7 @@ def read_output(folder,genealogytree=False,natoms=None, loggername=None):
                 plt.title('Fingerprint Distance vs. Energy, Generation={0}'.format(i))
                 plt.savefig('Plot-FpDist-{0}-gen{1}.png'.format(filename[:-4],i))
         if ('Genealogy' in filename) and (not 'png' in filename): #TTM do not try to process any Genealogy*.png plots
-            if loggername:
-                logger.info('Plotting bar plot of mutation success')
+            logger.info('Plotting bar plot of mutation success')
             f = open(os.path.join(folder,filename),'r')
             line0=f.readline()
             indhist=[[value] for value in line0.split()]
@@ -256,16 +246,14 @@ def read_output(folder,genealogytree=False,natoms=None, loggername=None):
             plt.title('Successful Mutations by Generation')
             plt.savefig('Plot-SuccessfulMutations-{0}.png'.format(filename[:-4]))
             if genealogytree:
-                if loggername:
-                    logger.info('Plotting genealogy tree')
+                logger.info('Plotting genealogy tree')
                 read_genealogy(filename)
         if 'Bests-energies' in filename:
-            if loggername:
-                logger.info('Plotting Best-energies scatter')
+            logger.info('Plotting Best-energies scatter')
             f=open(os.path.join(folder,filename),'r')
             benergies = []
             for line in f.readlines():
-                benergies.append(float(line))    
+                benergies.append(float(line))
             f.close()
             fig=plt.figure()
             ax1=fig.add_subplot(111)

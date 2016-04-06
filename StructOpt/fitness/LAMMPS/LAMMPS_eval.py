@@ -6,7 +6,7 @@ try:
     from ase.calculators.neighborlist import NeighborList
 except ImportError:
     pass
-from StructOpt.io.write_xyz import write_xyz
+from StructOpt.structoptio.write_xyz import write_xyz
 from StructOpt.fingerprinting import get_fingerprint
 from StructOpt.tools.lammps import LAMMPS
 from StructOpt.tools.setup_energy_calculator import setup_energy_calculator
@@ -82,7 +82,7 @@ class LAMMPS_eval(object):
 
     def evaluate_indiv(self, Optimizer, individ, rank, relax):
 
-        logger = logging.getLogger(Optimizer.loggername)
+        logger = logging.getLogger('by-rank')
         if relax:
             logger.info('Received individual HI = {0} for LAMMPS structure relaxation'.format(
                 individ.history_index))
@@ -227,7 +227,7 @@ class LAMMPS_eval(object):
 
 
     def sort_pealist(self, Optimizer,individ,pea):
-        logger = logging.getLogger(Optimizer.loggername)
+        logger = logging.getLogger('by-rank')
 
         #Add pealist to include atom index based on sorted PE. 
         syms = [sym for sym,c,m,u in Optimizer.atomlist]

@@ -3,8 +3,7 @@ import logging
 
 def moves_switch(indiv, Optimizer):
     """Select mutation to preform on individual from list of options"""
-    #logger = initialize_logger(Optimizer.loggername)
-    logger = logging.getLogger(Optimizer.loggername)
+    logger = logging.getLogger('default')
     scheme = random.choice(Optimizer.mutation_options)
     if 'MU' in Optimizer.debug:
         debug = True

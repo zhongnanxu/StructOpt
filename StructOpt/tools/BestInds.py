@@ -1,7 +1,7 @@
 import os
 from operator import attrgetter
 from ase import Atom, Atoms
-from StructOpt.io.write_xyz import write_xyz
+from StructOpt.structoptio.write_xyz import write_xyz
 import logging
 try:
     from mpi4py import MPI
@@ -20,8 +20,7 @@ def BestInds(pop, bests, Optimizer, writefile = False, fname = None):
         bests = list of Individual class structures updated with new options
     """
 
-    #logger = initialize_logger(Optimizer.loggername)
-    logger = logging.getLogger(Optimizer.loggername)
+    logger = logging.getLogger('default')
     logger.info('best_inds_list recieved population with length = {0} and best list with length = {1} for generation {2}'.format(
         len(pop), len(bests), Optimizer.generation))
 

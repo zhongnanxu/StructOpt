@@ -2,7 +2,7 @@ import random
 import numpy
 from ase import Atom, Atoms
 from StructOpt.tools.find_defects import find_defects
-from StructOpt.io import write_xyz
+from StructOpt.structoptio import write_xyz
 
 def randalloybox(ind1, ind2, Optimizer):
     """Select a box in the alloy configuration
