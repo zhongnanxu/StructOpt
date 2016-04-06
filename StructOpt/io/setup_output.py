@@ -84,6 +84,7 @@ def setup_output(filename, restart, nindiv, indiv_defect_write, genealogy,
         fpfile = None
         fpminfile = None
     outfiles = {'files':files, 'ifiles':ifiles, 'output':output, 'summary':summary,
-        'Genealogyfile':Genealogyfile, 'tenergyfile':tenergyfile, 'debugfile':debugfile,
-        'fpfile':fpfile, 'fpminfile':fpminfile,'optimizerfile':optifile}
+                'Genealogyfile':Genealogyfile, 'tenergyfile':tenergyfile,
+                'debugfile':debugfile, 'fpfile':fpfile, 'fpminfile':fpminfile,
+                'optimizerfile':optifile}
     return outfiles
