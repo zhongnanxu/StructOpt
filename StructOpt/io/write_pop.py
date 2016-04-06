@@ -21,8 +21,10 @@ def write_pop(Optimizer,pop):
         if Optimizer.indiv_defect_write:
             write_xyz(Optimizer.ifiles[ind.index],ind[0],ind.energy)
         update_structsumfile(ind, Optimizer.files[Optimizer.nindiv])
-        positions = update_structfile(ind, Optimizer.files[ind.index], Optimizer)
-        Optimizer.output.write('Number of positions = {0}\n'.format(len(positions)))
+        if (Optimizer.indiv_write.lower() == 'all'
+            or (Optimizer.indiv_write.lower() == 'best' and ind.index == 0)):
+            positions = update_structfile(ind, Optimizer.files[ind.index], Optimizer)
+            Optimizer.output.write('Number of positions = {0}\n'.format(len(positions)))
     if Optimizer.genealogy:
         Optimizer.Genealogyfile.write('\n')
     return
