@@ -78,7 +78,7 @@ class STEM_eval(object):
 
     def evaluate_indiv(self, Optimizer, individ, rank):
 
-        logger = logging.getLogger(Optimizer.loggername)
+        logger = logging.getLogger('by-rank')
 
         logger.info('Received individual HI = {0} for STEM evaluation'.format(
             individ.history_index))

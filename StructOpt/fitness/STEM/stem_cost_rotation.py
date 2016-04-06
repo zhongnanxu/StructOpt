@@ -17,7 +17,7 @@ def stem_cost_rotation(indiv, Optimizer):
         debug=True
     else:
         debug=False
-    logger = logging.getLogger(Optimizer.loggername)
+    logger = logging.getLogger('by-rank')
     starting = indiv.duplicate()
     cwd = os.getcwd()
     try:

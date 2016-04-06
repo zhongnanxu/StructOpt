@@ -13,7 +13,7 @@ def get_restart_population(Optimizer):
     Outputs:
         pop = List of structopt Individual class objects containing existing structures.
     """
-    logger = logging.getLogger(Optimizer.loggername)
+    logger = logging.getLogger('default')
     index1 = 0
     Optimizer.output.write('Loading structures from old run\n')
     pop = []

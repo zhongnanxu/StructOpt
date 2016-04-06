@@ -13,8 +13,7 @@ def surfaceenergy(indiv, Optimizer):
     Output:
         indiv = structopt Individual class object with new fitness.
     '''
-    logger = logging.getLogger(Optimizer.loggername)
-    #logger = initialize_logger(Optimizer.loggername)
+    logger = logging.getLogger('by-rank')
     starting = indiv.duplicate()
     cwd = os.getcwd()
     try:

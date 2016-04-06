@@ -14,7 +14,7 @@ def setup_energy_calculator(Optimizer, mod, relax):
     elif mod == 'LAMMPS':
         if 'SetCalc' in Optimizer.debug:
             debug = True
-            logger = logging.getLogger(Optimizer.loggername)
+            logger = logging.getLogger('default')
         else:
             debug = False
 

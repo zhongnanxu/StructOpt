@@ -5,8 +5,7 @@ import pdb
 def crossover_switch(child1, child2, Optimizer):
     """Functions for selecting and pairing individuals
     for crossovers"""
-    #logger = initialize_logger(Optimizer.loggername)
-    logger = logging.getLogger(Optimizer.loggername)
+    logger = logging.getLogger('default')
     if 'CX' in Optimizer.debug:
         debug = True
     else:

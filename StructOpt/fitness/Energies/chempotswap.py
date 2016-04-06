@@ -13,8 +13,7 @@ def chempotswap(indiv, Optimzier):
     Outputs:
         indiv = Evaluated Individual class object
     """
-    #logger = initialize_logger(Optimizer.loggername)
-    logger = logging.getLogger(Optimizer.loggername)
+    logger = logging.getLogger('by-rank')
     starting = indiv.duplicate()
     cwd = os.getcwd()
     try:
@@ -44,10 +43,8 @@ def chempotswap(indiv, Optimzier):
     passflag = True
     if abs(fit) > Optimizer.energy_cutoff_factor*(len(indiv[0])+len(indiv.bulki)):
         fit=10000
-        message = 'Warning: Found oddly large energy from Lammps in structure HI={0}'.format(indiv.history_index)
+        message = 'Warning: Found oddly large energy from Lammps in structure HI={0}. Setting fitness to 10000'.format(indiv.history_index)
         logger.warn(message)
-        print message
-        print '    Setting fitness to 10000'
         passflag = False
     if math.isnan(fit):
         logger.warn('Found NAN energy structure HI={0}'.format(indiv.history_index))

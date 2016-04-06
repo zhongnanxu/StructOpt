@@ -20,8 +20,7 @@ def formationenergy(indiv, Optimizer):
         indiv = totalenfit(indiv,Optimizer)
         stro = ''
     else:
-        logger = logging.getLogger(Optimizer.loggername)
-        #logger = initialize_logger(Optimizer.loggername)
+        logger = logging.getLogger('by-rank')
         starting = indiv.duplicate()
         cwd = os.getcwd()
         try:

@@ -20,8 +20,7 @@ def BestInds(pop, bests, Optimizer, writefile = False, fname = None):
         bests = list of Individual class structures updated with new options
     """
 
-    #logger = initialize_logger(Optimizer.loggername)
-    logger = logging.getLogger(Optimizer.loggername)
+    logger = logging.getLogger('default')
     logger.info('best_inds_list recieved population with length = {0} and best list with length = {1} for generation {2}'.format(
         len(pop), len(bests), Optimizer.generation))
 

@@ -14,8 +14,7 @@ def fitness_switch(input):
         stro='Evaluated none individual on {0}\n'.format(rank)
     else:
         Optimizer,indiv=input
-        #logger = initialize_logger(Optimizer.loggername)
-        logger = logging.getLogger(Optimizer.loggername)
+        logger = logging.getLogger('default')
         stro='Evaluating individual {0}\n'.format(indiv.index)
         if Optimizer.rattle_atoms:
             indiv[0]=rattle(indiv)

@@ -51,7 +51,7 @@ class FEMSIM_eval(object):
                 os.mkdir(femsimfiles)
             except OSError:
                 pass
-            
+
             for i in range(len(individ)):
                 indiv_folder = '{filename}-rank0/FEMSIMFiles/Individual{i}'.format(filename=Optimizer.filename,i=i)
                 try:
@@ -70,15 +70,15 @@ class FEMSIM_eval(object):
 
     def evaluate_indiv(self, Optimizer, individ, i):
 
-        logger = logging.getLogger(Optimizer.loggername)
+        logger = logging.getLogger('by-rank')
 
         logger.info('Received individual HI = {0} for FEMSIM evaluation'.format(
             individ.history_index))
-        
-        
+
+
         paramfilename = self.args['parameter_filename']
         paramfilename = paramfilename.split('.')
-        paramfilename[-2] = '{head}_{i}'.format(head=paramfilename[-2], i=individ.history_index) 
+        paramfilename[-2] = '{head}_{i}'.format(head=paramfilename[-2], i=individ.history_index)
         paramfilename = '.'.join(paramfilename)
 
         self.write_paramfile(paramfilename, Optimizer, individ, i)
@@ -90,7 +90,7 @@ class FEMSIM_eval(object):
         chisq = self.chi2(vk)
         logger.info('M:finish chi2 evaluation, chi2 = {0}'.format(chisq))
         stro = 'Evaluated individual {0}\n'.format(individ.history_index)
-        
+
         return chisq, stro
 
 
@@ -99,7 +99,7 @@ class FEMSIM_eval(object):
         #ase.io.write('structure_{i}.xyz'.format(i=individ.history_index), individ[0])
         data = "{} {} {}".format(self.args['xsize'], self.args['ysize'], self.args['zsize'])
         write_xyz('structure_{i}.xyz'.format(i=individ.history_index), individ[0], data)
-        
+
         with open(paramfilename, 'w') as f:
             f.write('# Parameter file for generation {gen}, individual {i}\n'.format(gen=Optimizer.generation, i=individ.history_index))
             f.write('{}\n'.format('structure_{i}.xyz'.format(i=individ.history_index)))

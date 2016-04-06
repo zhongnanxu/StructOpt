@@ -12,8 +12,7 @@ def exponentialfit(indiv, Optimizer):
     Outputs:
         indiv = Evaluated Individual class object
     """
-    #logger = initialize_logger(Optimizer.loggername)
-    logger = logging.getLogger(Optimizer.loggername)
+    logger = logging.getLogger('by-rank')
     starting = indiv.duplicate()
     cwd = os.getcwd()
     try:

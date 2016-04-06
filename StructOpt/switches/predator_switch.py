@@ -8,8 +8,7 @@ import pdb
 
 def predator_switch(pop,Optimizer):
     """Function for removing individuals from the population"""
-    #logger = initialize_logger(Optimizer.loggername)
-    logger = logging.getLogger(Optimizer.loggername)
+    logger = logging.getLogger('default')
     scheme = Optimizer.predator
     logger.info('Applying predator to population with initial size = {0}'.format(len(pop)))
     STR = 'PREDATOR\n'

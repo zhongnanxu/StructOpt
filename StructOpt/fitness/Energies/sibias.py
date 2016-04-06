@@ -6,7 +6,7 @@ import os
 from StructOpt.tools.find_defects import find_defects
 
 def sibias(indiv, Optimizer):
-    """Function to calculate total energy fitness of individual and bias away 
+    """Function to calculate total energy fitness of individual and bias away
     from Si-Interstitials.
     Input:
         indiv = structopt Individual class object to be evaluated
@@ -14,8 +14,7 @@ def sibias(indiv, Optimizer):
     Output:
         indiv = structopt Individual class object with new fitness.
     """
-    #logger = initialize_logger(Optimizer.loggername)
-    logger = logging.getLogger(Optimizer.loggername)
+    logger = logging.getLogger('by-rank')
     starting = indiv.duplicate()
     cwd = os.getcwd()
     try:
