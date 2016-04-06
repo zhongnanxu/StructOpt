@@ -1,0 +1,367 @@
+Generation 0
+ Index = 0
+    Energy = 0
+    Fitness = 0
+    Cell = [[ 1.  0.  0.]
+ [ 0.  1.  0.]
+ [ 0.  0.  1.]]
+    Pressure = 0
+    Genealogy = 0
+    Swaplist = []
+ Index = 1
+    Energy = 0
+    Fitness = 0
+    Cell = [[ 1.  0.  0.]
+ [ 0.  1.  0.]
+ [ 0.  0.  1.]]
+    Pressure = 0
+    Genealogy = 1
+    Swaplist = []
+ Index = 2
+    Energy = 0
+    Fitness = 0
+    Cell = [[ 1.  0.  0.]
+ [ 0.  1.  0.]
+ [ 0.  0.  1.]]
+    Pressure = 0
+    Genealogy = 2
+    Swaplist = []
+ Index = 3
+    Energy = 0
+    Fitness = 0
+    Cell = [[ 1.  0.  0.]
+ [ 0.  1.  0.]
+ [ 0.  0.  1.]]
+    Pressure = 0
+    Genealogy = 3
+    Swaplist = []
+ Index = 4
+    Energy = 0
+    Fitness = 0
+    Cell = [[ 1.  0.  0.]
+ [ 0.  1.  0.]
+ [ 0.  0.  1.]]
+    Pressure = 0
+    Genealogy = 4
+    Swaplist = []
+ Index = 0
+    Energy = -57.962338
+    Fitness = -57.96233
+    Cell = [[ 1.  0.  0.]
+ [ 0.  1.  0.]
+ [ 0.  0.  1.]]
+    Pressure = 0
+    Genealogy = 2
+    Swaplist = []
+ Index = 1
+    Energy = -57.962338
+    Fitness = -57.962329
+    Cell = [[ 1.  0.  0.]
+ [ 0.  1.  0.]
+ [ 0.  0.  1.]]
+    Pressure = 0
+    Genealogy = 4
+    Swaplist = []
+ Index = 2
+    Energy = -57.878391
+    Fitness = -57.87838
+    Cell = [[ 1.  0.  0.]
+ [ 0.  1.  0.]
+ [ 0.  0.  1.]]
+    Pressure = 0
+    Genealogy = 0
+    Swaplist = []
+ Index = 3
+    Energy = -57.854522
+    Fitness = -57.854512
+    Cell = [[ 1.  0.  0.]
+ [ 0.  1.  0.]
+ [ 0.  0.  1.]]
+    Pressure = 0
+    Genealogy = 3
+    Swaplist = []
+ Index = 4
+    Energy = -57.749542
+    Fitness = -57.749533
+    Cell = [[ 1.  0.  0.]
+ [ 0.  1.  0.]
+ [ 0.  0.  1.]]
+    Pressure = 0
+    Genealogy = 1
+    Swaplist = []
+Generation 1
+ Index = 0
+    Energy = -57.962338
+    Fitness = -57.96233
+    Cell = [[ 1.  0.  0.]
+ [ 0.  1.  0.]
+ [ 0.  0.  1.]]
+    Pressure = 0
+    Genealogy = 0
+    Swaplist = []
+ Index = 1
+    Energy = -57.928665
+    Fitness = -57.928655
+    Cell = [[ 1.  0.  0.]
+ [ 0.  1.  0.]
+ [ 0.  0.  1.]]
+    Pressure = 0
+    Genealogy = (0+2)
+    Swaplist = []
+ Index = 2
+    Energy = -57.878391
+    Fitness = -57.87838
+    Cell = [[ 1.  0.  0.]
+ [ 0.  1.  0.]
+ [ 0.  0.  1.]]
+    Pressure = 0
+    Genealogy = 2
+    Swaplist = []
+ Index = 3
+    Energy = -57.854522
+    Fitness = -57.854512
+    Cell = [[ 1.  0.  0.]
+ [ 0.  1.  0.]
+ [ 0.  0.  1.]]
+    Pressure = 0
+    Genealogy = 3
+    Swaplist = []
+ Index = 4
+    Energy = -57.749542
+    Fitness = -57.749533
+    Cell = [[ 1.  0.  0.]
+ [ 0.  1.  0.]
+ [ 0.  0.  1.]]
+    Pressure = 0
+    Genealogy = 4
+    Swaplist = []
+Generation 2
+ Index = 0
+    Energy = -57.962338
+    Fitness = -57.96233
+    Cell = [[ 1.  0.  0.]
+ [ 0.  1.  0.]
+ [ 0.  0.  1.]]
+    Pressure = 0
+    Genealogy = 0
+    Swaplist = []
+ Index = 1
+    Energy = -57.928665
+    Fitness = -57.928657
+    Cell = [[ 1.  0.  0.]
+ [ 0.  1.  0.]
+ [ 0.  0.  1.]]
+    Pressure = 0
+    Genealogy = (0+1)
+    Swaplist = []
+ Index = 2
+    Energy = -57.878391
+    Fitness = -57.87838
+    Cell = [[ 1.  0.  0.]
+ [ 0.  1.  0.]
+ [ 0.  0.  1.]]
+    Pressure = 0
+    Genealogy = 2
+    Swaplist = []
+ Index = 3
+    Energy = -57.854522
+    Fitness = -57.854512
+    Cell = [[ 1.  0.  0.]
+ [ 0.  1.  0.]
+ [ 0.  0.  1.]]
+    Pressure = 0
+    Genealogy = 3
+    Swaplist = []
+ Index = 4
+    Energy = -57.749542
+    Fitness = -57.749533
+    Cell = [[ 1.  0.  0.]
+ [ 0.  1.  0.]
+ [ 0.  0.  1.]]
+    Pressure = 0
+    Genealogy = 4
+    Swaplist = []
+Generation 3
+ Index = 0
+    Energy = -57.962338
+    Fitness = -57.96233
+    Cell = [[ 1.  0.  0.]
+ [ 0.  1.  0.]
+ [ 0.  0.  1.]]
+    Pressure = 0
+    Genealogy = 0
+    Swaplist = []
+ Index = 1
+    Energy = -57.928665
+    Fitness = -57.928657
+    Cell = [[ 1.  0.  0.]
+ [ 0.  1.  0.]
+ [ 0.  0.  1.]]
+    Pressure = 0
+    Genealogy = 1
+    Swaplist = []
+ Index = 2
+    Energy = -57.878391
+    Fitness = -57.87838
+    Cell = [[ 1.  0.  0.]
+ [ 0.  1.  0.]
+ [ 0.  0.  1.]]
+    Pressure = 0
+    Genealogy = 2
+    Swaplist = []
+ Index = 3
+    Energy = -57.854522
+    Fitness = -57.854512
+    Cell = [[ 1.  0.  0.]
+ [ 0.  1.  0.]
+ [ 0.  0.  1.]]
+    Pressure = 0
+    Genealogy = 3
+    Swaplist = []
+ Index = 4
+    Energy = -57.749542
+    Fitness = -57.749533
+    Cell = [[ 1.  0.  0.]
+ [ 0.  1.  0.]
+ [ 0.  0.  1.]]
+    Pressure = 0
+    Genealogy = 4
+    Swaplist = []
+Generation 4
+ Index = 0
+    Energy = -57.962338
+    Fitness = -57.96233
+    Cell = [[ 1.  0.  0.]
+ [ 0.  1.  0.]
+ [ 0.  0.  1.]]
+    Pressure = 0
+    Genealogy = 0
+    Swaplist = []
+ Index = 1
+    Energy = -57.928665
+    Fitness = -57.928658
+    Cell = [[ 1.  0.  0.]
+ [ 0.  1.  0.]
+ [ 0.  0.  1.]]
+    Pressure = 0
+    Genealogy = (2+0)
+    Swaplist = []
+ Index = 2
+    Energy = -57.854522
+    Fitness = -57.854512
+    Cell = [[ 1.  0.  0.]
+ [ 0.  1.  0.]
+ [ 0.  0.  1.]]
+    Pressure = 0
+    Genealogy = 3
+    Swaplist = []
+ Index = 3
+    Energy = -57.770978
+    Fitness = -57.770971
+    Cell = [[ 1.  0.  0.]
+ [ 0.  1.  0.]
+ [ 0.  0.  1.]]
+    Pressure = 0
+    Genealogy = (4+2)
+    Swaplist = []
+ Index = 4
+    Energy = -57.749542
+    Fitness = -57.749533
+    Cell = [[ 1.  0.  0.]
+ [ 0.  1.  0.]
+ [ 0.  0.  1.]]
+    Pressure = 0
+    Genealogy = 4
+    Swaplist = []
+Generation 5
+ Index = 0
+    Energy = -57.962338
+    Fitness = -57.96233
+    Cell = [[ 1.  0.  0.]
+ [ 0.  1.  0.]
+ [ 0.  0.  1.]]
+    Pressure = 0
+    Genealogy = 0
+    Swaplist = []
+ Index = 1
+    Energy = -57.854522
+    Fitness = -57.854512
+    Cell = [[ 1.  0.  0.]
+ [ 0.  1.  0.]
+ [ 0.  0.  1.]]
+    Pressure = 0
+    Genealogy = 2
+    Swaplist = []
+ Index = 2
+    Energy = -57.770978
+    Fitness = -57.770971
+    Cell = [[ 1.  0.  0.]
+ [ 0.  1.  0.]
+ [ 0.  0.  1.]]
+    Pressure = 0
+    Genealogy = 3
+    Swaplist = []
+ Index = 3
+    Energy = -57.696506
+    Fitness = -57.696495
+    Cell = [[ 1.  0.  0.]
+ [ 0.  1.  0.]
+ [ 0.  0.  1.]]
+    Pressure = 0
+    Genealogy = (2+0)
+    Swaplist = []
+ Index = 4
+    Energy = -57.447646
+    Fitness = -57.447638
+    Cell = [[ 1.  0.  0.]
+ [ 0.  1.  0.]
+ [ 0.  0.  1.]]
+    Pressure = 0
+    Genealogy = (0+2)mLAGC1
+    Swaplist = []
+Generation 6
+ Index = 0
+    Energy = -57.962338
+    Fitness = -57.96233
+    Cell = [[ 1.  0.  0.]
+ [ 0.  1.  0.]
+ [ 0.  0.  1.]]
+    Pressure = 0
+    Genealogy = 0
+    Swaplist = []
+ Index = 1
+    Energy = -57.928665
+    Fitness = -57.928656
+    Cell = [[ 1.  0.  0.]
+ [ 0.  1.  0.]
+ [ 0.  0.  1.]]
+    Pressure = 0
+    Genealogy = (1+0)
+    Swaplist = []
+ Index = 2
+    Energy = -57.854522
+    Fitness = -57.854512
+    Cell = [[ 1.  0.  0.]
+ [ 0.  1.  0.]
+ [ 0.  0.  1.]]
+    Pressure = 0
+    Genealogy = 1
+    Swaplist = []
+ Index = 3
+    Energy = -57.770978
+    Fitness = -57.770971
+    Cell = [[ 1.  0.  0.]
+ [ 0.  1.  0.]
+ [ 0.  0.  1.]]
+    Pressure = 0
+    Genealogy = 2
+    Swaplist = []
+ Index = 4
+    Energy = -57.447646
+    Fitness = -57.447638
+    Cell = [[ 1.  0.  0.]
+ [ 0.  1.  0.]
+ [ 0.  0.  1.]]
+    Pressure = 0
+    Genealogy = 4
+    Swaplist = []
