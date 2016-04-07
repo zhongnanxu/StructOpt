@@ -1,7 +1,7 @@
 import os
 import math
 import numpy
-from StructOpt.io import read_xyz
+from StructOpt.structoptio import read_xyz
 from StructOpt.tools import calc_dist
 
 def get_lattice_concentration(bulkfile,indivfile):

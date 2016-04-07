@@ -3,7 +3,7 @@ from ase import Atom, Atoms
 from ase.optimize import BFGS
 from ase.units import GPa
 from ase.calculators.neighborlist import NeighborList
-from StructOpt.io.write_xyz import write_xyz
+from StructOpt.structoptio.write_xyz import write_xyz
 from StructOpt.tools.find_defects import find_defects
 from StructOpt.tools.check_cell_type import check_cell_type
 from StructOpt.fingerprinting import get_fingerprint
@@ -102,7 +102,6 @@ def check_min_dist(Optimizer, totalsol, type='Defect', nat=None, min_len=0.7, ST
                                 STR += '--- WARNING: Atoms too close (<0.7A) - Implement Move ---\n'
             else:
                 rank = MPI.COMM_WORLD.Get_rank()
-                # logger = logging.getLogger(Optimizer.loggername)
                 R = totalsol.arrays['positions']
                 tol = 0.01
                 epsilon = 0.05
@@ -140,8 +139,6 @@ def check_min_dist(Optimizer, totalsol, type='Defect', nat=None, min_len=0.7, ST
                                 dist[k][j] = dist[j][k]
                     closelist = list(set(closelist))
                     closelist.sort()
-                    # if len(closelist) != 0:
-                    #    logger.info('M:iter {0}, closelist size {1}'.format(iter, len(closelist)))
         else:
             print 'WARNING: In Check_Min_Dist in EvalEnergy: Structure Type not recognized'
         return totalsol, STR

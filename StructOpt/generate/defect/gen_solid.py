@@ -1,7 +1,7 @@
 import os
 from ase import Atom, Atoms
 from ase.io import read
-from StructOpt.io import read_xyz, write_xyz
+from StructOpt.structoptio import read_xyz, write_xyz
 
 def gen_solid(solidfile,solidcell,outfilename,calc=False,calcmeth=None):
     """Function to load a bulk solid from a file for use in Defect structure optimization

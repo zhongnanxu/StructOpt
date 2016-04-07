@@ -2,7 +2,7 @@ import logging
 import numpy
 def compose_structure(Optimizer, individ):
     # Establish individual structure for evaluation.  Piece together regions when necessary.
-    logger = logging.getLogger(Optimizer.loggername)
+    logger = logging.getLogger('default')
     indiv = individ[0]
     if 'EE' in Optimizer.debug:
         debug = True

@@ -7,6 +7,7 @@ def decompose_structure(Optimizer, totalsol, individ):
    # Separate structures into distinct pieces
     if 'EE' in Optimizer.debug:
         debug = True
+        logger = logging.getLogger('default')
     else:
         debug = False
 

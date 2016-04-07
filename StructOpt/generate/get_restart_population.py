@@ -1,4 +1,4 @@
-from StructOpt.io import read_xyz
+from StructOpt.structoptio import read_xyz
 from StructOpt.generate.surface import get_surface_restart_indiv
 from StructOpt.generate.defect import get_defect_restart_indiv
 from StructOpt.generate.crystal import get_crystal_restart_indiv
@@ -13,7 +13,7 @@ def get_restart_population(Optimizer):
     Outputs:
         pop = List of structopt Individual class objects containing existing structures.
     """
-    logger = logging.getLogger(Optimizer.loggername)
+    logger = logging.getLogger('default')
     index1 = 0
     Optimizer.output.write('Loading structures from old run\n')
     pop = []

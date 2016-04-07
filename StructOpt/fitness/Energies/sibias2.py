@@ -1,5 +1,5 @@
 from StructOpt.tools.eval_energy import eval_energy
-from StructOpt.io.write_xyz import write_xyz
+from StructOpt.structoptio.write_xyz import write_xyz
 import logging
 import math
 import os
@@ -15,8 +15,7 @@ def sibias2(indiv, Optimizer):
     Output:
         indiv = structopt Individual class object with new fitness.
     """
-    #logger = initialize_logger(Optimizer.loggername)
-    logger = logging.getLogger(Optimizer.loggername)
+    logger = logging.getLogger('by-rank')
     starting = indiv.duplicate()
     cwd = os.getcwd()
     try:

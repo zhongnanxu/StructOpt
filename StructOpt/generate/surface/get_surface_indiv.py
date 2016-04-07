@@ -1,4 +1,4 @@
-from StructOpt.io import read_xyz
+from StructOpt.structoptio import read_xyz
 from StructOpt.tools import find_top_layer
 from StructOpt.switches import moves_switch
 from StructOpt.generate.Individual import Individual

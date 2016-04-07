@@ -26,11 +26,11 @@ class VASP_eval(object):
         return args
 
     def setup_mast_inp(self, Optimizer, individ, args, relax):
-        
+
         tmp = os.path.join(os.environ["STRUCTOPT_INSTALL_PATH"],"StructOpt/fitness/VASP/mast_template.inp")
         with open(tmp,'r') as fp:
             mastfile = fp.read()
-        
+
         mf = mastfile.split('\n')
         for l in range(len(mf)):
             if 'system_name' in mf[l]:
@@ -78,9 +78,9 @@ class VASP_eval(object):
             out = None
         out = MPI.COMM_WORLD.bcast(out, root=0)
         return out
-    
+
     def evaluate_indiv(self, Optimizer, individ, relax):
-        logger = logging.getLogger(Optimizer.loggername)
+        logger = logging.getLogger('by-rank')
         logger.info('Setting up MAST input for individual evaluation with VASP')
 
         self.setup_mast_inp(Optimizer, individ, self.args, relax)
@@ -98,7 +98,7 @@ class VASP_eval(object):
         cwd = os.getcwd()
         #scratch = os.path.join(cwd,'scratch')
         #archive = os.path.join(cwd,'archive')
-        
+
         #os.environ['MAST_SCRATCH'] = scratch
         #os.environ['MAST_ARCHIVE'] = archive
         scratch = os.getenv('MAST_SCRATCH')
@@ -109,11 +109,11 @@ class VASP_eval(object):
 
         mast = MASTInput(inputfile="my_mast.inp")
         ind_folders = mast.check_independent_loops()
-        
+
 
         for files in glob.glob("loop_*.inp"):
             os.remove(files)
-        
+
         logger.info('Completed setting up MAST jobs for individual evaluation of generation #%s'%Optimizer.generation)
         logger.info("Type 'mast' to manually submit VASP jobs or wait for crontab for submission.")
 
@@ -139,10 +139,10 @@ class VASP_eval(object):
                logger.info('Finished VASP jobs for all individuals of generation #%s'%Optimizer.generation) 
                break
             time.sleep(60)
-        
+
         stro = []
         energies = []
-        for i in range(len(ind_folders)): 
+        for i in range(len(ind_folders)):
             ingred = os.path.join(archive,ind_folders[i],'Individual')
             energy_output = check_output(['tail','-n1',os.path.join(ingred, 'OSZICAR')])
             individ[i].energy = float(energy_output.split()[4])
@@ -153,10 +153,10 @@ class VASP_eval(object):
                 stro.append('Evaluated energy of individual %s to be %s\n'%(individ[i].history_index,individ[i].energy))
             totalsol = read_vasp(os.path.join(ingred, 'CONTCAR'))
             individ[i], bul = decompose_structure(Optimizer,totalsol,individ[i])
-        
+
             shutil.rmtree(os.path.join(archive,ind_folders[i])) # either remove or zip ??
 
-        
+
 
         if relax:
             return individ, stro

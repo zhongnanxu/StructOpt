@@ -1,8 +1,9 @@
+import StructOpt
 import os
 import time
 import random
 import logging
-from StructOpt import io
+from StructOpt import structoptio
 from StructOpt import tools
 from StructOpt import generate
 from StructOpt import switches
@@ -17,48 +18,44 @@ from mpi4py import MPI
 
 class Optimizer():
     __version__  = 'StructOpt_v2.0'
-    logger = None
 
 
-    def __init__(self, input, uselogger=True):
-        self.args = io.read_parameter_input(input, uselogger)
-        for k, v in self.args.items():
+    def __init__(self):
+        self.logger = logging.getLogger('default')
+        for k, v in StructOpt.parameters.items():
             setattr(self, k, v)
 
-        self.relaxation_module = None # Currently only one relaxation module
-        if self.relaxation:
-            mod = import_module('StructOpt.fitness.{module_name}.{module_name}_eval'.format(module_name=self.relaxation))  # Import the module package
-            cls = getattr(mod, '{cls_name}_eval'.format(cls_name=self.relaxation))  # Get's the class from the module package
-            self.relaxation_module = cls()
+        self.relaxation_modules = []
+        for rm in self.relaxations:
+            mod = import_module('StructOpt.fitness.{module_name}.{module_name}_eval'.format(module_name=rm))  # Import the module package
+            cls = getattr(mod, '{cls_name}_eval'.format(cls_name=rm))  # Get's the class from the module package
+            self.relaxation_modules.append(cls())
 
         self.fitness_modules = []
-        for m in self.modules:
-            mod = import_module('StructOpt.fitness.{module_name}.{module_name}_eval'.format(module_name=m))  # Import the module package
-            cls = getattr(mod, '{cls_name}_eval'.format(cls_name=m))  # Get's the class from the module package
+        for fm in self.modules:
+            mod = import_module('StructOpt.fitness.{module_name}.{module_name}_eval'.format(module_name=fm))  # Import the module package
+            cls = getattr(mod, '{cls_name}_eval'.format(cls_name=fm))  # Get's the class from the module package
             self.fitness_modules.append(cls())
 
-        if self.loggername:
-            global logger
-            logger = logging.getLogger(self.loggername)
         if self.restart_optimizer:
-                logger.info('restarting output')
-                outdict = io.restart_output(self)
+                self.logger.info('restarting output')
+                outdict = structoptio.restart_output(self)
                 self.__dict__.update(outdict)
-                logger.info('Loading individual files')
+                self.logger.info('Loading individual files')
                 poplist = []
                 for indfile in self.population:
-                    ind = io.read_individual(indfile)
+                    ind = structoptio.read_individual(indfile)
                     poplist.append(ind)
                 self.population = poplist
-                logger.info('Loading bests')
+                self.logger.info('Loading bests')
                 bestlist = []
                 for bestfile in self.BESTS:
-                    ind = io.read_individual(bestfile)
+                    ind = structoptio.read_individual(bestfile)
                     bestlist.append(ind)
                 self.BESTS = bestlist
                 self.restart = True
                 if self.structure == 'Defect':
-                    bulk = io.read_xyz(self.solidfile)
+                    bulk = structoptio.read_xyz(self.solidfile)
                     bulk.set_pbc(True)
                     bulk.set_cell(self.solidcell)
                     self.solidbulk = bulk.copy()
@@ -84,19 +81,18 @@ class Optimizer():
 
 
     def algorithm_initialize(self):
-        global logger
         if self.restart_optimizer:
-            logger.info('Successfully loaded optimizer from file')
+            self.logger.info('Successfully loaded optimizer from file')
         else:
             # Setup the output files
-            logger.info('Initializing output for algorithm')
-            outdict = io.setup_output(self.filename, self.restart, self.nindiv,
+            self.logger.info('Initializing output for algorithm')
+            outdict = structoptio.setup_output(self.filename, self.restart, self.nindiv,
                 self.indiv_defect_write, self.genealogy, self.allenergyfile,
                 self.fingerprinting, self.debug)
             self.__dict__.update(outdict)
 
             # Set starting convergence and generation
-            logger.info('Initializing convergence, generation, and output monitoring stats')
+            self.logger.info('Initializing convergence, generation, and output monitoring stats')
             self.convergence = False
             self.overrideconvergence = False
             self.generation = 0
@@ -120,22 +116,20 @@ class Optimizer():
             elif self.swaplist:
                 swaplist = self.swaplist
             # Write the input parameters to the output file
-            logger.info('Writing the input parameters to output file')
-            io.write_parameters(self)
+            self.logger.info('Writing the input parameters to output file')
+            structoptio.write_parameters(self)
 
 
     def algorithm_run(self):
-        global logger
         comm = MPI.COMM_WORLD
         rank = MPI.COMM_WORLD.Get_rank()
-        Opti = Optimizer(self.args)
         if 'MA' in self.debug:
             debug = True
         else:
             debug = False
         if rank == 0:
             self.algorithm_initialize()
-            logger.info('Beginning main algorithm loop')
+            self.logger.info('Beginning main algorithm loop')
 
         # Begin main algorithm loop
         self.convergence = False
@@ -143,7 +137,7 @@ class Optimizer():
         while not convergence:
             if rank == 0:
                 pop = self.population
-                offspring = self.generation_set(pop, Opti)
+                offspring = self.generation_set(pop)
                 # Identify the individuals with an invalid fitness
                 indiv = [ind for ind in offspring if ind.fitness == 0]
                 # Evaluate the individuals with invalid fitness
@@ -153,11 +147,17 @@ class Optimizer():
 
             stro = ''
             if rank == 0:
-                indiv, stro = check_structures(Opti, indiv)
+                indiv, stro = check_structures(self, indiv)
 
-            if self.relaxation:
-                stro += 'Relaxing structure using {}\n'.format(self.relaxation)
-                relax_out = self.relaxation_module.evaluate_fitness(Opti, indiv, True)
+            # Be careful here, the relaxations will update the indiv list
+            # If there are multiple relaxations, they should be run in order,
+            # so relaxation1 will run, update the structure, which will then
+            # get fed into relaxation2, etc.
+            # TODO Are these only run on rank0? If so, this code blockis fine.
+            # If not, it needs to be updated!
+            for m in range(len(self.relaxation_modules)):
+                stro += 'Relaxing structure using {}\n'.format(self.relaxations[m])
+                relax_out = self.relaxation_modules[m].evaluate_fitness(self, indiv, True)
 
                 if rank == 0:
                     for i in range(len(indiv)):
@@ -165,9 +165,9 @@ class Optimizer():
                         stro += relax_out[i][1]
 
             fits = []
-            for m in range(len(self.modules)):
+            for m in range(len(self.fitness_modules)):
                 stro += 'Evaluating fitness with module {}\n'.format(self.modules[m])
-                out_part = self.fitness_modules[m].evaluate_fitness(Opti, indiv)
+                out_part = self.fitness_modules[m].evaluate_fitness(self, indiv)
                 fm = []
                 for i in range(len(out_part)):
                     fm.append(out_part[i][0])
@@ -175,14 +175,12 @@ class Optimizer():
                 fits.append(fm)
 
             if rank == 0:
-                logger.info('Individual fitnesses of Generation # {0}'.format(self.generation))
+                self.logger.info('Individual fitnesses of Generation # {0}'.format(self.generation))
                 for i in range(len(indiv)):
                     fi = [fits[m][i] for m in range(len(self.fitness_modules))]
-                    if None in fi:
-                        pass
-                    else:
+                    if None not in fi:
                         indiv[i].fitness = self.objective_function(fi, self.weights)
-                        logger.info('Individual {0}: {1}'.format(indiv[i].history_index, indiv[i].fitness))
+                        self.logger.info('Individual {0}: {1}'.format(indiv[i].history_index, indiv[i].fitness))
                 self.output.write(stro)
                 pop.extend(indiv)
                 pop = self.generation_eval(pop)
@@ -190,7 +188,7 @@ class Optimizer():
             convergence = comm.bcast(self.convergence, root=0)
 
         if rank == 0:
-            logger.info('Run algorithm stats')
+            self.logger.info('Run algorithm stats')
             end_signal = self.algorithm_stats(self.population)
         else:
             end_signal = None
@@ -318,7 +316,7 @@ class Optimizer():
         for ind in pop:
             ind.index = index1
             index1 += 1
-        io.write_pop(self, pop)
+        structoptio.write_pop(self, pop)
 
         if self.allenergyfile:
             for ind in pop:
@@ -365,7 +363,7 @@ class Optimizer():
             if self.generation > self.maxgen:
                 self.convergence = True
         if self.convergence:
-            logger.info("Successfully converged!\n")
+            self.logger.info("Successfully converged!\n")
 
         # Flush output to files
         self.output.flush()
@@ -401,7 +399,6 @@ class Optimizer():
 
 
     def generation_eval(self, pop):
-        global logger
         emx = max(ind.energy for ind in pop)
         emn = min(ind.energy for ind in pop)
         for ind in pop:
@@ -411,19 +408,19 @@ class Optimizer():
         # DEBUG: Write relaxed individual
         if 'MA' in self.debug:
             if self.generation > 0:
-                io.write_xyz(self.debugfile, pop[self.nindiv][0], 'First Relaxed Offspring {}'.format(repr(pop[self.nindiv-1].energy)))
+                structoptio.write_xyz(self.debugfile, pop[self.nindiv][0], 'First Relaxed Offspring {}'.format(repr(pop[self.nindiv-1].energy)))
 
                 # DEBUG: Write relaxed ind in solid
                 if self.structure == 'Defect' or self.structure == 'Surface':
-                    io.write_xyz(self.debugfile, pop[self.nindiv].bulki, 'First Relaxed bulki {}'.format(repr(pop[self.nindiv-1].energy)))
+                    structoptio.write_xyz(self.debugfile, pop[self.nindiv].bulki, 'First Relaxed bulki {}'.format(repr(pop[self.nindiv-1].energy)))
                     sols = pop[self.nindiv][0].copy()
                     sols.extend(pop[self.nindiv].bulki)
-                    io.write_xyz(self.debugfile, sols, 'First from Invalid-ind + Bulki '.format(repr(pop[self.nindiv].energy)))
+                    structoptio.write_xyz(self.debugfile, sols, 'First from Invalid-ind + Bulki '.format(repr(pop[self.nindiv].energy)))
                     sols = pop[self.nindiv][0].copy()
                     sols.extend(pop[self.nindiv].bulko)
-                    io.write_xyz(self.debugfile, sols, 'First from Invalid-ind + Bulko {}'.format(repr(pop[self.nindiv].energy)))
+                    structoptio.write_xyz(self.debugfile, sols, 'First from Invalid-ind + Bulko {}'.format(repr(pop[self.nindiv].energy)))
         if self.generation == 0:
-            logger.info('Initializing Bests list')
+            self.logger.info('Initializing Bests list')
             self.BESTS = list()
         if self.best_inds_list:
             self.BESTS = tools.BestInds(pop, self.BESTS, self, writefile = True)
@@ -432,7 +429,7 @@ class Optimizer():
         if 'lambda, mu' not in self.algorithm_type:
             pop = tools.get_best(pop, len(pop))
         if self.fingerprinting:
-            logger.info('Writing fingerprint files')
+            self.logger.info('Writing fingerprint files')
             for one in pop:
                 self.fpfile.write(repr(fingerprinting.fingerprint_dist(pop[0].fingerprint, one.fingerprint))+' '+repr(one.energy)+' ')  # TODO Fix this
             self.fpfile.write('\n')
@@ -440,14 +437,14 @@ class Optimizer():
             self.fpminfile.write(repr(pop[0].energy)+'\n')
         nevals = len(pop)/2
         if self.generation != 0:
-            logger.info('Applying predator')
+            self.logger.info('Applying predator')
             pop = predator_switch(pop, self)
         else:
             self.genrep = 0
             self.minfit = 0
 
         # Evaluate population
-        logger.info('Checking population for convergence')
+        self.logger.info('Checking population for convergence')
         self.check_pop(pop)
 
         # Update general output tracking
@@ -494,11 +491,9 @@ class Optimizer():
         return pop
 
 
-    def generation_set(self, pop, Opti):
-        global logger
-
-        # # Setting up energy calculators from relaxation method
-        # self.calc = setup_energy_calculator(Opti, self.relaxation, True)
+    def generation_set(self, pop):
+        # # Setting up energy calculators from relaxation methods
+        # self.calc = setup_energy_calculator(self.relaxations, True)
         # Set up calculator for fixed region calculations
         # if self.fixed_region:
         #    self.static_calc = self.calc # May need to copy this
@@ -507,7 +502,7 @@ class Optimizer():
         self.files[self.nindiv].write('Generation {}\n'.format(str(self.generation)))
 
         if self.generation == 0:
-            logger.info('Initializing structures')
+            self.logger.info('Initializing structures')
             offspring = self.initialize_structures()
             self.population = offspring
         else:
@@ -533,7 +528,7 @@ class Optimizer():
 
             # DEBUG: Write first child
             if 'MA' in self.debug:
-                io.write_xyz(self.debugfile, offspring[0][0], 'First Child '+
+                structoptio.write_xyz(self.debugfile, offspring[0][0], 'First Child '+
                     repr(offspring[0].history_index))
 
             # Apply mutation to the offspring
@@ -553,25 +548,24 @@ class Optimizer():
             self.mutattempts = mutattempts
             # DEBUG: Write first offspring
             if 'MA' in self.debug:
-                io.write_xyz(self.debugfile, muts[0][0], 'First Mutant {}\n'.format(repr(muts[0].history_index)))
+                structoptio.write_xyz(self.debugfile, muts[0][0], 'First Mutant {}\n'.format(repr(muts[0].history_index)))
 
         return offspring
 
 
     def initialize_structures(self):
-        global logger
         self.output.write('\n----Initialize Structures----\n')
         # self.logger.info('Initializing Structures')
         # Initialize Population - Generate a list of ncluster individuals
         # Set bulk and index atributes
         if self.restart:
-            logger.info('Loading previous population')
+            self.logger.info('Loading previous population')
             pop = generate.get_restart_population(self)
         else:
-            logger.info('Generating new population')
+            self.logger.info('Generating new population')
             pop = generate.get_population(self)
         if 'MA' in self.debug:
-            io.write_xyz(self.debugfile, pop[0][0], 'First Generated Individual')
+            structoptio.write_xyz(self.debugfile, pop[0][0], 'First Generated Individual')
 
         # Use if concentration of interstitials is unknown
         if self.swaplist:
@@ -586,7 +580,7 @@ class Optimizer():
 
         # Write Initial structures to files
         self.output.write('\n---Starting Structures---\n')
-        io.write_pop(self, pop)
+        structoptio.write_pop(self, pop)
 
         # Print number of atoms to Summary file
         if self.structure == 'Defect' or self.structure == 'Surface':
@@ -607,59 +601,46 @@ class Optimizer():
 
 
     def run(self):
-        global logger
         cwd = os.getcwd()
 
-        try:
-            self.algorithm_run()
+        self.algorithm_run()
 
-            if self.postprocessing:
-                logger.info('Running Post-processing')
+        if self.postprocessing:
+            self.logger.info('Running Post-processing')
+            path = os.path.join(os.getcwd(), '{0}-rank0'.format(self.filename))
+            os.chdir(path)
+            if self.genealogytree:
+                pp.read_output(os.getcwd(), genealogytree=True, natoms=self.natoms)
+            else:
+                pp.read_output(os.getcwd(), genealogytree=False, natoms=self.natoms)
+            os.chdir(cwd)
+        if self.lattice_concentration:
+            if self.structure == 'Defect':
+                self.logger.info('Running lattice concentration check')
                 path = os.path.join(os.getcwd(), '{0}-rank0'.format(self.filename))
                 os.chdir(path)
-                if self.genealogytree:
-                    pp.read_output(os.getcwd(), genealogytree=True, natoms=self.natoms)
+                if self.best_inds_list:
+                    pp.get_lattice_concentration(os.path.join(os.getcwd(), 'Bulkfile.xyz'), os.path.join(os.getcwd(), 'Bests-{}.xyz'.format(self.filename)))
                 else:
-                    pp.read_output(os.getcwd(), genealogytree=False, natoms=self.natoms)
+                    pp.get_lattice_concentration(os.path.join(os.getcwd(), 'Bulkfile.xyz'), os.path.join(os.getcwd(), 'indiv00.xyz'))
                 os.chdir(cwd)
-            if self.lattice_concentration:
-                if self.structure == 'Defect':
-                    logger.info('Running lattice concentration check')
-                    path = os.path.join(os.getcwd(), '{0}-rank0'.format(self.filename))
-                    os.chdir(path)
-                    if self.best_inds_list:
-                        pp.get_lattice_concentration(os.path.join(os.getcwd(), 'Bulkfile.xyz'), os.path.join(os.getcwd(), 'Bests-{}.xyz'.format(self.filename)))
-                    else:
-                        pp.get_lattice_concentration(os.path.join(os.getcwd(), 'Bulkfile.xyz'), os.path.join(os.getcwd(), 'indiv00.xyz'))
-                    os.chdir(cwd)
-
-        except Exception, e:
-            logger.error('Error in execution: {0}'.format(e), exc_info=True)
-            print('********ERROR IN EXECUTION********')
-            print(str(e))
-            print('CLEANING UP FILES')
-            try:
-                self.close_output()
-            except:
-                pass
-            print('EXITING PROGRAM')
 
 
     def read(self, optfile):
-        parameters = io.read_parameter_input(optfile, True)
+        parameters = structoptio.read_parameter_input(optfile, True)
         self.__dict__.update(parameters)
-        outdict = io.restart_output(self)
+        outdict = structoptio.restart_output(self)
         self.__dict__.update(outdict)
         poplist = []
 
         for indfile in self.population:
-            ind = io.read_individual(indfile)
+            ind = structoptio.read_individual(indfile)
             poplist.append(ind)
         self.population = poplist
         bestlist = []
 
         for bestfile in self.BESTS:
-            ind = io.read_individual(bestfile)
+            ind = structoptio.read_individual(bestfile)
             bestlist.append(ind)
         self.BESTS = bestlist
         self.restart = True
@@ -668,9 +649,9 @@ class Optimizer():
 
     def write(self, filename = None, restart = True):
         if filename:
-            io.write_optimizer(self, filename, restart)
+            structoptio.write_optimizer(self, filename, restart)
         else:
-            io.write_optimizer(self, self.optimizerfile, restart)
+            structoptio.write_optimizer(self, self.optimizerfile, restart)
         return
 
 
@@ -678,5 +659,9 @@ class Optimizer():
 if __name__ == "__main__":
     import sys
     input = sys.argv[1]
-    optimizer = Optimizer(input)
+
+    import StructOpt
+    StructOpt.setup(input)
+
+    optimizer = Optimizer()
     optimizer.run()

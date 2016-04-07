@@ -1,12 +1,11 @@
-from StructOpt.io.write_xyz import write_xyz
+from StructOpt.structoptio.write_xyz import write_xyz
 import logging
 import pdb
 
 def crossover_switch(child1, child2, Optimizer):
     """Functions for selecting and pairing individuals
     for crossovers"""
-    #logger = initialize_logger(Optimizer.loggername)
-    logger = logging.getLogger(Optimizer.loggername)
+    logger = logging.getLogger('default')
     if 'CX' in Optimizer.debug:
         debug = True
     else:

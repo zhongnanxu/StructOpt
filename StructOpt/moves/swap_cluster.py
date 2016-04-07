@@ -19,7 +19,7 @@ def swap_cluster(indiv, Optimizer):
     else:
         debug = False
 
-    logger = logging.getLogger(Optimizer.loggername)
+    logger = logging.getLogger('default')
     #logger.info('M:start swap-cluster')
     Optimizer.output.write('swap cluster Mutation performed on individual\n')
     Optimizer.output.write('Index = '+repr(indiv.index)+'\n')
@@ -37,7 +37,7 @@ def swap_cluster(indiv, Optimizer):
 
     lpealist = indiv.lpealist
 
-    atmlist = [] 
+    atmlist = []
 
     atom1 = random.choice(lpealist)
     lpealist.remove(atom1)
