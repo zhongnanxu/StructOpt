@@ -267,16 +267,16 @@ class LAMMPS_eval(object):
         pea = OUT['pea']
         totalsol.set_pbc(True)
         if fx_region:
-            STR+='Energy of fixed region calc = {0}\n'.format(OUT['thermo'][-1]['pe'])
+            STR += 'Energy of fixed region calc = {0}\n'.format(OUT['thermo'][-1]['pe'])
             totalsol.set_calculator(static_calc)
-            OUT=totalsol.calc.calculate(totalsol)
-            totalsol=OUT['atoms']
+            OUT = totalsol.calc.calculate(totalsol)
+            totalsol = OUT['atoms']
             totalsol.set_pbc(True)
-            STR+='Energy of static calc = {0}\n'.format(OUT['thermo'][-1]['pe'])
-        en=OUT['thermo'][-1]['pe']
-        stress=numpy.array([OUT['thermo'][-1][i] for i in ('pxx','pyy','pzz','pyz','pxz','pxy')])*(-1e-4*GPa)
+            STR += 'Energy of static calc = {0}\n'.format(OUT['thermo'][-1]['pe'])
+        en = OUT['thermo'][-1]['pe']
+        stress = numpy.array([OUT['thermo'][-1][i] for i in ('pxx','pyy','pzz','pyz','pxz','pxy')])*(-1e-4*GPa)
         volume = totalsol.get_volume()
         pressure = 0 ## should be modified if enthalpy_fit
-        energy=en
-        STR+='Energy per atom = {0}\n'.format(energy/len(totalsol))
+        energy = en
+        STR += 'Energy per atom = {0}\n'.format(energy/len(totalsol))
         return totalsol, pea, energy, pressure, volume, STR
