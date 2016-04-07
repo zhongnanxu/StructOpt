@@ -10,25 +10,28 @@ def gen_pop_sphere(atomlist,size,crystal=False):
             ('Sym2',int(concentration2), float(mass2),float(chempotential2)),...]
         size = Float of length of side of cube within which to generate atoms
         crystal = False/List of crystal cell shape options
-            list('cubic','orthorhombic','tetragonal','hexagonal','monoclinic','triclinic')
+            list('cubic','orthorhombic','tetragonal',
+                 'hexagonal','monoclinic','triclinic')
             cell shape will be adjusted accordingly
     Outputs:
         Returns individual of class Atoms (see ase manual for info on Atoms class)
-        and if crystal list provided also outputs combined string with output information
+        and if crystal list provided also outputs 
+        combined string with output information
     """
     size = float(size)
     indiv=Atoms()
     indiv.set_cell([size,size,size])
     # Get list of atom types for all atoms in cluster
-    for s,c,m,u in atomlist:
+    for s, c, m, u in atomlist:
         if c > 0:
             for i in range(c):
                 r = random.random()*size/2.0
                 d = [random.uniform(-1.0,1.0) for j in range(3)]
                 u = [d[j]/numpy.linalg.norm(d) for j in range(3)]
                 pos = [r*u[j]+size/2.0 for j in range(3)]
-                at=Atom(symbol=s,position=pos)
+                at = Atom(symbol=str(s), position=pos)
                 indiv.append(at)
+                             
     if crystal:
         stro=''
         natoms=sum([c for s,c,m,u in atomlist])

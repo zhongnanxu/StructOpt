@@ -26,7 +26,7 @@ def gen_pop_box(atomlist, size, crystal=False):
         if c > 0:
             for i in range(c):
                 pos = [random.uniform(0, size) for j in range(3)]
-                at = Atom(symbol = str(s), position = pos)
+                at = Atom(symbol=str(s), position=pos)
                 indiv.append(at)
 
     if not crystal:
