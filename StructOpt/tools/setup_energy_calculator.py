@@ -41,27 +41,27 @@ def setup_energy_calculator(Optimizer, mod, relax):
         elif args["pair_style"] == 'eam':
             if debug:
                 logger.info('Setting up LAMMPS calculator with EAM potential')
-            pair_coeff = [ '* * {0}'.format(args["pot_file"])]
+            pair_coeff = ['* * {0}'.format(args["pot_file"])]
             parameters = {'pair_style': args["pair_style"],
-                          'pair_coeff': pair_coeff }
+                          'pair_coeff': pair_coeff}
             filesL = [args["pot_file"]]
 
         elif args["pair_style"] == 'meam':
             if debug:
                 logger.info('Setting up LAMMPS calculator with MEAM potential')
-            parcoff = '* * {0}'.format(Optimizer.pot_file)
+            parcoff = '* * {0}'.format(args['pot_file'])
             if len(atomlist) > 1:
                 for one in atomlist:
                     parcoff += ' {0}'.format(one[0])
-                parcoff += ' {0}'.format(Optimizer.meam_param_file)
+                parcoff += ' {0}'.format(args['meam_param_file'])
                 for one in atomlist:
                     parcoff += ' {0}'.format(one[0])
             else:
                 parcoff += ' {0} NULL {0}'.format(atomlist[0][0])
             pair_coeff = [parcoff]
-            parameters = { 'pair_style' : Optimizer.pair_style,
-                           'pair_coeff' : pair_coeff }
-            filesL = [Optimizer.pot_file]
+            parameters = {'pair_style': args["pair_style"],
+                          'pair_coeff': pair_coeff }
+            filesL = [args["pot_file"]]
 
         elif args["pair_style"] == 'eam/fs':
             if debug:
