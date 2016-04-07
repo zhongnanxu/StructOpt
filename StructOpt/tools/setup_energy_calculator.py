@@ -21,6 +21,7 @@ def setup_energy_calculator(Optimizer, mod, relax):
         args = json.load(open('lammps_inp.json'))
         atomlist = Optimizer.atomlist
         atomlist = sorted(atomlist, key = lambda symbol: symbol[0])
+        
         if args["pair_style"] == 'tersoff':
             if debug:
                 logger.info('Setting up LAMMPS calculator with Tersoff potential')
@@ -32,15 +33,36 @@ def setup_energy_calculator(Optimizer, mod, relax):
             if len(atomlist) > 1:
                 for i in range(len(atomlist)-1):
                     mass.append('{0} {1}'.format(i+2, atomlist[i+1][2]))
-            parameters = { 'pair_style' : args["pair_style"], \
-            'pair_coeff' : pair_coeff , 'mass' : mass }
-            filesL = [ args["pot_file"] ]
+            parameters = {'pair_style': args["pair_style"],
+                          'pair_coeff': pair_coeff,
+                          'mass' : mass}
+            filesL = [args["pot_file"]]
+
         elif args["pair_style"] == 'eam':
             if debug:
                 logger.info('Setting up LAMMPS calculator with EAM potential')
             pair_coeff = [ '* * {0}'.format(args["pot_file"])]
-            parameters = { 'pair_style' : args["pair_style"], 'pair_coeff' : pair_coeff }
-            filesL = [ args["pot_file"] ]
+            parameters = {'pair_style': args["pair_style"],
+                          'pair_coeff': pair_coeff }
+            filesL = [args["pot_file"]]
+
+        elif args["pair_style"] == 'meam':
+            if debug:
+                logger.info('Setting up LAMMPS calculator with MEAM potential')
+            parcoff = '* * {0}'.format(Optimizer.pot_file)
+            if len(atomlist) > 1:
+                for one in atomlist:
+                    parcoff += ' {0}'.format(one[0])
+                parcoff += ' {0}'.format(Optimizer.meam_param_file)
+                for one in atomlist:
+                    parcoff += ' {0}'.format(one[0])
+            else:
+                parcoff += ' {0} NULL {0}'.format(atomlist[0][0])
+            pair_coeff = [parcoff]
+            parameters = { 'pair_style' : Optimizer.pair_style,
+                           'pair_coeff' : pair_coeff }
+            filesL = [Optimizer.pot_file]
+
         elif args["pair_style"] == 'eam/fs':
             if debug:
                 logger.info('Setting up LAMMPS calculator with EAM/FS potential')
@@ -54,7 +76,8 @@ def setup_energy_calculator(Optimizer, mod, relax):
                     mass.append('{0} {1}'.format(i+2, atomlist[i+1][2]))
             parameters = { 'pair_style' : args["pair_style"],
             'pair_coeff' : pair_coeff , 'mass' : mass }
-            filesL = [ args["pot_file"] ]
+            filesL = [args["pot_file"]]
+
         elif args["pair_style"] == 'eam/alloy':
             if debug:
                 logger.info('Setting up LAMMPS calculator with EAM/ALLOY potential')
@@ -62,8 +85,10 @@ def setup_energy_calculator(Optimizer, mod, relax):
             for one in atomlist:
                 parcoff += ' {0}'.format(one[0])
             pair_coeff = [parcoff]
-            parameters = { 'pair_style' : args["pair_style"], 'pair_coeff' : pair_coeff}
-            filesL = [ args["pot_file"] ]
+            parameters = {'pair_style': args["pair_style"],
+                          'pair_coeff': pair_coeff}
+            filesL = [args["pot_file"]]
+
         elif args["pair_style"] == 'eam/cd':
             if debug:
                 logger.info('Setting up LAMMPS calculator with EAM/CD potential')
@@ -71,8 +96,10 @@ def setup_energy_calculator(Optimizer, mod, relax):
             for one in atomlist:
                 parcoff += ' {0}'.format(one[0])
             pair_coeff = [parcoff]
-            parameters = { 'pair_style' : args["pair_style"], 'pair_coeff' : pair_coeff}
-            filesL = [ args["pot_file"] ]
+            parameters = {'pair_style': args["pair_style"],
+                          'pair_coeff': pair_coeff}
+            filesL = [args["pot_file"]]
+
         elif args["pair_style"] == 'edip':
             if debug:
                 logger.info('Setting up LAMMPS calculator with EDIP potential')
@@ -84,9 +111,12 @@ def setup_energy_calculator(Optimizer, mod, relax):
             if len(atomlist) > 1:
                 for i in range(len(atomlist)-1):
                     mass.append('{0} {1}'.format(i+2, atomlist[i+1][2]))
-            parameters = { 'pair_style' : args["pair_style"], \
-            'pair_coeff' : pair_coeff , 'mass' : mass, 'newton': 'on' }
-            filesL = [ args["pot_file"] ]
+            parameters = {'pair_style': args["pair_style"], 
+                          'pair_coeff': pair_coeff ,
+                          'mass': mass,
+                          'newton': 'on'}
+            filesL = [args["pot_file"]]
+
         elif args["pair_style"] == 'bop':
             if debug:
                 logger.info('Setting up LAMMPS calculator with BOP potential')
@@ -99,9 +129,12 @@ def setup_energy_calculator(Optimizer, mod, relax):
             if len(atomlist) > 1:
                 for i in range(len(atomlist)-1):
                     mass.append('{0} {1}'.format(i+2, atomlist[i+1][2]))
-            parameters = { 'pair_style' : args["pair_style"], \
-            'pair_coeff' : pair_coeff, 'mass' : mass, 'newton': 'on' }
-            filesL = [ args["pot_file"] ]
+            parameters = {'pair_style': args["pair_style"],
+                          'pair_coeff': pair_coeff,
+                          'mass': mass,
+                          'newton': 'on'}
+            filesL = [args["pot_file"]]
+
         elif args["pair_style"] == 'buck':
             if debug:
                 logger.info('Setting up LAMMPS calculator with Buckingham potential')
@@ -111,10 +144,11 @@ def setup_energy_calculator(Optimizer, mod, relax):
             if len(atomlist) > 1:
                 for i in range(len(atomlist)-1):
                     mass.append('{0} {1}'.format(i+2, atomlist[i+1][2]))
-            parameters = {'pair_style': pairstyle, 'pair_coeff': pair_coeff, \
-             'mass' : mass }
+            parameters = {'pair_style': pairstyle,
+                          'pair_coeff': pair_coeff,
+                          'mass': mass }
             filesL = None
-        # # ZS
+
         elif 'lj' in args["pair_style"]:
             if debug:
                 logger.info('Setting up LAMMPS calculator with Lennard Jones potential')
@@ -132,8 +166,9 @@ def setup_energy_calculator(Optimizer, mod, relax):
             if len(atomlist) > 1:
                 for i in range(len(atomlist)-1):
                     mass.append('{0} {1}'.format(i+2, atomlist[i+1][2]))
-            parameters = { 'pair_style' : pairstyle, \
-            'pair_coeff' : pair_coeff, 'mass' : mass}
+            parameters = {'pair_style': pairstyle,
+                          'pair_coeff': pair_coeff,
+                          'mass': mass}
             filesL = None
 
         elif args["pair_style"] == 'other':
@@ -162,6 +197,7 @@ def setup_energy_calculator(Optimizer, mod, relax):
                 filesL = [ args["pot_file"] ]
             else:
                 filesL = None
+
         else:
             if debug:
                 logger.warn('No LAMMPS potential recognized. Setting up LAMMPS calculator with Lennard Jones potential')
@@ -180,6 +216,7 @@ def setup_energy_calculator(Optimizer, mod, relax):
         if not relax:
             parameters['minimize'] = "1e-8 1e-8 0 0"
         parameters['thermosteps'] = args["thermo_steps"]
+
         if args["keep_files"]:
             if debug:
                 logger.info('Setting up directory for keeping LAMMPS files')
@@ -195,29 +232,28 @@ def setup_energy_calculator(Optimizer, mod, relax):
                             logger.info('Making directory: {0}'.format(os.path.join(path, 'LAMMPSFiles')))
             except:
                 rank = 0
+
             if filesL != None:
                 path = os.path.join(os.getcwd(), '{0}-rank{1}'.format(Optimizer.filename, rank))
                 if Optimizer.parallel and ('Island_Method' not in Optimizer.algorithm_type):
                     tmpdir = os.path.join(os.path.join(path, 'LAMMPSFiles'), 'rank-{0}'.format(real_rank))
-                    calc = LAMMPS(parameters = parameters, files = filesL, \
-                        keep_tmp_files = True, tmp_dir = tmpdir)
+                    calc = LAMMPS(parameters= parameters, files=filesL,
+                                  keep_tmp_files=True, tmp_dir=tmpdir)
                 else:
-                    calc = LAMMPS(parameters = parameters, files = filesL, \
-                        keep_tmp_files = True, tmp_dir = os.path.join(path, 'LAMMPSFiles'))
+                    calc = LAMMPS(parameters=parameters,files=filesL,
+                                  keep_tmp_files=True, tmp_dir=os.path.join(path, 'LAMMPSFiles'))
             else:
                 path = os.path.join(os.getcwd(), '{0}-rank{1}'.format(Optimizer.filename, rank))
                 # calc = LAMMPS(parameters = parameters, keep_tmp_files = True, \
                 #    tmp_dir = os.path.join(path, 'LAMMPSFiles'))
                 if Optimizer.parallel and ('Island_Method' not in Optimizer.algorithm_type):
                     tmpdir = os.path.join(os.path.join(path, 'LAMMPSFiles'), 'rank-{0}'.format(real_rank))
-                    calc = LAMMPS(parameters = parameters,  \
-                        keep_tmp_files = True, tmp_dir = tmpdir)
+                    calc = LAMMPS(parameters=parameters, keep_tmp_files=True, tmp_dir=tmpdir)
                 else:
-                    calc = LAMMPS(parameters = parameters,  \
-                        keep_tmp_files = True, tmp_dir = os.path.join(path, 'LAMMPSFiles'))
+                    calc = LAMMPS(parameters=parameters, keep_tmp_files=True, tmp_dir=os.path.join(path, 'LAMMPSFiles'))
         else:
             if filesL != None:
-                calc = LAMMPS(parameters = parameters, files = filesL)
+                calc = LAMMPS(parameters=parameters, files=filesL)
             else:
-                calc = LAMMPS(parameters = parameters)
+                calc = LAMMPS(parameters=parameters)
         return calc

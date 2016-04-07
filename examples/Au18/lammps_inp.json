@@ -1,9 +1,9 @@
 {
- "keep_files": false, 
+ "keep_files": true, 
  "min_style": "cg\nmin_modify line quadratic", 
  "minimize": "1e-8 1e-8 5000 10000", 
  "pair_style": "eam", 
  "parallel": true, 
- "pot_file": "Au_u3.eam", 
+ "pot_file": "/home/zxu/research/StructOpt/examples/Au18/Au_u3.eam", 
  "thermo_steps": 1000
 }
