@@ -134,15 +134,15 @@ class Optimizer():
                 pop = self.population
                 offspring = self.generation_set(pop)
                 # Identify the individuals with an invalid fitness
-                indiv = [ind for ind in offspring if ind.fitness == 0]
+                individuals = [ind for ind in offspring if ind.fitness == 0]
                 # Evaluate the individuals with invalid fitness
                 self.output.write('\n--Evaluate Structures--\n')
             else:
-                indiv = []
+                individuals = []
 
             stro = ''
             if rank == 0:
-                indiv, stro = StructOpt.tools.check_structures(self, indiv)
+                individuals, stro = StructOpt.tools.check_structures(self, individuals)
 
             # Be careful here, the relaxations will update the indiv list
             # If there are multiple relaxations, they should be run in order,
@@ -152,17 +152,17 @@ class Optimizer():
             # If not, it needs to be updated!
             for m in range(len(self.relaxation_modules)):
                 stro += 'Relaxing structure using {}\n'.format(self.relaxations[m])
-                relax_out = self.relaxation_modules[m].evaluate_fitness(self, indiv, True)
+                relax_out = self.relaxation_modules[m].evaluate_fitness(self, individuals, True)
 
                 if rank == 0:
-                    for i in range(len(indiv)):
-                        indiv[i] = relax_out[i][0]
+                    for i in range(len(individuals)):
+                        individuals[i] = relax_out[i][0]
                         stro += relax_out[i][1]
 
             fits = []
             for m in range(len(self.fitness_modules)):
                 stro += 'Evaluating fitness with module {}\n'.format(self.modules[m])
-                out_part = self.fitness_modules[m].evaluate_fitness(self, indiv)
+                out_part = self.fitness_modules[m].evaluate_fitness(self, individuals)
                 fm = []
                 for i in range(len(out_part)):
                     fm.append(out_part[i][0])
@@ -171,13 +171,13 @@ class Optimizer():
 
             if rank == 0:
                 self.logger.info('Individual fitnesses of Generation # {0}'.format(self.generation))
-                for i in range(len(indiv)):
+                for i in range(len(individuals)):
                     fi = [fits[m][i] for m in range(len(self.fitness_modules))]
                     if None not in fi:
-                        indiv[i].fitness = self.objective_function(fi, self.weights)
-                        self.logger.info('Individual {0}: {1}'.format(indiv[i].history_index, indiv[i].fitness))
+                        individuals[i].fitness = self.objective_function(fi, self.weights)
+                        self.logger.info('Individual {0}: {1}'.format(individuals[i].history_index, individuals[i].fitness))
                 self.output.write(stro)
-                pop.extend(indiv)
+                pop.extend(individuals)
                 pop = self.generation_eval(pop)
                 self.write()
             convergence = comm.bcast(self.convergence, root=0)
@@ -394,12 +394,6 @@ class Optimizer():
 
 
     def generation_eval(self, pop):
-        emx = max(ind.energy for ind in pop)
-        emn = min(ind.energy for ind in pop)
-        for ind in pop:
-            ind.tenergymx = emx
-            ind.tenergymin = emn
-
         # DEBUG: Write relaxed individual
         if 'MA' in self.debug:
             if self.generation > 0:
