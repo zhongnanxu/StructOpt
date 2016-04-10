@@ -1,6 +1,6 @@
 import copy
 from ase import Atom, Atoms
-from StructOpt.structoptio.write_individual import write_individual
+from StructOpt.fileio import write_individual
 
 class Individual(object):
     """Defines class object individual for use in evolution"""

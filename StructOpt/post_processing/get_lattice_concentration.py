@@ -1,8 +1,8 @@
 import os
 import math
 import numpy
-from StructOpt.structoptio import read_xyz
-from StructOpt.tools import calc_dist
+import StructOpt.fileio
+import StructOpt.tools
 
 def get_lattice_concentration(bulkfile,indivfile):
     """Function to identify the lattice concentration of atoms in a bulk structure compared to a
@@ -16,7 +16,7 @@ def get_lattice_concentration(bulkfile,indivfile):
     ** Note: Currently limited to cubic structures **
     """
     # Load Bulk Solid File
-    solid=read_xyz(bulkfile)
+    solid = StructOpt.fileio.read_xyz(bulkfile)
 
     # Get lattice sites for bulk
 
@@ -27,7 +27,7 @@ def get_lattice_concentration(bulkfile,indivfile):
         dist=[]
         for j in range(len(solid)):
             if i !=j:
-                d = calc_dist(solid[i],solid[j])
+                d = StructOpt.tools.calc_dist(solid[i],solid[j])
                 dist.append(d)
         distmin.append(min(dist))
     nndist=sum([one for one,x,y,z in distmin])/len(distmin)
@@ -68,7 +68,7 @@ def get_lattice_concentration(bulkfile,indivfile):
     n=0
     while True:
         try:
-            indiv=read_xyz(indivfile,n)
+            indiv = StructOpt.fileio.read_xyz(indivfile,n)
         except:
             break
         indiv.translate([nnxd/2.0,nnyd/2.0,nnzd/2.0])

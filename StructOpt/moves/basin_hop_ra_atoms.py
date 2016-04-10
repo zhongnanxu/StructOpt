@@ -1,7 +1,7 @@
 import copy
 import random
 import numpy
-from StructOpt.tools import fitness_switch
+from StructOpt.switches.fitness_switch import fitness_switch
 from StructOpt.moves.atoms_add import atoms_add
 from StructOpt.moves.atoms_remove import atoms_remove
 

@@ -1,5 +1,5 @@
 from ase import Atoms, Atom
-from StructOpt.structoptio.write_xyz import write_xyz
+from StructOpt.fileio.write_xyz import write_xyz
 
 def write_pop(Optimizer,pop):
     """

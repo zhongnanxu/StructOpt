@@ -2,7 +2,7 @@ from matplotlib import pyplot as plt
 from matplotlib import ticker
 from StructOpt.tools.StemCalc import ConvStem
 from StructOpt import Optimizer
-from StructOpt import io
+import StructOpt.fileio
 import  numpy as np
 
 aber=[[0,0],[0,0],[22.56,-20.1],[22.08,-7.5],[0.1198,0],[0.9018,-170.1],[0.04964,20.9],[28.43,-120.6],[11.84,153.8],[8.456,76.1],[0.622,0],[2.811,-125.5]]
@@ -23,8 +23,8 @@ fileobj.close()
 #plt.imshow(A.psf)
 #plt.show()
 
-Au=io.read_xyz('Output-rank0/indiv00.xyz',-1)
-#Au=io.read_xyz('STEM_ref',0)
+Au=StructOpt.fileio.read_xyz('Output-rank0/indiv00.xyz',-1)
+#Au=StructOpt.fileio.read_xyz('STEM_ref',0)
 imAu = A.get_image(A.psf, Au, autostemparameters['Slice size'], autostemparameters['Pixels'])
 IPlot = imAu.T
 plt.imshow(IPlot,origin="lower",cmap = plt.get_cmap('hot'))

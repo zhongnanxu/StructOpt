@@ -1,7 +1,7 @@
 import os
 from ase import Atom, Atoms
 from ase.io import read
-from StructOpt.structoptio import read_xyz, write_xyz
+import StructOpt.fileio
 
 def gen_solid(solidfile,solidcell,outfilename,calc=False,calcmeth=None):
     """Function to load a bulk solid from a file for use in Defect structure optimization
@@ -16,7 +16,7 @@ def gen_solid(solidfile,solidcell,outfilename,calc=False,calcmeth=None):
         energy and string if calc is not false
     """
     try:
-        sol = read_xyz(solidfile)
+        sol = StructOpt.fileio.read_xyz.read_xyz(solidfile)
     except Exception as e1:
         try:
             sol = read(solidfile)
@@ -47,9 +47,9 @@ def gen_solid(solidfile,solidcell,outfilename,calc=False,calcmeth=None):
             PureBulkEnpa = 0
         os.chdir(cwd)
         # Write bulk file to directory
-        write_xyz(outfilename,sol,PureBulkEnpa)
+        StructOpt.fileio.write_xyz.write_xyz(outfilename,sol,PureBulkEnpa)
         return sol, PureBulkEnpa, stro
     else:
         # Write bulk file to directory
-        write_xyz(outfilename,sol,'Pure Bulk')
+        StructOpt.fileio.write_xyz.write_xyz(outfilename,sol,'Pure Bulk')
         return sol

@@ -1,5 +1,5 @@
 import random
-from StructOpt.tools.StemCalc import ConvStem
+#from StructOpt.tools.StemCalc import ConvStem
 from ase import Atoms,Atom
 import math
 from math import fabs, sqrt, acos, pi, atan

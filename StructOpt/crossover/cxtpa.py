@@ -88,5 +88,5 @@ def cxtpa(ind1, ind2, Optimizer):
             print('DEBUG CX: Individual 1 has {} atoms of structure {}'.format(len([atm for atm in indi1n if atm.symbol == s]), s))
             print('DEBUG CX: Individual 2 has {} atoms of structure {}'.format(len([atm for atm in indi2n if atm.symbol == s]), s))
         print('DEBUG CX: Number of atoms in Individual 1 = {}'.format(len(indi1n)))
-        print('DEBUG CX: Number of atoms in Individual 2 = {}'.format(, len(indi2n)))
+        print('DEBUG CX: Number of atoms in Individual 2 = {}'.format(len(indi2n)))
     return ind1, ind2

@@ -2,8 +2,7 @@ import matplotlib
 from matplotlib import pyplot as plt
 from matplotlib import ticker
 from StructOpt.tools.StemCalc import ConvStem
-from StructOpt import Optimizer
-from StructOpt import io
+import StructOpt.fileio
 import numpy
 import ast
 fp = open('structoptinput.txt','r')
@@ -13,7 +12,7 @@ for i in range(len(data)):
 data=' '.join(data)
 data='{'+data+'}'
 parameters = ast.literal_eval(data)
-Au=io.read_xyz('STEM_ref.xyz',0)
+Au=StructOpt.fileio.read_xyz('STEM_ref.xyz',0)
 
 fileobj = open(parameters['psf'],'r')
 lines = fileobj.readlines()

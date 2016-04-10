@@ -54,6 +54,6 @@ def mutation_dups_adapt_stem(pop, Optimizer):
         outs = find_stem_coeff(Optimizer, indiv)
         ind = outs[1]
         Optimizer.stem_coeff = outs[0]
-        STR += 'Readjusting STEM Coeff = {0}'.format(Optimizer.stem_coeff))
+        STR += 'Readjusting STEM Coeff = {0}'.format(Optimizer.stem_coeff)
 
     return pop, STR

@@ -2,7 +2,7 @@ import random
 import numpy
 from ase import Atom, Atoms
 from ase.calculators.neighborlist import NeighborList
-from StructOpt.structoptio import write_xyz
+from StructOpt.fileio import write_xyz
 
 def newclus(ind1, ind2, Optimizer):
     """Select a box in the cluster configuration"""
@@ -58,7 +58,7 @@ def newclus(ind1, ind2, Optimizer):
             r = r*0.8
 
     if debug:
-        print('Neighborsize of box = {}'format(repr(r)))
+        print('Neighborsize of box = {}'.format(repr(r)))
         print('Position in solid1 = {}'.format(repr(pt1.position)))
         print('Position in solid2 = {}'.format(repr(pt2.position)))
 

@@ -1,6 +1,6 @@
 from StructOpt.tools import eval_energy
 from StructOpt.fitness import totalenfit
-from StructOpt.structoptio.write_xyz import write_xyz
+from StructOpt.fileio.write_xyz import write_xyz
 import logging
 import math
 import os
