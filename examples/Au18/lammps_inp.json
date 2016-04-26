@@ -4,6 +4,6 @@
  "minimize": "1e-8 1e-8 5000 10000", 
  "pair_style": "eam", 
  "parallel": true, 
- "pot_file": "/home/zxu/research/StructOpt/examples/Au18/Au_u3.eam", 
+ "pot_file": "/home/maldonis/USIT/StructOpt/examples/Au18/Au_u3.eam", 
  "thermo_steps": 1000
 }

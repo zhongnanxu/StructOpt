@@ -43,56 +43,56 @@ class FEMSIM_eval(object):
             self.args[key] = value
 
     def evaluate_fitness(self, Optimizer, individ):
+        logger = logging.getLogger('by-rank')
         rank = MPI.COMM_WORLD.Get_rank()
         out = []
         if rank==0:
             femsimfiles = '{filename}-rank0/FEMSIMFiles'.format(filename=Optimizer.filename)
-            try:
+            if not os.path.exists(femsimfiles):
                 os.mkdir(femsimfiles)
-            except OSError:
-                pass
 
+            commands = []
+            indiv_folders = []
+            bases = []
             for i in range(len(individ)):
-                indiv_folder = '{filename}-rank0/FEMSIMFiles/Individual{i}'.format(filename=Optimizer.filename,i=i)
-                try:
-                    os.mkdir(indiv_folder)
-                except OSError:
-                    pass
-                if not os.path.isfile(os.path.join(indiv_folder,self.args['vk_data_filename'])):
-                    shutil.copy(self.args['vk_data_filename'], os.path.join(indiv_folder,self.args['vk_data_filename']))
-                cwd = os.getcwd()
-                os.chdir(indiv_folder)
-                out.append(self.evaluate_indiv(Optimizer, individ[i], i))
-                os.chdir(cwd)
+                indiv_folder, paramfilename, base = self.setup_individual_evaluation(Optimizer, individ[i], i)
+                command = '-wdir {dir} {femsim_command} {base} {paramfilename}'.format(dir=indiv_folder, femsim_command=os.getenv('FEMSIM_COMMAND'), base=base, paramfilename=paramfilename)
+                commands.append(command)
+                indiv_folders.append(indiv_folder)
+                bases.append(base)
+            self.run(commands)
+
+            chisqs = []
+            for i, folder in enumerate(indiv_folders):
+                vk = self.get_vk_data(folder, bases[i])
+                chisq = self.chi2(vk)
+                chisqs.append(chisq)
+                logger.info('Individual {0} for FEMSIM evaluation had chisq {1}'.format(i, chisq))
+            out = [(chisq, '') for chisq in chisqs]
+            print(chisqs)
 
         out = MPI.COMM_WORLD.bcast(out, root=0)
         return out
 
-    def evaluate_indiv(self, Optimizer, individ, i):
+    def setup_individual_evaluation(self, Optimizer, individ, i):
 
         logger = logging.getLogger('by-rank')
 
-        logger.info('Received individual HI = {0} for FEMSIM evaluation'.format(
-            individ.history_index))
+        logger.info('Received individual HI = {0} for FEMSIM evaluation'.format(individ.history_index))
 
+        # Make individual folder and copy files there
+        indiv_folder = '{filename}-rank0/FEMSIMFiles/Individual{i}'.format(filename=Optimizer.filename, i=i)
+        if not os.path.exists(indiv_folder):
+            os.mkdir(indiv_folder)
+        if not os.path.isfile(os.path.join(indiv_folder, self.args['vk_data_filename'])):
+            shutil.copy(self.args['vk_data_filename'], os.path.join(indiv_folder, self.args['vk_data_filename']))
 
         paramfilename = self.args['parameter_filename']
-        paramfilename = paramfilename.split('.')
-        paramfilename[-2] = '{head}_{i}'.format(head=paramfilename[-2], i=individ.history_index)
-        paramfilename = '.'.join(paramfilename)
+        shutil.copy(paramfilename, indiv_folder)  # Not necessary?
+        self.write_paramfile(os.path.join(indiv_folder, paramfilename), Optimizer, individ, i)
 
-        self.write_paramfile(paramfilename, Optimizer, individ, i)
-
-        base = 'indiv{i}'.format(i=individ.history_index)
-        self.run_femsim(base=base, paramfilename=paramfilename)
-        vk = self.get_vk_data(base)
-
-        chisq = self.chi2(vk)
-        logger.info('M:finish chi2 evaluation, chi2 = {0}'.format(chisq))
-        stro = 'Evaluated individual {0}\n'.format(individ.history_index)
-
-        return chisq, stro
-
+        base = 'indiv{i}'.format(i=individ.history_index) # TODO Add generation number
+        return indiv_folder, paramfilename, base
 
     def write_paramfile(self, paramfilename, Optimizer, individ, i):
         # Write structure file to disk so that the fortran femsim can read it in
@@ -102,16 +102,19 @@ class FEMSIM_eval(object):
 
         with open(paramfilename, 'w') as f:
             f.write('# Parameter file for generation {gen}, individual {i}\n'.format(gen=Optimizer.generation, i=individ.history_index))
-            f.write('{}\n'.format('structure_{i}.xyz'.format(i=individ.history_index)))
+            f.write('{}\n'.format(os.path.join(os.getcwd(), 'structure_{i}.xyz'.format(i=individ.history_index))))
             f.write('{}\n'.format(self.args['vk_data_filename']))
             f.write('{}\n'.format(self.args['Q']))
             f.write('{} {} {}\n'.format(self.args['nphi'], self.args['npsi'], self.args['ntheta']))
             f.write('{}\n'.format(self.args['thickness_scaling_factor']))
 
 
-
-    def run_femsim(self, base, paramfilename):
-        self.run_subproc('{femsim_command} {base} {paramfilename}'.format(femsim_command=os.getenv('FEMSIM_COMMAND'),base=base, paramfilename=paramfilename))
+    def run(self, commands):
+        commands = ['-np 1 {command}'.format(command=command) for command in commands]  # TODO correctly allocate cores
+        command = 'mpiexec {}'.format(' : '.join(commands))
+        print("RUNNING FEMSIM!:")
+        print(command)
+        self.run_subproc(command)
 
 
     def run_subproc(self, args):
@@ -132,17 +135,8 @@ class FEMSIM_eval(object):
             print("{0} failed: {1}".format(args, perr))
         return ''.join(output)
 
-    def get_vk_data(self, base):
-        # Sleep until we can get the file
-        # There may be in issue if the file is only partially written to when the open command gets run...
-        # Let's hope that doesn't happen. If it does, I will convert this to a `if f in os.listdir()` command, followed by another short sleep.
-        while True:
-            try:
-                data = open('vk_initial_{base}.txt'.format(base=base)).readlines()
-                break
-            except IOError:
-                time.sleep(5.0)
-        #data.pop(0)  # I don't see the comment line in the vk output data
+    def get_vk_data(self, folder, base):
+        data = open(os.path.join(folder, 'vk_initial_{base}.txt'.format(base=base))).readlines()
         data = [line.strip().split()[:2] for line in data]
         data = [[float(line[0]), float(line[1])] for line in data]
         vk = np.array([vk for k, vk in data])
