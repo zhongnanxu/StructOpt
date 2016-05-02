@@ -3,7 +3,7 @@ from ase import Atom, Atoms
 from ase.optimize import BFGS
 from ase.units import GPa
 from ase.calculators.neighborlist import NeighborList
-from StructOpt.structoptio.write_xyz import write_xyz
+from StructOpt.fileio.write_xyz import write_xyz
 from StructOpt.tools.find_defects import find_defects
 from StructOpt.tools.check_cell_type import check_cell_type
 from StructOpt.fingerprinting import get_fingerprint

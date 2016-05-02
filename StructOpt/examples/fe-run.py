@@ -1,7 +1,7 @@
 from StructOpt import Optimizer
 from ase.lattice.cubic import BodyCenteredCubic as BCC
 from ase import Atoms,Atom
-from StructOpt.structoptio.write_xyz import write_xyz
+from StructOpt.fileio.write_xyz import write_xyz
 import random
 import numpy
 import os

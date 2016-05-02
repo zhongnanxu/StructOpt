@@ -2,7 +2,7 @@ import random
 import numpy
 from ase import Atom, Atoms
 
-def read_Ltraj_file(filename,atomlist=False,timestep=-1,atomlist=False,ratomlist=False,writefile=False):
+def read_Ltraj_file(filename,atomlist=False,timestep=-1,ratomlist=False,writefile=False):
     """Function to convert LAMMPS Trajectory file to ASE atoms object
     Inputs:
         filename = string of LAMMPS Trajectory file to read

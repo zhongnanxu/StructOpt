@@ -12,6 +12,8 @@ import matplotlib.cm  as cm
 from PIL import Image, ImageChops
 from ase.io import write
 from ase import Atom, Atoms
+import StructOpt.fileio
+from StructOpt.tools.eval_energy import eval_energy
 import scipy.interpolate
 import scipy.special
 import scipy.misc
@@ -195,8 +197,7 @@ class STEM_eval(object):
 
     def stemref2image(self,stemref):
         if stemref.split('/')[-1].endswith('xyz'): # xyz coordinates mean a phantom
-            from StructOpt import io
-            atoms_ref=io.read_xyz(stemref,0)
+            atoms_ref = StructOpt.fileio.read_xyz(stemref,0)
             return self.get_image(self.psf,atoms_ref,self.slice_size,self.pixels)
         else: # experimental image
             fileobj = open(stemref.split('/')[-1], 'r')
@@ -680,7 +681,6 @@ class STEM_eval(object):
         return p
 
     def find_stem_coeff(self, Optimizer, indiv):
-        from StructOpt.tools.eval_energy import eval_energy
         outs = eval_energy([Optimizer,indiv])
         indiv.energy = outs[0]
         stro=outs[3]

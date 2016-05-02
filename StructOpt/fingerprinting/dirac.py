@@ -1,13 +1,13 @@
 import math
 
-def dirac(x,a=0,sig=None):
+def dirac(x, a=0, sig=None):
     """Simple calculation of the dirac function
-    Inputs:
-        x = position for function evaluation
-        a = dirac move
-        sig = dirac spread
-    Outputs:
-        out = value of dirac function evaluated at x
+    Args:
+        x (float): position for function evaluation
+        a (float): dirac move
+        sig (float): dirac spread (default 'None' returns 0 if x != a else 1)
+    Returns:
+        float: value of dirac function evaluated at x
     """
 
     if sig == None:

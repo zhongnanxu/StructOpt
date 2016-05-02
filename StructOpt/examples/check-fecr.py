@@ -1,5 +1,5 @@
-from StructOpt.structoptio.read_xyz import read_xyz
-from StructOpt.structoptio.write_xyz import write_xyz
+from StructOpt.fileio.read_xyz import read_xyz
+from StructOpt.fileio.write_xyz import write_xyz
 from ase import Atom,Atoms
 from StructOpt.tools.lammps import LAMMPS
 import os

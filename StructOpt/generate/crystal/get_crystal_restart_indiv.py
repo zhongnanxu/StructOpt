@@ -1,4 +1,4 @@
-from StructOpt.structoptio import read_xyz
+from StructOpt.fileio.read_xyz import read_xyz
 from StructOpt.generate.Individual import Individual
 from StructOpt.tools import find_top_layer
 

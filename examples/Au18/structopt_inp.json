@@ -19,7 +19,8 @@
  "large_box_size": 500, 
  "maxgen": 5, 
  "modules": [
-  "LAMMPS"
+  "LAMMPS",
+  "FEMSIM"
  ], 
  "mutation_options": [
   "lattice_alteration", 
@@ -42,6 +43,7 @@
  "tolerance": 0.01, 
  "tournsize": 3, 
  "weights": [
+  1.0,
   1.0
  ],
  "logging_level": "info"

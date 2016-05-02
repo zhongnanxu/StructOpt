@@ -1,6 +1,6 @@
 from StructOpt import Optimizer
 from StructOpt.tools.StemCalc import ConvStem
-from StructOpt import io
+import StructOpt.fileio
 from mpi4py import MPI
 import numpy as np
 import math
@@ -14,7 +14,7 @@ if rank==0:
 
     # calculate ref STEM image
     A = ConvStem(parameters=autostemparameters,calc_exp=False)
-    atoms_ref=io.read_xyz('STEM_ref',0)
+    atoms_ref=StructOpt.fileio.read_xyz('STEM_ref',0)
 
     nk = autostemparameters['Pixels']
     A.psf = np.empty([nk,nk],dtype=float)

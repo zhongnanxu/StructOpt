@@ -4,7 +4,7 @@ from ase import Atom, Atoms
 from StructOpt.tools.find_defects import find_defects
 from StructOpt.tools.position_average import position_average
 from StructOpt.tools.shift_atoms import shift_atoms
-from StructOpt.structoptio import write_xyz
+from StructOpt.fileio import write_xyz
 
 def rotct_defect(ind1, ind2, Optimizer):
     """Rotate atoms cut and splice
@@ -148,9 +148,9 @@ def rotct_defect(ind1, ind2, Optimizer):
         # DEBUG: Check structure of atoms exchanged
         for sym, c, m, u in Optimizer.atomlist:
             nc = len([atm for atm in indi1 if atm.symbol == sym])
-            Optimizer.output.write('CX ROTCT_Defect: Individual 1 contains {} {} atoms\n'.format(repr(nc), repr(sym))
+            Optimizer.output.write('CX ROTCT_Defect: Individual 1 contains {} {} atoms\n'.format(repr(nc), repr(sym)))
             nc = len([atm for atm in indi2 if atm.symbol == sym])
-            Optimizer.output.write('CX ROTCT_Defect: Individual 2 contains {} {} atoms\n'.format(repr(nc), repr(sym))
+            Optimizer.output.write('CX ROTCT_Defect: Individual 2 contains {} {} atoms\n'.format(repr(nc), repr(sym)))
 
         if Optimizer.forcing != 'Concentration':
             for i in range(len(Optimizer.atomlist)):
@@ -190,9 +190,9 @@ def rotct_defect(ind1, ind2, Optimizer):
             solid2.extend(ind2.bulki)
             for sym, c, m, u in Optimizer.atomlist:
                 nc = len([atm for atm in solid1 if atm.symbol == sym])
-                Optimizer.output.write('CX ROTCT_Defect: Defect 1 configuration contains {} {} atoms\n'.format(repr(nc), repr(sym))
+                Optimizer.output.write('CX ROTCT_Defect: Defect 1 configuration contains {} {} atoms\n'.format(repr(nc), repr(sym)))
                 nc = len([atm for atm in solid2 if atm.symbol == sym])
-                Optimizer.output.write('CX ROTCT_Defect: Defect 2 configuration contains {} {} atoms\n'.format(repr(nc), repr(sym))
+                Optimizer.output.write('CX ROTCT_Defect: Defect 2 configuration contains {} {} atoms\n'.format(repr(nc), repr(sym)))
         if debug: Optimizer.output.flush()
         #pdb.set_trace()
         ind1[0] = indi1
