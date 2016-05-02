@@ -47,6 +47,10 @@ def set_default_parameters(parameters):
 
     parameters.setdefault('weights', [1.0 for _ in parameters['modules']])
 
+    if 'seed' not in parameters:
+        parameters['seed'] = random.randint(0, 10)
+        logger.info('Setting Random number seed (seed) to {0}'.format(parameters['seed']))
+    
     if 'structure' not in parameters:
         logger.critical("Input file/dictionary must include a structure for the simulation as 'structure':'Cluster/Crystal/Defect'")
         logger.debug("Current parameters include:\n"+repr(parameters))
@@ -76,7 +80,9 @@ def set_default_parameters(parameters):
         logger.warning('Number of atoms in simulation not set')
         logger.warning('Assuming natoms = {0}'.format(parameters['natoms']))
 
-    parameters['atomlist'] = check_atomlist_concentration(parameters['atomlist'], parameters['natoms'])
+    parameters['atomlist'] = check_atomlist_concentration(parameters['atomlist'],
+                                                          parameters['natoms'],
+                                                          parameters['seed'])
 
     if 'optimizer_type' not in parameters:
         logger.info('optimizer_type not set.  Default values set to GA.')
@@ -151,9 +157,6 @@ def set_default_parameters(parameters):
         logger.info('Setting genealogytree = {0}'.format(parameters['genealogytree']))
 
     # Parameters for general algorithm
-    if 'seed' not in parameters:
-        parameters['seed'] = random.randint(0, 10)
-        logger.info('Setting Random number seed (seed) to {0}'.format(parameters['seed']))
     if 'forcing' not in parameters:
         parameters['forcing'] = 'Concentration'
         logger.info('Setting forcing = {0}'.format(parameters['forcing']))

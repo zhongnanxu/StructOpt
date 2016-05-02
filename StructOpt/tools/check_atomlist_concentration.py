@@ -1,7 +1,8 @@
 import copy
 import logging
+import random
 
-def check_atomlist_concentration(atomlist, natoms):
+def check_atomlist_concentration(atomlist, natoms, seed):
     """Checks format of atomlist with natoms to ensure number and structure of atoms is correct"""
 
     flag = False
@@ -36,10 +37,11 @@ def check_atomlist_concentration(atomlist, natoms):
         catmlist = copy.copy(atomlist)
 
     if flag:
+        random.seed(seed)
         atms = sum([c for ind, c, m, u in natmlist])
         extraatms = natoms-atms
         while extraatms > 0:
-            random.choice(natmlist)[1]+= 1
+            random.choice(natmlist)[1] += 1
             atms = sum([c for ind, c, m, u in natmlist])
             extraatms = natoms-atms
         while extraatms < 0:

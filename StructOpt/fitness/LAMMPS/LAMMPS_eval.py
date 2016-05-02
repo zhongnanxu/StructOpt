@@ -147,10 +147,14 @@ class LAMMPS_eval(object):
             if not os.path.exists(path):
                 os.mkdir(path)
             #Copy files over
-            shutil.copyfile(calc.trajfile,os.path.join(path,os.path.basename(calc.trajfile)))
-            shutil.copyfile(calc.infile,os.path.join(path,os.path.basename(calc.infile)))
-            shutil.copyfile(calc.logfile,os.path.join(path,os.path.basename(calc.logfile)))
-            shutil.copyfile(calc.datafile,os.path.join(path,os.path.basename(calc.datafile)))
+            shutil.copyfile(calc.trajfile,
+                            os.path.join(path,os.path.basename(calc.trajfile)))
+            shutil.copyfile(calc.infile,
+                            os.path.join(path,os.path.basename(calc.infile)))
+            shutil.copyfile(calc.logfile,
+                            os.path.join(path,os.path.basename(calc.logfile)))
+            shutil.copyfile(calc.datafile,
+                            os.path.join(path,os.path.basename(calc.datafile)))
             raise RuntimeError('{0}:{1}'.format(Exception,e))
         if not Optimizer.parallel:
             if debug:

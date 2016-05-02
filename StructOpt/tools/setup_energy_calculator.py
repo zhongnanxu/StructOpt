@@ -50,18 +50,13 @@ def setup_energy_calculator(Optimizer, mod, relax):
             if debug:
                 logger.info('Setting up LAMMPS calculator with MEAM potential')
             parcoff = '* * {0}'.format(args['pot_file'])
-            if len(atomlist) > 1:
-                for one in atomlist:
-                    parcoff += ' {0}'.format(one[0])
-                parcoff += ' {0}'.format(args['meam_param_file'])
-                for one in atomlist:
-                    parcoff += ' {0}'.format(one[0])
-            else:
-                parcoff += ' {0} NULL {0}'.format(atomlist[0][0])
+            parcoff += ' {0} {1}'.format(args['meam_atoms'], args['meam_file'])
+            for one in atomlist:
+                parcoff += ' {0}'.format(one[0])
             pair_coeff = [parcoff]
             parameters = {'pair_style': args["pair_style"],
                           'pair_coeff': pair_coeff }
-            filesL = [args["pot_file"]]
+            filesL = [args["pot_file"], args["meam_file"]]
 
         elif args["pair_style"] == 'eam/fs':
             if debug:
@@ -212,6 +207,34 @@ def setup_energy_calculator(Optimizer, mod, relax):
             except KeyError:
                 parameters['pair_coeff'][0] += '\nmin_style {0}'.format(args["min_style"])
             parameters['minimize'] = args["minimize"]
+
+        # Turn on MD cycles to get a better ground state
+        if 'md_quench' in args.keys() and args['md_quench'] == True:
+            minimize = parameters['minimize'] + '\n'
+            md_defaults = {'md_cycles': 2,
+                           'md_steps': 7000,
+                           'md_max_T': 1000,
+                           'md_min_T': 2,
+                           'md_t_step': 0.01}
+            for key in md_defaults:
+                if key not in args.keys():
+                    args[key] = md_defaults[key]
+
+            cycles = args['md_cycles']
+            steps = args['md_steps']
+            max_T = args['md_max_T']
+            min_T = args['md_min_T']
+            t_step = args['md_t_step']
+            for i in range(cycles):
+                fix_cmd = 'fix fix_nvt all nvt temp {0} {1} {2}\n'
+                minimize += 'unfix fix_nve\n'
+                minimize += fix_cmd.format(max_T, min_T, t_step)
+                minimize += 'run {0}\n'.format(steps)
+                
+                minimize += 'unfix fix_nvt\n'
+                minimize += 'fix fix_nve all nve\n'
+                minimize += 'minimize {}\n'.format(parameters['minimize'])
+            parameters['minimize'] = minimize                        
 
         if not relax:
             parameters['minimize'] = "1e-8 1e-8 0 0"
